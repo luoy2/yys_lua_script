@@ -1,0 +1,87 @@
+{
+    "style": "default", //样式属性。custom为自定义 default为默认。新手可以使用默认
+    "config": "save_111.dat",
+    "width": 800,
+    "height": 800,   //界面宽高 建议和背景图片尺寸保持一致
+		//"bg": "bg.png",    //这是背景图片（可以不填）
+    "cancelname": "取消",   //这是取消的文字
+    "okname": "开始脚本", //这是确定的文字
+    "views": [
+				{
+            "type": "Page",
+            "style": "custom",
+            "text": "基础设置",
+            "views": [ 
+                {
+                    //"type": "Image",
+                    //"src": "2.jpg",
+                    //"rect": "0,0,800,400"  //控件的位置以及大小 如果样式使用的是default那么可以不用设置这行。
+                },
+								{
+										"type": "Label",
+										"text": "请选择要执行的任务",
+										"size": 35, 
+										"align": "center",
+										"width" : 100,
+										"height" : 100
+										//"color": "255,255,255", //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+										//"rect": "55,20,300,80"
+                },
+								{
+										"id" : "100",
+										"list" : "个人突破,悬赏封印（开发中）,御魂,续车,探索（肛狗粮）,业原火,妖气封印（式神碎片， 石距）,日常杂项（送心，买厕纸等等）",
+										"select" : "0",
+										"size" : "40",
+										"type" : "RadioGroup",
+										"orientation" : "vertical" //选项排布方式为智能横排
+										//"rect": "20,20,180,50"
+								}
+            ]
+        },
+		
+				{
+            //"type": "Page", //第二个选项页
+            "style": "custom",
+            "text": "testing page",
+            "views": [
+								
+                {
+                    //"type": "Image",
+                    //"src": "b.jpg",
+                    //"rect": "0,0,800,400"
+                },
+
+                {
+                    //"id": "201",
+                    //"type": "CheckBoxGroup",
+                    //"list": "",
+                    //"select": "0",
+                    //"rect": "50,200,400,80"
+                },
+								{
+									//"type": "Label",
+									//"text": "自动喊话 ↓下面设置内容↓",
+									//"size": 25, 
+									//"align": "center",
+									//"color": "255,255,255", //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+									//"rect": "55,20,300,80"
+                },
+
+                {
+									//"id": "202",
+									//"type": "Edit", 
+									//"prompt": "请输入自动喊话的内容",
+									//"text": "小叮当是大帅锅，不谢。叉叉助手开发者平台",
+									//"size": 25,
+									//"align": "center",
+									//"color": "255,0,0",
+									//"kbtype":"default", //输入框弹出的键盘类型 default是默认  number是数字键盘  ascii你自己玩 
+									//"rect": "40,120,600,80"
+                }
+            ]
+        }
+		
+    ]
+}
+
+

@@ -1,0 +1,51 @@
+{
+    "style": "default", //样式属性。custom为自定义 default为默认。新手可以使用默认
+    "config": "yeyuanhuo.dat",
+    "width": 800,
+    "height": 800,   //界面宽高 建议和背景图片尺寸保持一致
+		//"bg": "bg.png",    //这是背景图片（可以不填）
+    "cancelname": "取消",   //这是取消的文字
+    "okname": "开始尝试挑战", //这是确定的文字
+    "views": [
+        {
+            "type": "Page",
+            "style": "custom",
+            "text": "业原火设置",
+            "views": [ 
+								{
+										"type": "Label",
+										"text": "请输入挑战卷数量（在体力食盒的左边）:",
+										"size": 25, 
+										"align": "left",
+										"width" : 100
+										//"color": "255,255,255", //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+										//"rect": "55,20,300,80"
+                },
+								{
+										"id" : "100",
+										"select" : "1",
+										"size" : "30",
+										"type" : "Edit"
+								},
+								{
+										"type": "Label",
+										"text": "挑战:",
+										"size": 25, 
+										"align": "left",
+										"width" : 100
+										//"color": "255,255,255", //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+										//"rect": "55,20,300,80"
+                },
+								{
+										"id" : "101",
+										"list" : "贪之阵,嗔之阵,痴之阵",
+										"select" : "3",
+										"size" : "30",
+										"type" : "RadioGroup"
+								}
+            ]
+        }
+    ]
+}
+
+

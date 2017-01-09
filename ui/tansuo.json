@@ -1,0 +1,65 @@
+{
+   "style" : "default", //样式属性。custom为自定义 default为默认。新手可以使用默认
+   "config" : "tansuo.dat",
+   "width" : 800,
+   "height" : 800, //界面宽高 建议和背景图片尺寸保持一致
+   //"bg": "bg.png",    //这是背景图片（可以不填）
+   "cancelname" : "取消", //这是取消的文字
+   "okname" : "开始探索", //这是确定的文字
+   "views" : [
+      {
+         "type" : "Page",
+         "style" : "custom",
+         "text" : "探索设置（17困难）",
+         "views" : [
+						{
+               "type" : "Label",
+               "text" : "请输入数字，设置总共战斗次数（0为无限）",
+               "size" : 25,
+               "align" : "center",
+               "width" : 100
+            },
+						{
+               "id" : "99",
+               "kbtype" : "number",
+               "prompt" : "请输入数字，设置总共战斗次数（0为无限）",
+               "size" : "25",
+               "text" : "0",
+               "type" : "Edit"
+            },
+            {
+               "type" : "Label",
+               "text" : "狗粮跳过行数（n卡）",
+               "size" : 25,
+               "align" : "center",
+               "width" : 100
+            },
+            //"color": "255,255,255", //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+            //"rect": "55,20,300,80"
+            {
+               "id" : "100",
+               "kbtype" : "number",
+               "prompt" : "请输入数字，跳过前几行狗粮",
+               "size" : "25",
+               "text" : "2",
+               "type" : "Edit"
+            },
+						{
+               "type" : "Label",
+               "text" : "请输入数字，设置每次检索经验怪次数（建议10）",
+               "size" : 25,
+               "align" : "center",
+               "width" : 100
+            },
+						{
+               "id" : "101",
+               "kbtype" : "number",
+               "prompt" : "请输入数字，设置每次检索经验怪次数（建议10）",
+               "size" : "25",
+               "text" : "10",
+               "type" : "Edit"
+            }
+         ]
+      }
+   ]
+}
