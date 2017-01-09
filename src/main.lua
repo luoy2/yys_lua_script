@@ -121,9 +121,9 @@ function in_party()
 			sleepRandomLag(1000)
 	end
 end
-
-main()
-
+change_ss(1)
+--main()
+--check_current_state()
 
 --[[
 enter_main_function()

@@ -247,6 +247,10 @@ function check_current_state()
 	local party_x, party_y = myFindColor(组队界面)
 	local tap_exit_x, tap_exit_y = myFindColor(顶点退出)
 	local redcross_x, redcross_y = myFindColor(右上红叉)
+	local defeat_x, defeat_y = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
+	local win_x, win_y = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
+	local chat_cross_x, chat_cross_y = myFindColor(聊天红叉)
+	
 	keepScreen(false)
 	
 	if scroll_x > -1 then
@@ -307,6 +311,15 @@ function check_current_state()
 		my_toast(id, '稍等')
 		tap(redcross_x, redcross_y)
 		mSleep(500)
+		return check_current_state()
+	elseif chat_cross_x > -1 then
+		my_toast(id, '聊天界面')
+		tap(chat_cross_x, chat_cross_y)
+		mSleep(500)
+		return check_current_state()
+	elseif defeat_x > -1 or win_x > -1 then
+		end_combat()
+		mSleep(1000)
 		return check_current_state()
   else
     my_toast(id, "当前界面未知 请进入庭院或者探索界面， 并打开画轴");

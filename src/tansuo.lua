@@ -1,4 +1,4 @@
-chapter_tap = switch {
+ chapter_tap = switch {
   [1] = function () tap(1900, 339) end,
   [2] = function() tap(1900, 520 ) end,		
   [3] = function() tap(1900, 700) end,  
@@ -239,8 +239,22 @@ function change_ss(slot_num)
     if emty_x > -1  and full_x == -1 then
       accept_quest()
       local watch_x, watch_y = findMultiColorInRegionFuzzy(0xb4dfff,"13|2|0xbae1ff,32|4|0xb0ddff,22|21|0xb6e0ff",95, emty_x+61, emty_y+136, emty_x+139, emty_y+213)
-      local in_combat_x, in_combat_y = findMultiColorInRegionFuzzy(0xffe3c0,"1|14|0xffdfbb,26|-1|0xffdab3,31|20|0xffdab3,40|33|0xffdfba",95,emty_x+61, emty_y+136, emty_x+139, emty_y+213)
-      if watch_x == -1 and in_combat_x == -1 then
+      local in_combat_x, in_combat_y = findMultiColorInRegionFuzzy(0xffe3c0,"1|14|0xffdfbb,26|-1|0xffdab3,31|20|0xffdab3,40|33|0xffdfba",90,emty_x+61, emty_y+136, emty_x+139, emty_y+213)
+      local black_x, black_y = findMultiColorInRegionFuzzy(0xffffff,"35|1|0xedefef,51|0|0xffffff,58|0|0x333130,79|0|0x171615,84|0|0xffffff", 90,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+			local red_x, red_y = findMultiColorInRegionFuzzy(0xf3efef,"66|-2|0xfdfbfa,35|31|0xfde3ce,-5|40|0x302a2a,81|37|0x363231,49|83|0xfcfaf9,-4|79|0xeb705a,78|82|0xe86555",90,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+			local blue_x, blue_y  = findMultiColorInRegionFuzzy(0xa5cae4,"1|92|0x8bb9dd,-31|99|0x7dadd6,40|101|0x7bacd5,5|126|0x383230,-28|32|0x723515,35|32|0x773d1f",90,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+			
+			if watch_x > -1 then
+        sysLog('观战gl'..emty_x..','..emty_x..'watch_x:'..watch_x)
+      elseif in_combat_x > -1 then
+        sysLog('出战gl'..emty_x..','..emty_x..'combat_x:'..in_combat_x)
+			elseif black_x > -1 then
+				sysLog('black'..emty_x..','..emty_x..'combat_x:'..black_x)
+			elseif red_x > -1 then
+				sysLog('red'..emty_x..','..emty_x..'combat_x:'..red_x)
+			elseif blue_x > -1 then
+				sysLog('blue'..emty_x..','..emty_x..'combat_x:'..red_x)
+			else
         sysLog('找到gl'..emty_x..'.'..emty_y)
         local new_x = emty_x+100
         local new_y = emty_y+100
@@ -256,10 +270,6 @@ function change_ss(slot_num)
         --mSleep(2000)
 				keepScreen(false)
         return true
-      elseif watch_x > -1 then
-        sysLog('观战gl'..emty_x..','..emty_x..'watch_x:'..watch_x)
-      elseif in_combat_x > -1 then
-        sysLog('出战gl'..emty_x..','..emty_x..'combat_x:'..in_combat_x)
       end
     else
       sysLog(i..'号位未找到')
@@ -297,20 +307,18 @@ function search_for_exp(fight_times, search_times, skip_lines)
       result = '找到经验怪'
       toast("s:" .. result .. "time:" .. mTime() - qTime)
       accept_quest()
-      local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 80, exp_x-500, exp_y-400, exp_x+500, exp_y-100)
+      local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, exp_x-500, exp_y-350, exp_x+500, exp_y-50)
       if combat_x > -1 then 
         sysLog('找到战斗')
         tap(combat_x, combat_y)
         if_outof_sushi()
-        mSleep(500)
-        combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 80, exp_x-500, exp_y-400, exp_x+500, exp_y-100)
-        while combat_x > -1 do
+        mSleep(1000)
+				check_current_state()
+        combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, 0, 0, 1535, 2047)
+				if combat_x > -1 then																			--如果还能找到 说明有问题 重新找经验怪
           sysLog('还能找到战斗')
-          tap(combat_x, combat_y)
-          if_outof_sushi()
-          mSleep(500)
-          combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 80, exp_x-500, exp_y-400, exp_x+500, exp_y-100)
-        end
+          return search_for_exp(fight_times, search_times, skip_lines)
+				end
         my_toast(id, '检测狗粮')
         accept_quest()
         local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -386,6 +394,7 @@ end
 
 
 function tansuo(fight_times, search_times, skip_lines)
+	local target_chapter = 17
   --Initialize chapter
 	enter_tansuo()
 	local chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 95, 826,534,1184,866)
@@ -393,13 +402,13 @@ function tansuo(fight_times, search_times, skip_lines)
 		tap(chapter_x, chapter_y)
 		mSleep(500)
 	else
-		choose_chapter(17)
+		choose_chapter(target_chapter)
 	end
 	enter_dungeon()
   local fight_count = 0
   while fight_count <= fight_times do
     --enter_dungeon()
-    mSleep(5000)
+    mSleep(4000)
 		sysLog('检测锁定')
     local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
     if lockss_x > -1 then
@@ -407,22 +416,31 @@ function tansuo(fight_times, search_times, skip_lines)
       tap(lockss_x, lockss_y)
     end
     mSleep(1000)
-    swip(1347, 1365, 500, 1365)    -- Initialize position
+    my_swip(1977, 1346, 1400, 1346, 50)    -- Initialize position
 		mSleep(5000)										-- waiting for dialog 
 		search_for_exp(fight_times, search_times, skip_lines)
     for find_time = 1, 4, 1 do
-      next_scene()  --4次
-			search_for_exp(fight_times, search_times, skip_lines)
+        my_swip(1977, 1346, 1400, 1346, 35)  --4次
+				search_for_exp(fight_times, search_times, skip_lines)
     end
     tap(78, 103)													--退出探索
     mSleep(1500)
     tap(1244, 842)
-    mSleep(2000)
-    chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 95, 826,534,1184,866)
+    mSleep(3000)
+    local chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 95, 826,534,1184,866)
     if chapter_x > -1 then
+			sysLog('快速进入副本')
       tap(chapter_x, chapter_y)
-    else
-      tap(1000, 700)
+			mSleep(1000)
+			chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 95, 826,534,1184,866)
+			while chapter_x > -1 do
+			tap(chapter_x, chapter_y)
+			mSleep(1000)
+			chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 95, 826,534,1184,866)
+			end
+		else
+			enter_tansuo()
+			choose_chapter(target_chapter)
     end
 		mSleep(1000)
 		enter_dungeon()
