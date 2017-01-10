@@ -48,7 +48,7 @@ end
 
 
 function my_toast(id, my_string)
-  showHUD(id, my_string ,45,"0xff48f442",'hud2.png',0,100,95,600,78)    
+  showHUD(id, my_string ,50,"0xffffffff",'hud2.png',0,100,95,600,78)    
 end
 
 

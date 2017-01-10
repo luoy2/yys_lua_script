@@ -11,8 +11,8 @@ f_num = {f_zero, f_one, f_two, f_three, f_four,f_five, f_seven}
 fy_chapter = {
 首无 = {13, 1}, 山兔 = {16, 1}, 独眼小僧 = {11,1}, 丑时之女 = {10,1}, 觉 = {10,1}, 帚神 = {8, 1}, 
 九命猫 ={18, 0}, 蝴蝶精 = {6, 1}, 桃花妖 = 3 , 灯笼鬼 = {9, 1}, 鲤鱼精 = {7,1}, 鸦天狗 = {12, 1}, 提灯小僧 = {二口女, 海坊主}, 管狐 = {11, 1},
-食梦貘 = 4, 九命猫 ={18, 0}, 蝴蝶精 = {6, 1}, 桃花妖 = 3 , 灯笼鬼 = {9, 1}, 鲤鱼精 = {7,1}, 鸦天狗 = {12, 1}, 
-提灯小僧 = {二口女, 海坊主}, 武士之灵 = {11, 1}, 傀儡师 = {10, 1}}
+食梦貘 = 4, 九命猫 ={18, 0}, 蝴蝶精 = {6, 1}, 桃花妖 = 3 , 灯笼鬼 = {9, 1}, 鲤鱼精 = {7,1}, 鸦天狗 = {12, 1}, 武士之灵 = {11, 1}, 傀儡师 = {10, 1}, 
+天邪鬼青 = {跳跳哥哥, 二口女}, 唐纸伞妖 = {4, 1}}
 
 
 
@@ -160,14 +160,6 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
-	if 悬赏封印_results['200'] ~= '0' then
-		fengyin_toast = createHUD()
-		local fy_monster = tostring(mystery_table[tonumber(悬赏封印_results['200'])][1])
-		local location = tostring(mystery_table[tonumber(悬赏封印_results['200'])][2])
-		local detail = tostring(mystery_table[tonumber(悬赏封印_results['200'])][3])
-		local output_text = '您需要击杀'..fy_monster..", 在"..location..", 具体如下:"..detail
-		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,724,1200,600,80) 
-	end
 	local skip_lines = tonumber(悬赏封印_results['01'])
 	local fy_order_1 = {tonumber(悬赏封印_results['101']), tonumber(悬赏封印_results['100'])}
 	local fy_order_2 = {tonumber(悬赏封印_results['111']), tonumber(悬赏封印_results['110'])}
@@ -175,7 +167,15 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 	local fy_order_4 = {tonumber(悬赏封印_results['131']), tonumber(悬赏封印_results['130'])}
 	local fy_order = {fy_order_1, fy_order_2, fy_order_3, fy_order_4}
 	fy_all(fy_order, skip_lines)
-	mSleep(30*600000)
+	if 悬赏封印_results['200'] ~= '0' then
+		fengyin_toast = createHUD()
+		local fy_monster = tostring(mystery_table[tonumber(悬赏封印_results['200'])][1])
+		local location = tostring(mystery_table[tonumber(悬赏封印_results['200'])][2])
+		local detail = tostring(mystery_table[tonumber(悬赏封印_results['200'])][3])
+		local output_text = '您需要击杀'..fy_monster..", 在"..location..", 具体如下:"..detail
+		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,724,1200,600,80) 
+		mSleep(30*600000)
+	end
 	end
 
 
