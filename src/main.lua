@@ -104,24 +104,8 @@ function main()
   
 end
 
-function in_party()
-	local statue = party_statue()
-	while statue == 1 do
-			mSleep(500)
-			my_toast(id, '等待队伍开始')
-			statue = party_statue()
-	end
-		if statue == 2 then
-			my_toast(id, '进入战斗')
-			mSleep(500)
-		else
-			my_toast(id, '队长跑了,自己开始队伍')
-			tap(1547, 1157)
-			if_outof_sushi()
-			sleepRandomLag(1000)
-	end
-end
-main()
+
+--main()
 --check_current_state()
 
 --[[
@@ -140,8 +124,20 @@ if feng_x > -1 then tap(feng_x, feng_y) else sysLog('couldnt find feng') end
 
 local d_x, d_y = myFindColor(斗鱼)
 local t_x, t_y = myFindColor(太鼓)
-
-
+enter_main_function()
+sub_function:case('guild')
+tap(1549, 1220)
+sleepRandomLag(3000)									
+tap(1050, 700)			                     --点开结界
+sleepRandomLag(3000)	
+		
+accept_quest()
+x, y = findColorInRegionFuzzy(0x272420, 95, 1798, 874, 1802, 876)	 --寄养的黑色+号
+if x > -1 then
+	tap(1800, 875)														--点击寄存
+	sleepRandomLag(2000)	
+	tap(777,712)
+end
 ------------------------------------------------------------------------------
 
 
