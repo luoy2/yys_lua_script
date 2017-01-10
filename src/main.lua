@@ -120,9 +120,8 @@ function tansuo(fight_count, tupo_sep)
 		tap(lockss_x, lockss_y)
 	end
 	mSleep(500)
-	
-	my_swip(1977, 1346, 1400, 1346, 50)    -- Initialize position
-	mSleep(2000)										-- waiting for dialog 
+
+	mSleep(2000)										-- waiting for
 	search_for_exp(_G.fighttime, _G.searchtime, _G.skiplines)
 	for find_time = 1, 4, 1 do
 			my_swip(1977, 1346, 1400, 1346, 35)  --4次
@@ -135,8 +134,8 @@ function tansuo(fight_count, tupo_sep)
 	mSleep(500)
 	enter_tansuo()
 	fight_count = fight_count + 1
-	sysLog(math.floor(fight_count/tupo_sep)*tupo_sep)
-	if fight_time - math.floor(fight_count/tupo_sep)*tupo_sep == 0 then
+	sysLog(fight_count - math.floor(fight_count/tupo_sep)*tupo_sep)
+	if (fight_count - math.floor(fight_count/tupo_sep)*tupo_sep) == 0 then
 		main_tupo(tupo_ret,tupo_results)
 	end
 	return tansuo(fight_count, tupo_sep)

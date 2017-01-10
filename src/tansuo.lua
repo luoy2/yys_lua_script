@@ -333,6 +333,7 @@ function search_for_exp(ｆight_count)
 				while check_current_state() ~= 22 do
 					mSleep(200)
 				end
+				mSleep(1000)
         if_boss(ｆight_count)
         return search_for_exp(ｆight_count)
       else 
