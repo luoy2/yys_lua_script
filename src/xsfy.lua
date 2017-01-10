@@ -154,9 +154,28 @@ end
 --fy_order = {fy_chapter['hudiejing']}
 --fy_all(fy_order, 0)
 
-function find_mystery_monster(input_str)
-
-end
+function main_xsfy(悬赏封印_ret,悬赏封印_results)
+	if 悬赏封印_ret==0 then	
+		toast("您选择了取消，停止脚本运行")
+		lua_exit()
+	end
+	if 悬赏封印_results['200'] ~= '0' then
+		fengyin_toast = createHUD()
+		local fy_monster = tostring(mystery_table[tonumber(悬赏封印_results['200'])][1])
+		local location = tostring(mystery_table[tonumber(悬赏封印_results['200'])][2])
+		local detail = tostring(mystery_table[tonumber(悬赏封印_results['200'])][3])
+		local output_text = '您需要击杀'..fy_monster..", 在"..location..", 具体如下:"..detail
+		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,724,1200,600,80) 
+	end
+	local skip_lines = tonumber(悬赏封印_results['01'])
+	local fy_order_1 = {tonumber(悬赏封印_results['101']), tonumber(悬赏封印_results['100'])}
+	local fy_order_2 = {tonumber(悬赏封印_results['111']), tonumber(悬赏封印_results['110'])}
+	local fy_order_3 = {tonumber(悬赏封印_results['121']), tonumber(悬赏封印_results['120'])}
+	local fy_order_4 = {tonumber(悬赏封印_results['131']), tonumber(悬赏封印_results['130'])}
+	local fy_order = {fy_order_1, fy_order_2, fy_order_3, fy_order_4}
+	fy_all(fy_order, skip_lines)
+	mSleep(30*600000)
+	end
 
 
 
