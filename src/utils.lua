@@ -224,7 +224,6 @@ function getKeysSortedByValue(tbl, sortFunction)
   for key in pairs(tbl) do
     table.insert(keys, key)
   end
-  
   table.sort(keys, function(a, b)
   return sortFunction(tbl[a], tbl[b])
 end)
@@ -322,7 +321,7 @@ function check_current_state()
 		mSleep(1000)
 		return check_current_state()
   else
-    my_toast(id, "当前界面未知 请进入庭院或者探索界面， 并打开画轴");
+    my_toast(id, "当前界面未知");
 		mSleep(1000)
 		return check_current_state()
   end

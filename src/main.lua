@@ -1,6 +1,9 @@
 --
-init("0", 1)
+--init("0", 1)
 setScreenScale(1536,2048)
+init("0", 1)
+
+
 width,height = getScreenSize()
 sysLog("width: "..width.."; height: "..height)
 
@@ -84,17 +87,8 @@ end
 _G.skiplines = 1
 _G.searchtime = 5
 _G.fighttime = 99999
---tansuo_new(0)
-fight_count = 0
---function tansuo_new(fight_count)
-	if fight_count >= _G.fighttime then
-		sysLog('探索任务完成')
-		do return end
-	end
-	--进入副本
-	local target_chapter = 17
-  --Initialize chapter
-	enter_tansuo()
+tupo_ret,tupo_results = showUI("tupo.json")
+function tansuo_to_dungeon(target_chapter)
 	local chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 90, 826,534,1184,866)
 	if chapter_x > -1 then
 		tap(chapter_x, chapter_y)
@@ -103,6 +97,19 @@ fight_count = 0
 		choose_chapter(target_chapter)
 	end
 	enter_dungeon()
+end
+
+
+function tansuo(fight_count, tupo_sep)
+	sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
+	if fight_count >= _G.fighttime then
+		sysLog('探索任务完成')
+		do return end
+	end
+	enter_tansuo()
+	tansuo_to_dungeon(17)
+	--进入副本
+  --Initialize chapter
 	while check_current_state() ~= 22 do
 		mSleep(200)
 	end
@@ -113,6 +120,7 @@ fight_count = 0
 		tap(lockss_x, lockss_y)
 	end
 	mSleep(500)
+	
 	my_swip(1977, 1346, 1400, 1346, 50)    -- Initialize position
 	mSleep(2000)										-- waiting for dialog 
 	search_for_exp(_G.fighttime, _G.searchtime, _G.skiplines)
@@ -120,10 +128,24 @@ fight_count = 0
 			my_swip(1977, 1346, 1400, 1346, 35)  --4次
 			search_for_exp(_G.fighttime, _G.searchtime, _G.skiplines)
 	end
-		
+	
+	tap(78, 103)													--退出探索
+	mSleep(1500)
+	tap(1244, 842)
+	mSleep(500)
+	enter_tansuo()
+	fight_count = fight_count + 1
+	sysLog(math.floor(fight_count/tupo_sep)*tupo_sep)
+	if fight_time - math.floor(fight_count/tupo_sep)*tupo_sep == 0 then
+		main_tupo(tupo_ret,tupo_results)
+	end
+	return tansuo(fight_count, tupo_sep)
+end
 
-
-
+tansuo(0, 2)
+--earch_for_exp(ｆight_count)
+--main()
+--check_current_state()
 
 --[[
 enter_main_function()

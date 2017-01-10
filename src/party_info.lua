@@ -42,6 +42,7 @@ function in_party()
 end
 
 
+
 function enter_party()
   local current_state = check_current_state()
   if current_state == 'party' then

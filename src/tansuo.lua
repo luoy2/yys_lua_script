@@ -163,6 +163,7 @@ end
 
 --检测是否需要更换， 从1-5号位开始
 function if_change(slot, skip_lines)
+	sysLog('!!!!!!!!!'..skip_lines)
   local combat_table = {}
   local watch_table = {}
   keepScreen(true)
@@ -292,12 +293,11 @@ function next_scene()
 end
 
 
-function search_for_exp(fight_times, search_times, skip_lines)
+function search_for_exp(ｆight_count)
 	sysLog('search_for_exp')
-	sysLog(skip_lines)
   local count = 0
   my_toast(id, '寻找经验怪。。。')
-  while count < search_times do
+  while count < _G.searchtime do
     local qTime = mTime()
     accept_quest()
     local exp_x, exp_y = findMultiColorInRegionFuzzy(0x8c1a1b,"-17|-35|0x307885,16|36|0xa16343", 95, 0, 0, 1535, 2047)
@@ -305,7 +305,7 @@ function search_for_exp(fight_times, search_times, skip_lines)
       my_toast(id, '找到经验怪')
       sysLog('x:'..exp_x..' y:'..exp_y)
       result = '找到经验怪'
-      toast("s:" .. result .. "time:" .. mTime() - qTime)
+      toast(result .. "　time:" .. mTime() - qTime)
       accept_quest()
       local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, exp_x-500, exp_y-350, exp_x+500, exp_y-50)
       if combat_x > -1 then 
@@ -317,8 +317,9 @@ function search_for_exp(fight_times, search_times, skip_lines)
         combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, 0, 0, 1535, 2047)
 				if combat_x > -1 then																			--如果还能找到 说明有问题 重新找经验怪
           sysLog('还能找到战斗')
-          return search_for_exp(fight_times, search_times, skip_lines)
+          return search_for_exp(ｆight_count)
 				end
+				--sysLog(skip_lines)
         my_toast(id, '检测狗粮')
         accept_quest()
         local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -327,18 +328,20 @@ function search_for_exp(fight_times, search_times, skip_lines)
           accept_quest()
           ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
         end
-        if_change(slot, skip_lines)
+        if_change(slot, tonumber(_G.skiplines))
         start_combat(0)
-        mSleep(5000)
-        if_boss(fight_times, search_times, skip_lines)
-        return search_for_exp(fight_times, search_times, skip_lines)
+				while check_current_state() ~= 22 do
+					mSleep(200)
+				end
+        if_boss(ｆight_count)
+        return search_for_exp(ｆight_count)
       else 
         my_toast(id, '未找到战斗')
       end
       --]]
     else
       result = '未找到'
-      toast("s:" .. result .. "time:" .. mTime() - qTime)
+      toast(result .. " time:" .. mTime() - qTime)
     end
     count = count + 1
   end
@@ -347,7 +350,7 @@ end
 
 
 ----------------------------------------------------Step 4: 汇总---------------------------------------------------
-function if_boss(fight_times, search_times, skip_lines)
+function if_boss(fight_count)
 	sysLog('if_boss')
   my_toast(id, '寻找boss中。。。')
   local boss_x, boss_y = findMultiColorInRegionFuzzy(0x8f1c1e,"32|27|0x8c4f24,29|-4|0xf8e5d6,13|-17|0x455280,19|8|0xede8e3", 90, 768, 400, 1262, 693)
@@ -364,10 +367,10 @@ function if_boss(fight_times, search_times, skip_lines)
 			accept_quest()
 			ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
 		end
-    if_change(slot, skip_lines)
+    if_change(slot, _G.skiplines)
     start_combat(0)
     mSleep(7000)
-    return pick_loot(fight_times, search_times, skip_lines)
+    return pick_loot(fight_count)
   else
     my_toast(id, '未找到boss, 继续刷怪')
     mSleep(1000)
@@ -376,7 +379,7 @@ end
 
 
 
-function pick_loot(fight_times, search_times, skip_lines)
+function pick_loot(fight_count)
   local loot_x, loot_y = findMultiColorInRegionFuzzy(0xb44620,"18|-12|0xfff4d4,-20|-13|0xfff4d4,-18|10|0xfff4d4,20|12|0xfff4d4", 90, 0, 0, 2047, 1535)
   if loot_x > -1 then
     my_toast(id, '找到小纸人...')
@@ -384,11 +387,12 @@ function pick_loot(fight_times, search_times, skip_lines)
     mSleep(1000)
     tap(1635, 1156)
     mSleep(2000)
-    return pick_loot(fight_times, search_times, skip_lines)
+    return pick_loot(fight_count)
   else
 		my_toast(id, '未找到小纸人...')
     mSleep(10000)
-    return tansuo(fight_times, search_times, skip_lines)
+		fight_count = fight_count +　１
+    return tansuo(fight_count)
   end
 end
 
