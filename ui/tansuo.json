@@ -38,26 +38,38 @@
             //"rect": "55,20,300,80"
             {
                "id" : "100",
-               "kbtype" : "number",
-               "prompt" : "请输入数字，跳过前几行狗粮",
+							 "list" : "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                "size" : "25",
-               "text" : "2",
-               "type" : "Edit"
+               "select" : "2",
+               "type" : "ComboBox"
             },
 						{
                "type" : "Label",
-               "text" : "请输入数字，设置每次检索经验怪次数（建议10）",
+               "text" : "请选择数字，设置每次检索经验怪次数（建议8）",
                "size" : 25,
                "align" : "center",
                "width" : 100
             },
 						{
                "id" : "101",
-               "kbtype" : "number",
-               "prompt" : "请输入数字，设置每次检索经验怪次数（建议5）",
-               "size" : "25",
-               "text" : "5",
-               "type" : "Edit"
+							 "list" : "0,1,2,3,4,5,6,7,8,9,10",
+               "select" : "8",
+               "size" : "30",
+               "type" : "ComboBox"
+            },
+						{
+               "type" : "Label",
+               "text" : "请输入数字，设置个人突破间隔",
+               "size" : 25,
+               "align" : "center",
+               "width" : 100
+            },
+						{
+               "id" : "102",
+							 "list" : "0,1,2,3,4,5,6,7,8,9,10",
+               "select" : "9",
+               "size" : "30",
+               "type" : "ComboBox"
             }
          ]
       }

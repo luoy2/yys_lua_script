@@ -48,29 +48,20 @@ end
 -------------------------------------------单刷--------------------------------------
 function solo_yh(mark_case)
   current_state = check_current_state()
-  if current_state == 1 then
-    enter_tansuo()
-  elseif current_state == 3 then
-    accept_quest()
-    tansuo_x, tansuo_y = findColorInRegionFuzzy(0x1e1ea6, 95, 314, 1493, 340, 1509) -- 探索yuhun下方蓝色
-    while tansuo_x > -1 do
-      tap(326, 1454)
-      mSleep(200)
-      accept_quest()
-      tansuo_x, tansuo_y = findColorInRegionFuzzy(0x1e1ea6, 95, 314, 1493, 340, 1509) -- 探索yuhun下方蓝色
-    end
-    mSleep(1000)
-    tap(600, 800)
-  elseif current_state == 4 then
-    sleepRandomLag(2000)
-  elseif current_state == 5 then
-    mSleep(1000)
-    custom_mark_combat(mark_case)
+	if current_state == 3 then
   else
-    my_toast(id,'请手动进入探索')
-    sleepRandomLag(2000)
-    solo_yh(mark_case)
-  end
+		enter_tansuo()
+	end
+	mSleep(1000)
+	local tansuo_x, tansuo_y = findColorInRegionFuzzy(0x1e1ea6, 95, 314, 1493, 340, 1509) -- 探索yuhun下方蓝色
+	while tansuo_x > -1 do
+		tap(326, 1454)
+		mSleep(1000)
+		accept_quest()
+		tansuo_x, tansuo_y = findColorInRegionFuzzy(0x1e1ea6, 95, 314, 1493, 340, 1509) -- 探索yuhun下方蓝色
+	end
+	mSleep(1000)
+	tap(600, 800)
   mSleep(1000)
   swip(650, 830, 650, 450)
   swip(650, 830, 650, 450)
@@ -268,14 +259,12 @@ function main_yh(yh_ret, yh_results)
 		while true do 
 			accept_invite(mark_case)
 		end
-		--[[	
 	elseif yh_results["101"] == "4" then
 		recursive_task()
 	elseif yh_results["101"] == "5" then
 		while true do 
 			solo_yh(mark_case)
 		end
-		--]]
 	else
 		dialog("你tm什么都没设置，玩儿我吧？")
 		lua_exit()

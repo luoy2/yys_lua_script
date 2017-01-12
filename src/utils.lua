@@ -48,7 +48,7 @@ end
 
 
 function my_toast(id, my_string)
-  showHUD(id, my_string ,38,"0xffffff66",'hud1.png',0,170,116,415,40)    
+  showHUD(id, my_string ,50,"0xffffffff",'hud2.png',0,100,95,600,78)    
 end
 
 
@@ -250,6 +250,7 @@ function check_current_state()
 	local win_x, win_y = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
 	local chat_cross_x, chat_cross_y = myFindColor(聊天红叉)
 	
+	
 	keepScreen(false)
 	
 	if scroll_x > -1 then
@@ -270,7 +271,6 @@ function check_current_state()
 			sysLog('当前处于庭院')
 			return 1
     end
-
   elseif intansuo_x > -1 then
     if incombat_x > -1 then
       sysLog("当前处于战斗中。。。")
@@ -321,7 +321,7 @@ function check_current_state()
 		mSleep(1000)
 		return check_current_state()
   else
-    my_toast(id, "当前界面未知 请进入庭院或者探索界面， 并打开画轴");
+    my_toast(id, "当前界面未知");
 		mSleep(1000)
 		return check_current_state()
   end

@@ -69,7 +69,7 @@ function tupo(refresh_count, total_avaliable)
   sysLog(refresh_count..'次刷新')
   if total_avaliable == 0 then
     my_toast(id, "没有挑战卷")
-    lua_exit()
+		do return end
   end  
   star_list = {true, true, true,true, true, true,true, true, true}
   keepScreen(true)
@@ -122,8 +122,9 @@ function tupo(refresh_count, total_avaliable)
       sysLog('挑战卷: '..total_avaliable)
       if total_avaliable == 0 then
         my_toast(id, "已打完挑战卷！")
-        lockDevice();
-        lua_exit();
+				do return end
+        --lockDevice();
+        --lua_exit();
       end
     end
   end
