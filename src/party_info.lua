@@ -42,6 +42,13 @@ function in_party(case, input_ss_table)
 		my_toast(id, '队长离开队伍，离开')
 		tap(477,1161)
 		mSleep(500)
+		local x, y = findMultiColorInRegionFuzzy(0xf3b25e,"-313|19|0xdf6851,-193|25|0xcbb59c", 90, 659, 799, 1376, 948)
+		while x == -1 do
+			tap(477,1161)
+			mSleep(500)
+		end
+		tap(1230, 883)
+		mSleep(500)
 		return in_party(case, input_ss_table)
 	elseif statue == 3 then
 		my_toast(id, '可以刷新')
@@ -50,8 +57,6 @@ function in_party(case, input_ss_table)
 		elseif case == 'yaoqi' then return refresh_yaoqi(input_ss_table)
 		end
 	elseif statue == 4 then
-		local state = check_current_state()
-		while state ~= 'ready' do mSleep(500) state = check_current_state() end
 	end
 end
 
@@ -135,7 +140,7 @@ function find_yaoqi(input_ss)
 	for i = 1,4,1 do
 		local x, y = yqfyFindColor(input_ss, yqfy_ocr_table[i])
 		if x > -1 then
-			sysLog(i)
+			--sysLog(i)
 			return(i)
 		end
 	end
@@ -144,88 +149,88 @@ end
   
   
 function refresh_yaoqi(input_ss_table)
+	sysLog('refresh_yaoqi')
 	tap(1200, 1300)
-	sleepRandomLag(500)
+	mSleep(200)
 	accept_quest()
 	for k,v in pairs(input_ss_table) do
 		local slot = find_yaoqi(v)
 		if slot ~= nil then
 			join_party:case(slot)
 			if_outof_sushi()
-			sleepRandomLag(1000)
+			mSleep(200)
 			accept_quest()
 			keepScreen(false)
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
-			sysLog(refresh_x)
+			--sysLog(refresh_x)
 			if refresh_x == -1 then
 				my_toast(id, "已加入队伍")
 				mSleep(1000)
 				in_party('yaoqi', input_ss_table)
+				sysLog('start_combat')
 				start_combat(0)
-				return true
+				sysLog('战斗完成,函数跳出')
+				do return end
 			else
-				sleepRandomLag(200)
+				mSleep(100)
 				return refresh_yaoqi(input_ss_table)
 			end
 		end
 	end
-	sleepRandomLag(200)
 	return refresh_yaoqi(input_ss_table)
 end
   
   
   
-  function main_yqfy(yqfy_ret, yqfy_results)
-    if yqfy_ret==0 then	
-      toast("您选择了取消，停止脚本运行")
-      lua_exit()
-    end
-    ss_list = {海坊主, 小黑, 二口女, 骨女, 哥哥, 经验, 金币, 椒图, 饿鬼, '石距'}
-		sysLogLst(ss_list)
-    local fight_times = tonumber(yqfy_results['100'])
-    local ss_index = str_split((yqfy_results['101']))														--ui返回选择的项目index
-    _G.time_left = tonumber(yqfy_results['102'])*60*1000												--用户输入的石距剩余时间
-		local initial_t = mTime()																										--当前时间
-    sysLog(_G.time_left)
-		--初始化战斗次数
-    local current_ss_time = 0
-    -- 如果用户选择战斗次数为0则最大化战斗次数
-		if fight_times == 0 then
-      fight_times = 999999
-    end							
-    ss_target_table = {}
-		--ui返回选择的0_base_index,需要+1才能用在lua table里面
-    for k,v in pairs(ss_index) do
-      ss_index[k] = ss_index[k] + 1
-      table.insert(ss_target_table, ss_list[ss_index[k]])
-    end	
-    sysLog(tablelength(ss_target_table))
-    
-    
-    if table.contains(ss_target_table, '石距') then
-      sysLog('需要打章鱼')
-      table.remove(ss_target_table, tablelength(ss_target_table))
-			if_shiju = true
+function main_yqfy(yqfy_ret, yqfy_results)
+	if yqfy_ret==0 then	
+		toast("您选择了取消，停止脚本运行")
+		lua_exit()
+	end
+	ss_list = {海坊主, 小黑, 二口女, 骨女, 哥哥, 经验, 金币, 椒图, 饿鬼, '石距'}
+	sysLogLst(ss_list)
+	local fight_times = tonumber(yqfy_results['100'])
+	local ss_index = str_split((yqfy_results['101']))														--ui返回选择的项目index
+	_G.time_left = tonumber(yqfy_results['102'])*60*1000												--用户输入的石距剩余时间
+	local initial_t = mTime()																										--当前时间
+	sysLog(_G.time_left)
+	--初始化战斗次数
+	local current_ss_time = 0
+	-- 如果用户选择战斗次数为0则最大化战斗次数
+	if fight_times == 0 then
+		fight_times = 999999
+	end							
+	ss_target_table = {}
+	--ui返回选择的0_base_index,需要+1才能用在lua table里面
+	for k,v in pairs(ss_index) do
+		ss_index[k] = ss_index[k] + 1
+		table.insert(ss_target_table, ss_list[ss_index[k]])
+	end	
+	sysLog(tablelength(ss_target_table))
+	if table.contains(ss_target_table, '石距') then
+		sysLog('需要打章鱼')
+		table.remove(ss_target_table, tablelength(ss_target_table))
+		if_shiju = true
+	end
+	
+	while current_ss_time < fight_times do
+		if if_shiju then
+			local pass_time = mTime() - initial_t
+			local time_left = _G.time_left - pass_time
+			sysLog(time_left)
+			shiju(time_left)
+			my_toast(id, '等待'..math.ceil(time_left/1000)..'秒可以打石距')
+			mSleep(1000)
 		end
-		
-
-		while current_ss_time < fight_times do
-			if if_shiju then
-				local pass_time = mTime() - initial_t
-				local time_left = _G.time_left - pass_time
-				sysLog(time_left)
-				shiju(time_left)
-				my_toast(id, '等待'..math.ceil(time_left/1000)..'秒可以打石距')
-				mSleep(1000)
-			end
-			if next(ss_target_table) ~= nil then 
-				enter_party()
-				tap(400, 1230)
-				my_toast(id, '开始刷碎片!')
-				mSleep(500)
-				refresh_yaoqi(ss_target_table)
-				current_ss_time = current_ss_time + 1
-				sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)
-			end
-    end
-  end
+		if next(ss_target_table) ~= nil then 
+			enter_party()
+			tap(400, 1230)
+			my_toast(id, '开始刷碎片!')
+			mSleep(500)
+			refresh_yaoqi(ss_target_table)
+			current_ss_time = current_ss_time + 1
+			mSleep(1000)
+			sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)
+		end
+	end
+end

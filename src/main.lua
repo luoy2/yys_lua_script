@@ -72,7 +72,10 @@ function main()
     elseif results['100'] == '7' then
       richang_ret,richang_results = showUI("richang.json")
 			main_richang(richang_ret,richang_results)
-      -------------------------------------------开发中--------------------------------------	
+			-------------------------------------------一条龙挂机--------------------------------------	
+    elseif results['100'] == '8' then
+			dialog('功能马上完成, 敬请期待')
+			-------------------------------------------开发中--------------------------------------	
 			
     else 
       toast("您什么都没有设置")
@@ -100,11 +103,9 @@ function main_afk()
 	main_xsfy(悬赏封印_ret,悬赏封印_results)
 	tansuo(0, _G.tupo_sep)
 end
-main()
-
 
 --earch_for_exp(ｆight_count)
---main()
+main()
 --check_current_state()
 
 --[[
