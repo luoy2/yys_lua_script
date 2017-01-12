@@ -165,18 +165,17 @@ function refresh_yaoqi(input_ss_table)
 			--sysLog(refresh_x)
 			if refresh_x == -1 then
 				my_toast(id, "已加入队伍")
-				mSleep(1000)
-				in_party('yaoqi', input_ss_table)
-				sysLog('start_combat')
-				start_combat(0)
-				sysLog('战斗完成,函数跳出')
+				mSleep(2000)
+				sysLog('函数跳出')
 				do return end
 			else
 				mSleep(100)
+				sysLog('1..refresh_yaoqi(input_ss_table)')
 				return refresh_yaoqi(input_ss_table)
 			end
 		end
 	end
+	sysLog('2..refresh_yaoqi(input_ss_table)')
 	return refresh_yaoqi(input_ss_table)
 end
   
@@ -228,8 +227,12 @@ function main_yqfy(yqfy_ret, yqfy_results)
 			my_toast(id, '开始刷碎片!')
 			mSleep(500)
 			refresh_yaoqi(ss_target_table)
+			in_party('yaoqi', ss_target_table)
+			sysLog('start_combat...')
+			start_combat(0)
 			current_ss_time = current_ss_time + 1
 			mSleep(1000)
+			my_toast(id, '刷怪次数： '..current_ss_time..'/'..fight_times)
 			sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)
 		end
 	end
