@@ -173,7 +173,7 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 		local location = tostring(mystery_table[tonumber(悬赏封印_results['200'])][2])
 		local detail = tostring(mystery_table[tonumber(悬赏封印_results['200'])][3])
 		local output_text = '您需要击杀'..fy_monster..", 在"..location..", 具体如下:"..detail
-		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,724,1200,600,80) 
+		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,100,180,600,80)
 		mSleep(30*600000)
 	end
 	end

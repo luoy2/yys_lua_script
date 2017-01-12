@@ -10,34 +10,48 @@ join_party = switch {
 function party_statue()
 	local ifstart_x, ifstart_y = myFindColor(组队开始)
 	local ifwait_x, if_wait_y = myFindColor(组队等待)
+	local leader_wait_x, leader_wait_y = myFindColor(队长等待)
+	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)
 	if ifstart_x > -1 then 
 		sysLog('可以开始队伍')
 		return 0
+	elseif leader_wait_x > -1 then
+		sysLog('等待人来')
+		return 2
+	elseif refresh_x > -1 then
+		sysLog('可以刷新')
+		return 3
 	elseif ifwait_x > -1 then
 		sysLog('等待队伍开始')
 		return 1
 	else
-		sysLog('已退出界面')
-		return 2
+		sysLog('离开组队界面')
+		return 4
 	end
 end
 
 
-function in_party()
+function in_party(case, input_ss_table)
 	local statue = party_statue()
 	while statue == 1 do
 			mSleep(500)
 			my_toast(id, '等待队伍开始')
 			statue = party_statue()
 	end
-		if statue == 2 then
-			my_toast(id, '进入战斗')
-			mSleep(500)
-		else
-			my_toast(id, '队长跑了,自己开始队伍')
-			tap(1547, 1157)
-			if_outof_sushi()
-			sleepRandomLag(1000)
+	if statue == 2 or statue == 0 then
+		my_toast(id, '队长离开队伍，离开')
+		tap(477,1161)
+		mSleep(500)
+		return in_party(case, input_ss_table)
+	elseif statue == 3 then
+		my_toast(id, '可以刷新')
+		mSleep(500)
+		if case == 'shiju' then return refresh()
+		elseif case == 'yaoqi' then return refresh_yaoqi(input_ss_table)
+		end
+	elseif statue == 4 then
+		local state = check_current_state()
+		while state ~= 'ready' do mSleep(500) state = check_current_state() end
 	end
 end
 
@@ -46,6 +60,14 @@ end
 function enter_party()
   local current_state = check_current_state()
   if current_state == 'party' then
+		mSleep(500)
+		my_swip(411, 547, 647, 1035, 30)
+		mSleep(500)
+	elseif current_state == 1 or current_state == 'machi' then
+		mSleep(500)
+		sub_function:case('party')
+		mSleep(1000)
+		return enter_party()
   else
     enter_main_function()
 		mSleep(500)
@@ -71,7 +93,7 @@ function refresh()
 		if x == -1 then
 			toast("已加入队伍")
 			mSleep(1000)
-			in_party()
+			in_party('shiju', {0})
 			start_combat(0)
 		else
 			sleepRandomLag(200)
@@ -133,20 +155,18 @@ function refresh_yaoqi(input_ss_table)
 			sleepRandomLag(1000)
 			accept_quest()
 			keepScreen(false)
-			
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
 			sysLog(refresh_x)
 			if refresh_x == -1 then
 				my_toast(id, "已加入队伍")
 				mSleep(1000)
-				in_party()
+				in_party('yaoqi', input_ss_table)
 				start_combat(0)
 				return true
 			else
 				sleepRandomLag(200)
 				return refresh_yaoqi(input_ss_table)
 			end
-			
 		end
 	end
 	sleepRandomLag(200)

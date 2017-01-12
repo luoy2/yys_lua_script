@@ -173,7 +173,7 @@ end
 
 --检测是否需要更换， 从1-5号位开始
 function if_change(slot, skip_lines)
-	sysLog('!!!!!!!!!'..skip_lines)
+	--sysLog('!!!!!!!!!'..skip_lines)
   local combat_table = {}
   local watch_table = {}
   keepScreen(true)
@@ -303,7 +303,7 @@ function next_scene()
 end
 
 
-function search_for_exp(ｆight_count, tupo_sep)
+function search_for_exp(fight_count, tupo_sep)
 	sysLog('search_for_exp')
   local count = 0
   my_toast(id, '寻找经验怪, 同屏找怪'.. _G.searchtime..'次')
@@ -315,6 +315,7 @@ function search_for_exp(ｆight_count, tupo_sep)
     --local exp_x, exp_y = findMultiColorInRegionFuzzy(0xaa724f,"-16|-43|0x8a191b,-36|-83|0x2d7888,127|-44|0xa66746,120|-96|0x8a1919,113|-125|0x2d7481", 90, 599, 368, 1613, 1206)
 		keepScreen(false)
 		if exp_x > -1 then
+			--sysLog('11:'..fight_count)
       my_toast(id, '找到经验怪')
       sysLog('x:'..exp_x..' y:'..exp_y)
       result = '找到经验怪'
@@ -330,9 +331,9 @@ function search_for_exp(ｆight_count, tupo_sep)
         combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, 0, 0, 1535, 2047)
 				if combat_x > -1 then																			--如果还能找到 说明有问题 重新找经验怪
           sysLog('还能找到战斗')
-          return search_for_exp(ｆight_count, tupo_sep)
+          return search_for_exp(fight_count, tupo_sep)
 				end
-				--sysLog(skip_lines)
+				--sysLog('11:'..fight_count)
         my_toast(id, '检测狗粮')
         accept_quest()
         local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -342,17 +343,20 @@ function search_for_exp(ｆight_count, tupo_sep)
           ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
         end
         if_change(slot, tonumber(_G.skiplines))
+				--sysLog('12:'..fight_count)
         start_combat(0)
 				while check_current_state() ~= 22 do
 					mSleep(200)
 				end
 				mSleep(1000)
-				local boss_bool, this_fight_count = if_boss(fight_count)
+				--sysLog('13:'..fight_count)
+				local boss_bool = if_boss(fight_count)
         if boss_bool then
-					this_fight_count = this_fight_count + 1
-					return tansuo(this_fight_count, tupo_sep)
+					fight_count = fight_count + 1
+					sysLog('14:'..fight_count)
+					return tansuo(fight_count, tupo_sep)
 				end
-        return search_for_exp(this_fight_count, tupo_sep)
+        return search_for_exp(fight_count, tupo_sep)
       else 
         my_toast(id, '未找到战斗')
       end
@@ -369,6 +373,7 @@ end
 
 ----------------------------------------------------Step 4: 汇总---------------------------------------------------
 function if_boss(fight_count)
+	--sysLog('20:'..fight_count)
 	sysLog('if_boss')
   my_toast(id, '寻找boss中。。。')
   local boss_x, boss_y = findMultiColorInRegionFuzzy(0x8f1c1e,"32|27|0x8c4f24,29|-4|0xf8e5d6,13|-17|0x455280,19|8|0xede8e3", 90, 768, 400, 1262, 693)
@@ -388,18 +393,21 @@ function if_boss(fight_count)
     if_change(slot, _G.skiplines)
     start_combat(0)
     mSleep(7000)
-    local this_fight_count = pick_loot(fight_count)
-		return true, this_fight_count
+		sysLog('21:'..fight_count)
+    pick_loot()
+		sysLog('22:'..fight_count)
+		return true
   else
     my_toast(id, '未找到boss, 继续刷怪')
     mSleep(1000)
+		--sysLog('23:'..fight_count)
 		return false, fight_count
   end
 end
 
 
 
-function pick_loot(fight_count)
+function pick_loot()
   local loot_x, loot_y = findMultiColorInRegionFuzzy(0xb44620,"18|-12|0xfff4d4,-20|-13|0xfff4d4,-18|10|0xfff4d4,20|12|0xfff4d4", 90, 0, 0, 2047, 1535)
   if loot_x > -1 then
     my_toast(id, '找到小纸人...')
@@ -420,7 +428,6 @@ function pick_loot(fight_count)
 			mSleep(2000)
 		end
   end
-	return fight_count
 end
 
 
