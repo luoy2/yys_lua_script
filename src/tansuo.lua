@@ -3,8 +3,11 @@
   [2] = function() tap(1900, 520 ) end,		
   [3] = function() tap(1900, 700) end,  
   [4] = function() tap(1900, 900)	end,	
-  [17] = function() tap(1900, 750)	end, 
-  [18] = function() tap(1900, 950) end
+	[17] = function() tap(1900, 556)	end, 
+  [18] = function() tap(1900, 750) end,
+	[19] = function() tap(1900, 950) end,
+  [171] = function() tap(1900, 750)	end, 
+  --[18] = function() tap(1900, 950) end
 }
 
 change_ss_tap = switch {
@@ -433,8 +436,13 @@ end
 
 
 
-function tansuo(fight_count, tupo_sep)
-	local target_chapter = 17
+function tansuo(fight_count, tupo_sep, if_extra)
+	if if_extra == 0 then
+		target_chapter = 17
+	else 
+		target_chapter = 171
+	end
+
 	my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
 	sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
 	if fight_count >= _G.fighttime then
@@ -442,6 +450,7 @@ function tansuo(fight_count, tupo_sep)
 		do return end
 	end
 	enter_tansuo()
+
 	tansuo_to_dungeon(target_chapter)
 	--进入副本
   --Initialize chapter
@@ -493,6 +502,7 @@ function main_tansuo(ts_ret, ts_results)
 	_G.skiplines = tonumber(ts_results['100'])
 	_G.searchtime = tonumber(ts_results['101'])
 	_G.tupo_sep = tonumber(ts_results['102'])
+	if_extra = tonumber(ts_results['103'])
 	if _G.tupo_sep ~= 0 then
 			tupo_ret,tupo_results = showUI("tupo.json")
 	end
@@ -500,6 +510,7 @@ function main_tansuo(ts_ret, ts_results)
 	if _G.fighttime == 0 then
 		_G.fighttime = 999999
 	end
-	return tansuo(0, _G.tupo_sep)
+
+	return tansuo(0, _G.tupo_sep, if_extra)
 end
 
