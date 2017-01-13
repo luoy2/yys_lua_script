@@ -104,8 +104,19 @@ function main_afk()
   tansuo(0, _G.tupo_sep)
 end
 
---earch_for_exp(ｆight_count)
+function move_one_lvl() 
+	for i = 1, 59, 1 do
+		my_swip(1320, 818, 1320, 746, 20)
+		mSleep(200)
+	end
+end
+
+
+
 main()
+
+--]]
+--
 --check_current_state()
 --[[
 enter_main_function()
@@ -166,6 +177,4 @@ enter_main_function()
     
     --page 2
     
-    
-    
-    
+   

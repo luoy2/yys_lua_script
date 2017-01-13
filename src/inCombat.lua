@@ -26,7 +26,6 @@ function if_mark(tap_situation)
 		else
 			--my_toast(id,'标记case'..tap_situation)
 			mark_cases:case(tap_situation)
-			mSleep(20)
 			return if_mark(tap_situation)
 		end
 	end

@@ -249,6 +249,7 @@ function check_current_state()
 	local defeat_x, defeat_y = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
 	local win_x, win_y = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
 	local chat_cross_x, chat_cross_y = myFindColor(聊天红叉)
+	local creat_x = myFindColor(创建队伍)
 	
 	
 	keepScreen(false)
@@ -320,7 +321,10 @@ function check_current_state()
 		end_combat()
 		mSleep(1000)
 		return check_current_state()
-  else
+  elseif  creat_x > -1 then
+		my_toast(id, '创建队伍界面')
+		return 'create_party'
+	else
     my_toast(id, "当前界面未知");
 		mSleep(1000)
 		return check_current_state()
