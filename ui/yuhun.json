@@ -1,7 +1,7 @@
 {
     "style": "default", //样式属性。custom为自定义 default为默认。新手可以使用默认
     "config": "yuhun.dat",
-    "width": 800,
+    "width": 1230,
     "height": 800,   //界面宽高 建议和背景图片尺寸保持一致
 		//"bg": "bg.png",    //这是背景图片（可以不填）
     "cancelname": "取消",   //这是取消的文字

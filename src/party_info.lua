@@ -306,20 +306,6 @@ function main_yqfy(yqfy_ret, yqfy_results)
 			mSleep(1000)
 		end
 		if next(ss_target_table) ~= nil then 
-			--[[
-			enter_party()
-			tap(400, 1230)
-			my_toast(id, '开始刷碎片!')
-			mSleep(500)
-			refresh_yaoqi(ss_target_table)
-			sysLog('检测队伍状态...')
-			in_party('yaoqi', ss_target_table)
-			sysLog('start_combat...')
-			start_combat(0)
-			current_ss_time = current_ss_time + 1
-			mSleep(1000)
-			my_toast(id, '刷怪次数： '..current_ss_time..'/'..fight_times)
-			--]]
 			seal_yaoqi(ss_target_table)
 			current_ss_time = current_ss_time + 1
 			sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)

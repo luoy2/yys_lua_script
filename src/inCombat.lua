@@ -18,16 +18,21 @@ mark_cases = switch {
 function if_mark(tap_situation)
 	if tap_situation ~= 6 and tap_situation ~= 0 then
 		--sysLog('if_mark'..tap_situation)
+		local initial_t = mTime()	
 		accept_quest()
-		x, y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535)
-		if x > -1 then
-			my_toast(id,'为您标记好了')
-			mSleep(2000)
-		else
-			--my_toast(id,'标记case'..tap_situation)
+		local x, y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535)
+		local force_skip_t = mTime() - initial_t
+		while x == -1 do
+			sysLog(force_skip_t)
 			mark_cases:case(tap_situation)
-			return if_mark(tap_situation)
+			x, y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535)
+			force_skip_t = mTime() - initial_t
+			if force_skip_t >= 10000 then
+				my_toast(id, '标记超时, 直接下一轮标记')
+				break end
 		end
+		my_toast(id,'为您标记好了')
+		mSleep(1000)
 	end
 end
 

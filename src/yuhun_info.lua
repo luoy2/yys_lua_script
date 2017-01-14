@@ -39,6 +39,7 @@ function create_party(visible)
 	mSleep(1000)
 	local lvl_floor = myFindColor(六十底)
 	local lvl_top = myFindColor(六十顶)
+	my_toast(id, '检测等级设置')
 	for i = 1,5,1 do
 		if lvl_floor == -1 then 
 			my_swip(1320, 900, 1320, 0, 50)
@@ -53,7 +54,9 @@ function create_party(visible)
 			break end
 	end
 	mSleep(1000)
+	my_toast(id, '创建队伍')
 	tap(creat_x, creat_y)
+	if_outof_sushi()
 end
 
 
@@ -79,12 +82,14 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 			end
 			my_toast(id,"重新邀请")
 			tap(1184, 877)
+			if_outof_sushi()
 			current_party_statue = party_statue()
 			sysLog(current_party_statue)
 			while current_party_statue == 4 do
 				sysLog(current_party_statue)
 				mSleep(1000)
 				current_party_statue = party_statue()
+				if_outof_sushi()
 			end
 		else
 			my_toast(id,"翻车了, 不要这批队友了")
@@ -299,14 +304,19 @@ end
     
 function if_other_round()
 	--sysLog('if_other_round')
-	x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
-	--x, y = findMultiColorInRegionFuzzy(0x691007,"16|-32|0x2d2720,-8|-85|0xf3daa9,15|-198|0x272420", 85, 1034-5,991-5, 1034+5,991+5) --回目
-	if x > -1 then
-		--my_toast(id,'检测到回目')
-	else
+	local x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
+	local initial_t = mTime()	
+	local force_skip_t = mTime() - initial_t
+	--my_toast(id,'检测到回目')
+	while x == -1 do
 		my_toast(id,'等待下一回合的标记')
-		mSleep(20)
-		if_other_round()
+		mSleep(100)
+		x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
+		force_skip_t = mTime() - initial_t
+		--sysLog(force_skip_t)
+		if force_skip_t >= 30000 then
+			my_toast(id, '回合超时')
+			break end
 	end
 end
     
