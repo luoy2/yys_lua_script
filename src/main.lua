@@ -88,7 +88,6 @@ end
 main()
 
 
-
 --]]
 --
 --check_current_state()

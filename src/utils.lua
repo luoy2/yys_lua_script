@@ -305,12 +305,14 @@ function check_current_state()
 		sysLog('party')
 		return 'party'
 	elseif tap_exit_x > -1 then
+		sysLog('找到退出')
 		my_toast(id, '稍等')
 		tap(tap_exit_x, tap_exit_y)
 		mSleep(500)
 		return check_current_state()
 	elseif redcross_x > -1 then
 		my_toast(id, '稍等')
+		sysLog('找到红叉')
 		tap(redcross_x, redcross_y)
 		mSleep(500)
 		return check_current_state()

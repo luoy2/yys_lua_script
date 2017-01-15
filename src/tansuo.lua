@@ -422,14 +422,16 @@ function pick_loot()
   else
 		my_toast(id, '未找到小纸人...')
     mSleep(8000)
+		--[[
 		local chest_x, chest_y = myFindColor(地图宝箱)
 		if chest_x > -1 then
 			my_toast(id, '找到宝箱')
 			tap(chest_x, chest_y)
-			mSleep(1500)
+			mSleep(3000)
 			tap(1738, 1406)
 			mSleep(2000)
 		end
+		--]]
   end
 end
 
@@ -443,9 +445,11 @@ function tansuo(fight_count, tupo_sep, if_extra)
 		target_chapter = 171
 	end
 	
-	_G.time_pass = mTime() - _G.liaotupo_t
-	sysLog('已过去时间'.._G.time_pass)
-	main_liaotupo('combine')
+	if _G.if_liaotupo then
+		_G.time_pass = mTime() - _G.liaotupo_t
+		sysLog('已过去时间'.._G.time_pass)
+		main_liaotupo('combine', tonumber(tupo_results['200']))
+	end
 	
 	my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
 	sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
@@ -484,14 +488,16 @@ function tansuo(fight_count, tupo_sep, if_extra)
 	mSleep(500)
 	enter_tansuo()
 	local this_fight_count = fight_count + 1
-
-	if_tupo = this_fight_count - math.floor(this_fight_count/tupo_sep)*tupo_sep
-	sysLog(if_tupo)
-	my_toast(id, '当前探索次数'..this_fight_count..'; 突破间隔'..tupo_sep)
-	if if_tupo == 0 then
-		sysLog('已经刷完'..this_fight_count..'次, 开始结界突破')
-		my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始结界突破')
-		main_tupo(tupo_ret,tupo_results)
+	
+	if _G.if_tupo then
+		if_tupo = this_fight_count - math.floor(this_fight_count/tupo_sep)*tupo_sep
+		sysLog(if_tupo)
+		my_toast(id, '当前探索次数'..this_fight_count..'; 突破间隔'..tupo_sep)
+		if if_tupo == 0 then
+			sysLog('已经刷完'..this_fight_count..'次, 开始结界突破')
+			my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始结界突破')
+			main_tupo(tupo_ret,tupo_results)
+		end
 	end
 	return tansuo(this_fight_count, tupo_sep, if_extra)
 end
@@ -506,11 +512,32 @@ function main_tansuo(ts_ret, ts_results)
 	_G.skiplines = tonumber(ts_results['100'])
 	_G.searchtime = tonumber(ts_results['101'])
 	_G.tupo_sep = tonumber(ts_results['102'])
-	if_extra = tonumber(ts_results['103'])
+	_G.if_liaotupolist = {true, true, true}
 	_G.liaotupo_t = 0
 	_G.time_pass = mTime() - _G.liaotupo_t
-	if _G.tupo_sep ~= 0 then
+	if_extra = tonumber(ts_results['103'])
+	
+	if ts_results['98'] == '0' then
+		_G.if_tupo = true
+		_G.if_liaotupo = false
+	elseif ts_results['98'] == '1' then
+		_G.if_tupo = false
+		_G.if_liaotupo = true
+	elseif ts_results['98'] == '0@1' then
+				_G.if_tupo = true
+		_G.if_liaotupo = true
+	else
+				_G.if_tupo = false
+		_G.if_liaotupo = false
+	end
+	sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
+	
+	if _G.if_tupo or _G.if_liaotupo then
 			tupo_ret,tupo_results = showUI("tupo.json")
+			if tupo_ret==0 then	
+			toast("突破未设置, 请从探索页面选择取消突破")
+			lua_exit()
+	end
 	end
 
 	if _G.fighttime == 0 then
