@@ -136,6 +136,14 @@ function swip(x1,y1,x2,y2)
   mSleep(30)
   touchUp(index, x2, y2)
 end
+function my_swip_2(x1, y1, x2, y2, sleep1, sleep2, step)
+		local new = pos:new(x1, y1)
+		local move = {x=x2, y=y2}
+		local step = step or 10
+		local sleep1 = sleep1 or 200
+		local sleep2 = sleep2 or 40
+		new:touchMoveTo(move,step,sleep1,sleep2)
+end
 
 function my_swip(x1, y1, x2, y2, speed)
 	local new = pos:new(x1, y1)

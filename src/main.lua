@@ -84,9 +84,9 @@ function main()
     my_exist(true)
   end
 end
-
 main()
-
+--main()
+--my_swip_2(1305, 1241, 1305, 380, 10, 200, 40)
 
 --]]
 --
