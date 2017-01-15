@@ -442,7 +442,11 @@ function tansuo(fight_count, tupo_sep, if_extra)
 	else 
 		target_chapter = 171
 	end
-
+	
+	_G.time_pass = mTime() - _G.liaotupo_t
+	sysLog('已过去时间'.._G.time_pass)
+	main_liaotupo('combine')
+	
 	my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
 	sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
 	if fight_count >= _G.fighttime then
@@ -489,7 +493,7 @@ function tansuo(fight_count, tupo_sep, if_extra)
 		my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始结界突破')
 		main_tupo(tupo_ret,tupo_results)
 	end
-	return tansuo(this_fight_count, tupo_sep)
+	return tansuo(this_fight_count, tupo_sep, if_extra)
 end
 
 
@@ -503,6 +507,8 @@ function main_tansuo(ts_ret, ts_results)
 	_G.searchtime = tonumber(ts_results['101'])
 	_G.tupo_sep = tonumber(ts_results['102'])
 	if_extra = tonumber(ts_results['103'])
+	_G.liaotupo_t = 0
+	_G.time_pass = mTime() - _G.liaotupo_t
 	if _G.tupo_sep ~= 0 then
 			tupo_ret,tupo_results = showUI("tupo.json")
 	end

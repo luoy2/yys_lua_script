@@ -5,10 +5,10 @@
 -- 勋章数：928,1166,1008,1205
 -- 排名： 1598,1164,1705,1206
 -- 刷新： 1617,1032,1739,1090
-
+-------------------------------------------------------个人突破------------------------------------------------------------------
 
 function get_star(input_table)
-	if if_defeat(input_table) then return 6 end
+	if if_defeat(input_table) then return 7 end
   for i = 0,5,1 do
     accept_quest()
     x, y = findColorInRegionFuzzy(0xb3a28d, 95, input_table[1]+63*i-2, input_table[2]-2, input_table[1]+63*i+2, input_table[2]+2)
@@ -26,6 +26,7 @@ function get_star(input_table)
   end
 end
 
+
 function if_defeat(input_table)
 	local x, y = findMultiColorInRegionFuzzy(0xaa3333,"8|19|0xab3534,-26|3|0x260803,-2|34|0x3b0b06", 90, input_table[1]+275,input_table[2]-156, input_table[1]+359 , input_table[2]-63)
 	if x > -1 then
@@ -34,7 +35,6 @@ function if_defeat(input_table)
 		return false
 	end
 end
-
 
 
 function tupo_from_less_star(items)
@@ -47,6 +47,7 @@ function tupo_from_less_star(items)
 	end
   return output_table
 end
+
 
 function enter_tupo()
   local current_state = check_current_state()
@@ -174,4 +175,105 @@ function main_tupo(tupo_ret,tupo_results)
   else
     tupo(9, tupo_avaliable)
   end
+end
+
+
+
+-------------------------------------------------------寮突破------------------------------------------------------------------
+
+
+function enter_liaotupo()
+  local current_state = check_current_state()
+	if current_state == 'tupo' then
+		sleepRandomLag(1000)
+		tap(1978, 742)
+		local liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
+		sysLog(liao_tupo_x)
+		while liao_tupo_x == -1 do
+			sysLog('未进入寮突破')
+			tap(1978, 742)
+			mSleep(1000)
+			liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
+		end
+	elseif current_state == 3 then
+		tap(676, 1457)
+		mSleep(200)
+		tap(676, 1457)
+		sleepRandomLag(2000)
+		return enter_liaotupo()
+	else
+		enter_tansuo()
+		return enter_liaotupo()
+	end
+end
+
+
+function find_one_round_metal()
+	star_list = {true, true, true,true, true, true,true, true}
+  keepScreen(true)
+  for i = 1,8,1 do
+		local this_star = get_star(liao_enemy[i])
+    star_list[i] = this_star
+    sysLog('结界'..i..'勋章: ' .. this_star)
+    my_toast(id,'结界'..i..'勋章: ' .. this_star)
+  end
+  keepScreen(false)
+	return star_list
+end
+
+
+function one_liaotupo(base_metal)
+	local this_star_list = find_one_round_metal()
+	local search_state = true
+	while search_state do
+		for tupo_target = 1, 8, 1 do
+			if this_star_list[tupo_target] <= base_metal then
+				sysLog('找到目标'..tupo_target..', 勋章数'..this_star_list[tupo_target])
+				search_state = false
+				tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
+				sleepRandomLag(1000)
+				tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
+				sleepRandomLag(1000)
+				start_combat(0)
+				do return end
+			end
+		end
+		my_swip(1305, 1236, 1305, 476, 20)
+		mSleep(2000)
+		this_star_list = find_one_round_metal()
+	end
+end
+
+
+function start_liaotupo(base_metal)
+	enter_liaotupo()
+	liao_list = {{478, 463}, {488, 745}, {538, 1100}}
+	for i = 1, 3, 1 do
+		tap(liao_list[i][1], liao_list[i][2])
+		mSleep(1000)
+		tap(liao_list[i][1], liao_list[i][2])
+		mSleep(2000)
+		one_liaotupo(base_metal)
+		mSleep(2000)
+	end
+end
+
+
+function main_liaotupo(mode)
+	while true do
+		sysLog(_G.time_pass)
+		if _G.time_pass <= 10*60*1000 then
+			local wait_time = 10*60*1000 - _G.time_pass
+			sysLog('等待'..wait_time..'毫秒')
+			if mode == 'pure' then
+				mSleep(wait_time)
+			else
+				do return end
+			end
+		end
+			sysLog('可以开始突破')
+			_G.liaotupo_t = mTime()
+			start_liaotupo(4)
+			_G.time_pass = mTime() - _G.liaotupo_t
+	end
 end

@@ -69,6 +69,25 @@ function if_start_combat()
 	end
 end
 
+function if_start_combat_intime()
+	accept_quest()
+	local initial_t = mTime()
+	local limit_t = mTime() - initial_t
+	local ready_x, ready_y = myFindColor(准备)
+	sysLog(limit_t)
+	while limit_t <= 15000 do
+		if ready_x > -1 then
+			sysLog('可以开始战斗')
+			return true
+		else
+			sysLog('经过'..limit_t..'仍未开始战斗')
+			mSleep(1000)
+			ready_x, ready_y = myFindColor(准备)
+		end
+		limit_t = mTime() - initial_t
+	end
+	return false
+end
 
 function ready()
 	--sysLog('ready')
@@ -101,7 +120,9 @@ function end_combat(tap_situation)
 		--combat_win = false
 		combat_result = 'defeat'
 		sysLog("战斗失败")
+		my_toast(id,"结束战斗")
 		tap(x_defeat, y_defeat)
+		mSleep(2000)
 	elseif x_win > 1 then
 		combat_result = 'win'
 		--combat_win = true
@@ -183,7 +204,12 @@ end
 -------------------------------------------汇总--------------------------------------
 function start_combat(tap_situation)
 	accept_quest()
-  ready()
+	if if_start_combat_intime() then
+		ready()
+	else
+		sysLog('战斗未开始, 跳出战斗循环')
+		return 'defeat'
+	end
   combat_result = end_combat(tap_situation)
 	return combat_result
 end

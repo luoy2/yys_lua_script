@@ -105,7 +105,9 @@ function tap(x, y)
   touchDown(index,rand_x, rand_y)
   mSleep(math.random(60,80))                --某些特殊情况需要增大延迟才能模拟点击效果
   touchUp(index, rand_x, rand_y)
-  mSleep(20)
+  mSleep(100)
+	local lag_x, lag_y = myFindColor(延迟白点)
+	--sysLog(lag_x)
 end
 
 -- 模拟滑动操作，从点(x1, y1)划到到(x2, y2)
@@ -318,6 +320,7 @@ function check_current_state()
 		mSleep(500)
 		return check_current_state()
 	elseif defeat_x > -1 or win_x > -1 then
+		my_toast(id, '结算界面')
 		end_combat()
 		mSleep(1000)
 		return check_current_state()
