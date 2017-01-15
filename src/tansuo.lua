@@ -493,8 +493,8 @@ function tansuo(fight_count, tupo_sep, if_extra)
     my_toast(id, '当前探索次数'..this_fight_count..'; 突破间隔'..tupo_sep)
     if if_tupo == 0 then
       sysLog('已经刷完'..this_fight_count..'次, 开始结界突破')
-      my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始结界突破')
-      main_tupo(tupo_ret,tupo_results)
+      my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始个人结界突破')
+      main_gerentupo(tupo_results)
     end
   end
   return tansuo(this_fight_count, tupo_sep, if_extra)
