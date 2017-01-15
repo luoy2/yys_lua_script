@@ -8,11 +8,18 @@ join_party = switch {
 
 -----------------------------------------------------------------------------------------------------------
 function party_statue()
-	local ifstart_x, ifstart_y = myFindColor(组队开始)
+	keepScreen(true)
+	local ifstart_x, ifstart_y = findMultiColorInRegionFuzzy(0xf3b25e,"-1079|-3|0xdf6851,-436|33|0xc7bdb4,-129|-13|0x973b2e", 95, 1560,1120,1565,1130)					--开始队伍的颜色
 	local ifwait_x, if_wait_y = myFindColor(组队等待)
 	local leader_wait_x, leader_wait_y = myFindColor(队长等待)
 	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)
-	if ifstart_x > -1 then 
+  local full_color, y_full = findColorInRegionFuzzy(0x7c7977, 95, 1773, 466, 1803, 493)					--三人的右上角
+	local full_color_2, y_full_2 = findColorInRegionFuzzy(0x7c7977, 95, 1225, 468, 1258, 501)			--二人的右上角
+	keepScreen(false)
+	if ifstart_x > -1 and full_color == -1 and full_color_2 == -1 then
+		sysLog('三人满')
+		return 5
+	elseif ifstart_x > -1 then 
 		sysLog('可以开始队伍')
 		return 0
 	elseif leader_wait_x > -1 then
@@ -32,7 +39,9 @@ end
 
 
 function in_party(case, input_ss_table)
+	mSleep(500)
 	local statue = party_statue()
+	sysLog('队伍状态: '..statue)
 	while statue == 1 do
 			mSleep(500)
 			my_toast(id, '等待队伍开始')
@@ -57,12 +66,19 @@ function in_party(case, input_ss_table)
 		elseif case == 'yaoqi' then return refresh_yaoqi(input_ss_table)
 		end
 	elseif statue == 4 then
+		mSleep(1000)
 	end
+	sysLog('final statu')
+	statue = party_statue()
+	if statue == 4 then
+	else 
+	sysLog('false alarm') 
+	return in_party(case, input_ss_table) end
 end
 
 
-
 function enter_party()
+	sysLog('enter_party')
   local current_state = check_current_state()
   if current_state == 'party' then
 		mSleep(500)
@@ -81,8 +97,15 @@ function enter_party()
 		return enter_party()
 	end
 end
-  
-  
+
+
+function enter_yaoqi()
+	enter_party()
+	mSleep(500)
+	tap(400, 1230)
+	my_toast(id, '开始刷碎片!')
+	mSleep(1000)
+end
   
 function refresh()
 	tap(1200, 1300)
@@ -110,7 +133,7 @@ function refresh()
 	end
 end
 
-------------------------------------------------------妖气封印--------------------------------------------------------
+------------------------------------------------------石距--------------------------------------------------------
 function shiju(time_left)
 	if time_left <= 0 then
 		sysLog('可以打石距')
@@ -133,9 +156,9 @@ function yqfyFindColor(color, position)
 	return x, y
 end
   
-  
-  
+	
 function find_yaoqi(input_ss)
+	--sysLog('find_yaoqi')
 	keepScreen(true)
 	for i = 1,4,1 do
 		local x, y = yqfyFindColor(input_ss, yqfy_ocr_table[i])
@@ -146,43 +169,110 @@ function find_yaoqi(input_ss)
 	end
 	keepScreen(false)
 end
-  
-  
-function refresh_yaoqi(input_ss_table)
-	sysLog('refresh_yaoqi')
-	tap(1200, 1300)
-	mSleep(200)
-	accept_quest()
+
+
+function if_refresh(input_ss_table)
+		--sysLog('if_refresh')
+	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1075, 1258, 1348, 1344)
+	if refresh_x > -1 then
+		sysLog('找到刷新')
+		tap(refresh_x, refresh_y)
+		--sysLog('是否有妖气')
+		mSleep(100)
+		return if_monster(input_ss_table)
+	else
+		sysLog('未找到刷新')
+		return seal_yaoqi(input_ss_table)
+	end
+end
+
+
+function if_monster(input_ss_table)
+	--sysLog('if_monster')
 	for k,v in pairs(input_ss_table) do
 		local slot = find_yaoqi(v)
 		if slot ~= nil then
 			join_party:case(slot)
-			if_outof_sushi()
 			mSleep(200)
 			accept_quest()
 			keepScreen(false)
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
-			--sysLog(refresh_x)
 			if refresh_x == -1 then
+				if_outof_sushi()
 				my_toast(id, "已加入队伍")
-				mSleep(1000)
-				in_party('yaoqi', input_ss_table)
-				sysLog('start_combat')
-				start_combat(0)
-				sysLog('战斗完成,函数跳出')
-				do return end
+				--sysLog('加入队伍成功')
+				mSleep(2000)
+				sysLog('进入队伍, 检测队伍状态...')
+				return check_party_statue('yaoqi', ss_target_table)
 			else
 				mSleep(100)
-				return refresh_yaoqi(input_ss_table)
+				sysLog('加入队伍失败')
+				return if_monster(input_ss_table)
 			end
 		end
 	end
-	return refresh_yaoqi(input_ss_table)
+	sysLog('没找到妖气')
+	mSleep(100)
+	return if_refresh(input_ss_table)
 end
-  
-  
+
+
+function check_party_statue(case, input_ss_table)
+	mSleep(500)
+	local statue = party_statue()
+	sysLog('队伍状态: '..statue)
+	if statue == 1 then
+		mSleep(500)
+		my_toast(id, '等待队伍开始')
+		sysLog('等待队伍开始')
+		return check_party_statue(case, input_ss_table)
+	elseif statue == 2 or statue == 0 then
+		my_toast(id, '队长离开队伍，离开')
+		sysLog('离开队伍'..statue)
+		tap(477,1161)
+		mSleep(500)
+		local x, y = findMultiColorInRegionFuzzy(0xf3b25e,"-313|19|0xdf6851,-193|25|0xcbb59c", 90, 659, 799, 1376, 948)
+		while x == -1 do
+			tap(477,1161)
+			mSleep(500)
+		end
+		tap(1230, 883)
+		mSleep(500)
+		return if_monster(input_ss_table)
+	elseif statue == 3 then
+		sysLog('刷新页面'..statue)
+		my_toast(id, '可以刷新')
+		mSleep(500)
+		if case == 'shiju' then 
+			return refresh()
+		elseif case == 'yaoqi' then 
+			return if_monster(input_ss_table)
+		end
+	elseif statue == 4 then
+		sysLog('疑似战斗页面')
+		mSleep(1000)
+	end
+	sysLog('检测最终状态')
+	statue = party_statue()
+	if statue == 4 then
+		sysLog('应该是可以开始战斗了')
+		return start_combat(0)
+	else 
+		sysLog('false alarm') 
+		return seal_yaoqi(input_ss_table) end
+end
+
+
+function seal_yaoqi(input_ss_table)
+	sysLog('进入妖气...')
+	enter_yaoqi()
+	return if_refresh(input_ss_table)
+	--sysLog(combat_result_inall)
+end
+
   
 function main_yqfy(yqfy_ret, yqfy_results)
+
 	if yqfy_ret==0 then	
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
@@ -223,14 +313,63 @@ function main_yqfy(yqfy_ret, yqfy_results)
 			mSleep(1000)
 		end
 		if next(ss_target_table) ~= nil then 
-			enter_party()
-			tap(400, 1230)
-			my_toast(id, '开始刷碎片!')
-			mSleep(500)
-			refresh_yaoqi(ss_target_table)
+			seal_yaoqi(ss_target_table)
 			current_ss_time = current_ss_time + 1
-			mSleep(1000)
 			sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)
 		end
 	end
 end
+
+
+
+	------------------------------------------------------觉醒--------------------------------------------------------
+function enter_juexing()
+end
+
+
+
+
+
+
+
+
+
+--[[
+function refresh_yaoqi(input_ss_table)
+	--sysLog('refresh_yaoqi')
+	local refresh_x, refresh_y = myFindColor(组队刷新)
+	if refresh_x > -1 then
+		tap(refresh_x, refresh_y)
+	else
+		enter_yaoqi()
+		sysLog('没找到..refresh_yaoqi')
+		return refresh_yaoqi(input_ss_table)
+	end
+	mSleep(200)
+	accept_quest()
+	for k,v in pairs(input_ss_table) do
+		local slot = find_yaoqi(v)
+		if slot ~= nil then
+			join_party:case(slot)
+			if_outof_sushi()
+			mSleep(200)
+			accept_quest()
+			keepScreen(false)
+			refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
+			--sysLog(refresh_x)
+			if refresh_x == -1 then
+				my_toast(id, "已加入队伍")
+				mSleep(2000)
+				sysLog('函数跳出')
+				do return end
+			else
+				mSleep(100)
+				sysLog('1..refresh_yaoqi(input_ss_table)')
+				return refresh_yaoqi(input_ss_table)
+			end
+		end
+	end
+	sysLog('2..refresh_yaoqi(input_ss_table)')
+	return refresh_yaoqi(input_ss_table)
+end
+--]]

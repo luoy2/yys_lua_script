@@ -105,7 +105,9 @@ function tap(x, y)
   touchDown(index,rand_x, rand_y)
   mSleep(math.random(60,80))                --某些特殊情况需要增大延迟才能模拟点击效果
   touchUp(index, rand_x, rand_y)
-  mSleep(20)
+  mSleep(100)
+	local lag_x, lag_y = myFindColor(延迟白点)
+	--sysLog(lag_x)
 end
 
 -- 模拟滑动操作，从点(x1, y1)划到到(x2, y2)
@@ -133,6 +135,14 @@ function swip(x1,y1,x2,y2)
   touchMove(index, x2, y2)
   mSleep(30)
   touchUp(index, x2, y2)
+end
+function my_swip_2(x1, y1, x2, y2, sleep1, sleep2, step)
+		local new = pos:new(x1, y1)
+		local move = {x=x2, y=y2}
+		local step = step or 10
+		local sleep1 = sleep1 or 200
+		local sleep2 = sleep2 or 40
+		new:touchMoveTo(move,step,sleep1,sleep2)
 end
 
 function my_swip(x1, y1, x2, y2, speed)
@@ -249,6 +259,7 @@ function check_current_state()
 	local defeat_x, defeat_y = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
 	local win_x, win_y = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
 	local chat_cross_x, chat_cross_y = myFindColor(聊天红叉)
+	local creat_x = myFindColor(创建队伍)
 	
 	
 	keepScreen(false)
@@ -302,12 +313,14 @@ function check_current_state()
 		sysLog('party')
 		return 'party'
 	elseif tap_exit_x > -1 then
+		sysLog('找到退出')
 		my_toast(id, '稍等')
 		tap(tap_exit_x, tap_exit_y)
 		mSleep(500)
 		return check_current_state()
 	elseif redcross_x > -1 then
 		my_toast(id, '稍等')
+		sysLog('找到红叉')
 		tap(redcross_x, redcross_y)
 		mSleep(500)
 		return check_current_state()
@@ -317,11 +330,17 @@ function check_current_state()
 		mSleep(500)
 		return check_current_state()
 	elseif defeat_x > -1 or win_x > -1 then
+		my_toast(id, '结算界面')
 		end_combat()
 		mSleep(1000)
 		return check_current_state()
-  else
-    my_toast(id, "当前界面未知");
+  elseif  creat_x > -1 then
+		my_toast(id, '创建队伍界面')
+		return 'create_party'
+	else
+    my_toast(id, "当前界面未知")
+		tap(20, 1329)
+		sysLog('点击边缘试试')
 		mSleep(1000)
 		return check_current_state()
   end

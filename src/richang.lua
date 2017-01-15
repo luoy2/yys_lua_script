@@ -146,5 +146,23 @@ end
 		
 		
 		
-		
+	
+function main_afk()
+  悬赏封印_ret,悬赏封印_results = showUI("xsfy.json")
+  ts_ret,ts_results = showUI("tansuo.json")
+  
+  _G.fighttime = tonumber(ts_results['99'])
+  _G.skiplines = tonumber(ts_results['100'])
+  _G.searchtime = tonumber(ts_results['101'])
+  _G.tupo_sep = tonumber(ts_results['102'])
+  if _G.tupo_sep ~= 0 then
+    tupo_ret,tupo_results = showUI("tupo.json")
+  end
+  if _G.fighttime == 0 then
+    _G.fighttime = 999999
+  end
+  
+  main_xsfy(悬赏封印_ret,悬赏封印_results)
+  tansuo(0, _G.tupo_sep)
+end	
 		

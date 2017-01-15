@@ -5,26 +5,27 @@
 -- 勋章数：928,1166,1008,1205
 -- 排名： 1598,1164,1705,1206
 -- 刷新： 1617,1032,1739,1090
-
+-------------------------------------------------------个人突破------------------------------------------------------------------
 
 function get_star(input_table)
-	if if_defeat(input_table) then return 6 end
+	if if_defeat(input_table) then return 7 end
   for i = 0,5,1 do
     accept_quest()
-    x, y = findColorInRegionFuzzy(0xb3a28d, 95, input_table[1]+63*i-2, input_table[2]-2, input_table[1]+63*i+2, input_table[2]+2)
+    x, y = findColorInRegionFuzzy(0xb3a28d, 95, input_table[1]+63*i, input_table[2], input_table[1]+63*i, input_table[2])
     if x > -1 then
       star = i
       return star
     end
   end
   accept_quest()
-  x, y = findColorInRegionFuzzy(0x645a4f, 95, input_table[1]-2, input_table[2]+38, input_table[1]+2, input_table[2]+42)
+  x, y = findColorInRegionFuzzy(0xc98a1c, 95, input_table[1]+272, input_table[2]-108, input_table[1]+303, input_table[2]-79)
   if x > -1 then
     return 6   -- 表示打过了
   else 
     return 5
   end
 end
+
 
 function if_defeat(input_table)
 	local x, y = findMultiColorInRegionFuzzy(0xaa3333,"8|19|0xab3534,-26|3|0x260803,-2|34|0x3b0b06", 90, input_table[1]+275,input_table[2]-156, input_table[1]+359 , input_table[2]-63)
@@ -34,7 +35,6 @@ function if_defeat(input_table)
 		return false
 	end
 end
-
 
 
 function tupo_from_less_star(items)
@@ -48,13 +48,12 @@ function tupo_from_less_star(items)
   return output_table
 end
 
+
 function enter_tupo()
   local current_state = check_current_state()
 	if current_state == 'tupo' then
 		sleepRandomLag(2000)
 	elseif current_state == 3 then
-		tap(676, 1457)
-		mSleep(200)
 		tap(676, 1457)
 		sleepRandomLag(2000)
 		return enter_tupo()
@@ -151,27 +150,201 @@ function tupo(refresh_count, total_avaliable)
   tupo(refresh_count, total_avaliable)
 end
 
+function main_gerentupo(tupo_results)
+	enter_tupo()
+		accept_quest()
+		local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
+		local tupo_avaliable = 0
+		for k,v in pairs(tupo_avaliable_ocr) do
+			sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
+			tupo_avaliable = tupo_avaliable*10 + tonumber(v.text)
+		end
+		my_toast(id, '挑战卷个数: '..tupo_avaliable)
+		sysLog('挑战卷个数: '..tupo_avaliable)		
+		if tupo_results['100'] == '0' then
+			tupo(3, tupo_avaliable)
+		elseif tupo_results['100'] == '1' then
+			tupo(6, tupo_avaliable)
+		else
+			tupo(9, tupo_avaliable)
+		end
+end
 
 function main_tupo(tupo_ret,tupo_results)
   if tupo_ret==0 then	
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
-  enter_tupo()
-  accept_quest()
-  local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
-  local tupo_avaliable = 0
-  for k,v in pairs(tupo_avaliable_ocr) do
-    sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
-    tupo_avaliable = tupo_avaliable*10 + tonumber(v.text)
-  end
-  my_toast(id, '挑战卷个数: '..tupo_avaliable)
-  sysLog('挑战卷个数: '..tupo_avaliable)		
-  if tupo_results['100'] == '0' then
-    tupo(3, tupo_avaliable)
-  elseif tupo_results['100'] == '1' then
-    tupo(6, tupo_avaliable)
-  else
-    tupo(9, tupo_avaliable)
-  end
+	if tupo_results['10'] == '0' then
+		main_gerentupo(tupo_results)
+	elseif tupo_results['10'] == '1' then
+		_G.if_liaotupo = true
+		_G.if_liaotupolist = {true, true, true}
+		_G.liaotupo_t = 0
+		_G.time_pass = mTime() - _G.liaotupo_t
+		sysLog('已过去时间'.._G.time_pass)
+		main_liaotupo('pure', tonumber(tupo_results['200']))
+	end
 end
+
+
+---------------------------------------------------------------------------寮突破--------------------------------------------------------------------------
+function enter_liaotupo()
+	my_toast(id, '进入寮突破')
+  local current_state = check_current_state()
+	if current_state == 'tupo' then
+		sleepRandomLag(1000)
+		tap(1978, 742)
+		local liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
+		sysLog(liao_tupo_x)
+		while liao_tupo_x == -1 do
+			sysLog('未进入寮突破')
+			tap(1978, 742)
+			mSleep(1000)
+			liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
+		end
+		my_toast(id, '已进入寮突破')
+	elseif current_state == 3 then
+		tap(676, 1457)
+		mSleep(3000)
+		return enter_liaotupo()
+	else
+		enter_tansuo()
+		return enter_liaotupo()
+	end
+end
+
+
+function find_one_round_metal()
+	star_list = {true, true, true,true, true, true,true, true}
+  keepScreen(true)
+  for i = 1,8,1 do
+		local this_star = get_star(liao_enemy[i])
+    star_list[i] = this_star
+    sysLog('结界'..i..'勋章: ' .. this_star)
+    --my_toast(id,'结界'..i..'勋章: ' .. this_star)
+  end
+	local eight_x, _ = findColorInRegionFuzzy(0xaa8386, 95, 1669, 1065, 1707, 1095)
+	if eight_x > -1 then 
+		star_list[8] = 9
+	end
+  keepScreen(false)
+	return star_list
+end
+
+
+function one_liaotupo(base_metal, which_liao)
+	sysLog('寮'..which_liao..'突破状态:'..tostring(_G.if_liaotupolist[which_liao]))
+	local liaotupo_load_x, _ = findMultiColorInRegionFuzzy(0xfee8a8,"3|0|0xfdf8e3,7|0|0x87826c", 95, 683, 582+(which_liao-1)*297, 695, 603+(which_liao-1)*297)
+	if liaotupo_load_x > -1 then
+		sysLog('寮'..which_liao..'已经完全突破')
+		_G.if_liaotupolist[which_liao] = false
+	end
+	
+	if _G.if_liaotupolist[which_liao] == false then
+		my_toast(id, '此寮不需要突破')
+		sysLog('寮'..which_liao..'突破状态:'..tostring(_G.if_liaotupolist[which_liao]))
+		do return end
+	end
+	local this_star_list = find_one_round_metal()
+	local search_state = true
+	while search_state do
+		for tupo_target = 1, 8, 1 do
+			if this_star_list[tupo_target] <= base_metal then
+				sysLog('找到目标'..tupo_target..', 勋章数'..this_star_list[tupo_target])
+				search_state = false
+				tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
+				sleepRandomLag(1000)
+				tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
+				sleepRandomLag(1000)
+				start_combat(0)
+				do return end
+			end
+		end
+		--my_swip(1305, 1236, 1305, 470, 20)
+		local new = pos:new(1305, 1241)
+		local move = {x=1305,y=387}
+		local step = 10
+		local sleep1,sleep2 = 10, 40
+		new:touchMoveTo(move,step,sleep1,sleep2)
+		local ifend_x, ifend_y = findColorInRegionFuzzy(0x93897c, 98,779,1001,829,1030)
+		
+		if ifend_x > -1 then
+			my_toast(id, '已到达最底部')
+			mSleep(2000)
+			this_star_list = find_one_round_metal()
+			for tupo_target = 1, 8, 1 do
+				if this_star_list[tupo_target] <= base_metal then
+					sysLog('找到目标'..tupo_target..', 勋章数'..this_star_list[tupo_target])
+					search_state = false
+					tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
+					sleepRandomLag(1000)
+					tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
+					sleepRandomLag(1000)
+					start_combat(0)
+					do return end
+				end
+			end
+			_G.if_liaotupolist[which_liao] = false
+			sysLog('寮'..which_liao..'突破状态:'..tostring(_G.if_liaotupolist[which_liao]))
+			do return end
+		else
+			my_toast(id, '还能继续下拉')
+		end
+		mSleep(2000)
+		this_star_list = find_one_round_metal()
+	end
+end
+
+
+function start_liaotupo(base_metal)
+	enter_liaotupo()
+	liao_list = {{478, 463}, {488, 745}, {538, 1100}}
+	for i = 1, 3, 1 do
+		tap(liao_list[i][1], liao_list[i][2])
+		mSleep(1000)
+		tap(liao_list[i][1], liao_list[i][2])
+		mSleep(2000)
+		one_liaotupo(base_metal, i)
+		mSleep(2000)
+	end
+	sysLog(tostring(_G.if_liaotupo))
+	if _G.if_liaotupolist[1] == false and _G.if_liaotupolist[2] == false and _G.if_liaotupolist[3] == false then
+		_G.if_liaotupo = false
+		sysLog('总状态:'..tostring(_G.if_liaotupo))
+	end
+end
+
+
+function main_liaotupo(mode, base_metal)
+	while true do
+		sysLog(mode)
+		sysLog(_G.time_pass)
+		if _G.time_pass <= 12*60*1000 then
+			local wait_time = 12*60*1000 - _G.time_pass
+			my_toast(id, '等待'..wait_time/(60*1000)..'分钟')
+			sysLog('等待'..wait_time..'毫秒')
+			if mode == 'pure' then
+				if _G.if_liaotupo == false then 
+					do return end
+				else
+					mSleep(wait_time)
+				end
+			else
+				do return end
+			end
+		end
+		sysLog('可以开始突破')
+		_G.liaotupo_t = mTime()
+		sysLog(_G.liaotupo_t)
+		if _G.if_liaotupo then
+			start_liaotupo(base_metal)
+		else
+			my_toast(id, '寮突破已经打完')
+			my_exist(true)
+		end
+		_G.time_pass = mTime() - _G.liaotupo_t
+	end
+end
+
+
