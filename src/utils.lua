@@ -341,7 +341,7 @@ function check_current_state()
     my_toast(id, "当前界面未知")
 		tap(20, 1329)
 		sysLog('点击边缘试试')
-		mSleep(2000)
+		mSleep(3000)
 		return check_current_state()
   end
 end	

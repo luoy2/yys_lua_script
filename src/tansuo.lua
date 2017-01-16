@@ -328,14 +328,21 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
       if combat_x > -1 then 
         sysLog('找到战斗')
         tap(combat_x, combat_y)
+				mSleep(1000)
         if_outof_sushi()
-        mSleep(1000)
-        check_current_state()
+        --check_current_state()	
+				if if_start_combat_intime() then
+				else
+					sysLog('战斗未开始, 跳出战斗循环')
+					return search_for_exp(fight_count, tupo_sep, if_extra)
+				end
+				--[[
         combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, 0, 0, 1535, 2047)
         if combat_x > -1 then																			--如果还能找到 说明有问题 重新找经验怪
           sysLog('还能找到战斗')
           return search_for_exp(fight_count, tupo_sep, if_extra)
         end
+				--]]
         --sysLog('11:'..fight_count)
         my_toast(id, '检测狗粮')
         accept_quest()
@@ -362,6 +369,7 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
         return search_for_exp(fight_count, tupo_sep)
       else 
         my_toast(id, '未找到战斗')
+				return search_for_exp(fight_count, tupo_sep, if_extra)
       end
       --]]
     else
