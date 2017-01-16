@@ -71,6 +71,18 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 		tap(1547, 1157)
 		if_outof_sushi()
 		local combat_result = custom_mark_combat(mark_case)
+		if _G.if_tupo then
+			sysLog('需要突破')
+			this_if_tupo = current_fight+1 - math.floor((current_fight+1)/tupo_sep)*_G.tupo_sep
+			sysLog(this_if_tupo)
+			my_toast(id, '当前御魂次数'..(current_fight+1)..'; 突破间隔'.._G.tupo_sep)
+			if this_if_tupo == 0 then
+				tap(836, 883)
+				sysLog('已经刷完'..(current_fight+1)..'次, 开始结界突破')
+				my_toast(id, '已经刷完'..(current_fight+1)..'次副本, 现在开始个人结界突破')
+				return main_gerentupo(tupo_results)
+			end
+		end
 		sysLog(combat_result)
 		sleepRandomLag(1000)
 		if combat_result == 'win' then
@@ -380,7 +392,15 @@ function main_yh(yh_ret, yh_results)
 		end
 		--------------------------------加入队伍--------------------------------
 	elseif yh_results['101'] == '2' then	
-		sysLog('1:'..mark_case[1])
+		if yh_results['300'] == '0' then
+			_G.if_tupo = true
+			_G.tupo_sep = tonumber(yh_results['301'])
+			tupo_ret,tupo_results = showUI("tupo.json")
+			if tupo_ret==0 then	
+				toast("突破设置取消，停止脚本运行")
+				lua_exit()
+			end
+		end
 		return create_yuhun(0, 0, 10, 'public', mark_case)
 		--------------------------------等待邀请---------------------------------
 	elseif yh_results["101"] == "3" then

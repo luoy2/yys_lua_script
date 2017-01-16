@@ -324,7 +324,7 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
       result = '找到经验怪'
       toast(result .. "　time:" .. mTime() - qTime)
       accept_quest()
-      local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, exp_x-500, exp_y-350, exp_x+500, exp_y-50)
+      local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, exp_x-300, exp_y-350, exp_x+300, exp_y-50)
       if combat_x > -1 then 
         sysLog('找到战斗')
         tap(combat_x, combat_y)
@@ -439,7 +439,7 @@ end
 
 
 function tansuo(fight_count, tupo_sep, if_extra)
-  sysLog(_G.liaotupo_t)
+  --sysLog(_G.liaotupo_t)
   
   if _G.if_liaotupo then
     _G.time_pass = mTime() - _G.liaotupo_t

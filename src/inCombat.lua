@@ -116,7 +116,8 @@ function end_combat(tap_situation)
 	combat_result = '未知'
 	accept_quest()
 	local x_defeat, y_defeat = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
-	local x_win, y_win = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
+	--local x_win, y_win = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
+	local x_win, y_win = findMultiColorInRegionFuzzy(0x76170f,"-34|39|0x941b11,28|39|0x8e1a11,-2|26|0xcdbeaa,4|129|0xdbcfb8,16|155|0xa78d69,26|181|0x4f0e05,-2|205|0x8d2016", 90, 717, 252, 819, 337)
 	if x_defeat > -1 then
 		--combat_win = false
 		combat_result = 'defeat'

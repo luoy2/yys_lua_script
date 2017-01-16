@@ -152,22 +152,22 @@ end
 
 function main_gerentupo(tupo_results)
 	enter_tupo()
-		accept_quest()
-		local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
-		local tupo_avaliable = 0
-		for k,v in pairs(tupo_avaliable_ocr) do
-			sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
-			tupo_avaliable = tupo_avaliable*10 + tonumber(v.text)
-		end
-		my_toast(id, '挑战卷个数: '..tupo_avaliable)
-		sysLog('挑战卷个数: '..tupo_avaliable)		
-		if tupo_results['100'] == '0' then
-			tupo(3, tupo_avaliable)
-		elseif tupo_results['100'] == '1' then
-			tupo(6, tupo_avaliable)
-		else
-			tupo(9, tupo_avaliable)
-		end
+	accept_quest()
+	local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
+	local tupo_avaliable = 0
+	for k,v in pairs(tupo_avaliable_ocr) do
+		sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
+		tupo_avaliable = tupo_avaliable*10 + tonumber(v.text)
+	end
+	my_toast(id, '挑战卷个数: '..tupo_avaliable)
+	sysLog('挑战卷个数: '..tupo_avaliable)		
+	if tupo_results['100'] == '0' then
+		tupo(3, tupo_avaliable)
+	elseif tupo_results['100'] == '1' then
+		tupo(6, tupo_avaliable)
+	else
+		tupo(9, tupo_avaliable)
+	end
 end
 
 function main_tupo(tupo_ret,tupo_results)
