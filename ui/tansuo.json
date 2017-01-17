@@ -34,6 +34,20 @@
             },
 						{
                "type" : "Label",
+               "text" : "请选择狗粮大队长位置",
+               "size" : 25,
+               "align" : "center",
+               "width" : 100
+            },	
+						{
+               "id" : "104",
+               "list" : "神乐胖头鱼, 左边, 中间, 右边",
+               "size" : "25",
+							 "select" : "0",
+               "type" : "RadioGroup"
+            },
+						{
+               "type" : "Label",
                "text" : "请输入数字，设置总共战斗次数（0为无限）",
                "size" : 25,
                "align" : "center",
@@ -42,7 +56,6 @@
 						{
                "id" : "99",
                "kbtype" : "number",
-               "prompt" : "请输入数字，设置总共战斗次数（0为无限）",
                "size" : "25",
                "text" : "0",
                "type" : "Edit"

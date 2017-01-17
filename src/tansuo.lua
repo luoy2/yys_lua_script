@@ -181,17 +181,19 @@ function if_change(slot, skip_lines)
   local watch_table = {}
   keepScreen(true)
   for i = 1, 5, 1 do
-    accept_quest()
-    local ifchange_x, ifchange_y = findMultiColorInRegionFuzzy(0xf9ac14,"7|-1|0xffad15,-1|7|0xf4bf0d,14|10|0xffd30a,14|16|0xffe605,-12|-7|0xf89819,-14|4|0xfebc11,-13|17|0xfbe504,-6|17|0xefd905,3|-6|0xff9f19", 90, slot[i][1], slot[i][2], slot[i][3], slot[i][4])
-    if ifchange_x > -1 then
-      my_toast(id, '需要更换狗粮')
-      sysLog(ifchange_x..','..ifchange_y..'需要更换狗粮')
-      if i <= 3 then
-        table.insert(combat_table, i)
-      else
-        table.insert(watch_table, i)
-      end
-    end
+		if i ~= _G.gouliang_captain then 
+			accept_quest()
+			local ifchange_x, ifchange_y = findMultiColorInRegionFuzzy(0xf9ac14,"7|-1|0xffad15,-1|7|0xf4bf0d,14|10|0xffd30a,14|16|0xffe605,-12|-7|0xf89819,-14|4|0xfebc11,-13|17|0xfbe504,-6|17|0xefd905,3|-6|0xff9f19", 90, slot[i][1], slot[i][2], slot[i][3], slot[i][4])
+			if ifchange_x > -1 then
+				my_toast(id, '需要更换狗粮')
+				sysLog(ifchange_x..','..ifchange_y..'需要更换狗粮')
+				if i <= 3 then
+					table.insert(combat_table, i)
+				else
+					table.insert(watch_table, i)
+				end
+			end
+		end
   end
   keepScreen(false)
   
@@ -315,9 +317,10 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
     accept_quest()
     keepScreen(true)
     local exp_x, exp_y = findMultiColorInRegionFuzzy(0x8c1a1b,"-17|-35|0x307885,16|36|0xa16343", 95, 599, 368, 1613, 1206)
+		local exp_x2, exp_y2 = findMultiColorInRegionFuzzy(0xf99c15,"4|-33|0xad704c,-6|-81|0x901c1b,-9|-121|0x317886", 95, 1496, 1145, 1589, 1235)
     --local exp_x, exp_y = findMultiColorInRegionFuzzy(0xaa724f,"-16|-43|0x8a191b,-36|-83|0x2d7888,127|-44|0xa66746,120|-96|0x8a1919,113|-125|0x2d7481", 90, 599, 368, 1613, 1206)
     keepScreen(false)
-    if exp_x > -1 then
+    if exp_x > -1 or exp_x2 > -1 then
       --sysLog('11:'..fight_count)
       my_toast(id, '找到经验怪')
       sysLog('x:'..exp_x..' y:'..exp_y)
@@ -522,6 +525,7 @@ function main_tansuo(ts_ret, ts_results)
   _G.liaotupo_t = 10
   _G.time_pass = mTime() - _G.liaotupo_t
   _G.if_extra = tonumber(ts_results['103'])
+	_G.gouliang_captain = tonumber(ts_results['104'])
 	if if_extra == 0 then
     target_chapter = 17
   else 

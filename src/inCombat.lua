@@ -123,13 +123,13 @@ function end_combat(tap_situation)
 		combat_result = 'defeat'
 		sysLog("战斗失败")
 		my_toast(id,"结束战斗")
-		tap(x_defeat, y_defeat)
+		tap(1028, 476)
 		mSleep(2000)
 	elseif x_win > 1 then
 		combat_result = 'win'
 		--combat_win = true
 		sysLog("战斗胜利")
-		tap(x_win, y_win) 
+		tap(1028, 476)
 		local bool_val = true
 		while bool_val do
 			accept_quest()
