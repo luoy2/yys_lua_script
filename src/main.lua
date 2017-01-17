@@ -87,66 +87,11 @@ function main()
 end
 
 main()
---my_swip_2(1305, 1241, 1305, 380, 10, 200, 40)
-
---]]
---
---check_current_state()
---[[
-enter_main_function()
-  my_swip(200, 1250, 1800, 1250, 50)
-  local feng_x, feng_y = myFindColor(悬赏)
-  if feng_x > -1 then tap(feng_x, feng_y) else sysLog('couldnt find feng') end
-  ]]--
-  
-
-
---[[
-my_swip_2(1008, 1354, 1008, 1306, 40, 50, 5)
-mSleep(3000)
-tap(jiejie_friend[1][1], jiejie_friend[1][2])
-mSleep(3000)
-local if_can_jiyang_x, if_can_jiyang_y = myFindColor(寄养)
-if if_can_jiyang_x > -1 then
-	
-else
-	return false
-end
---]]
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---enter_jiyang()
---if_jiyang()
-  --[[
-      
-    x, y = myFindColor(不动风车)
-    if x > -1 then
-      sysLog('没有结界卡')
-    end
-    --]]
-    ------------------------------------------------------------------------------
-    
-    
-    -----------------------------------------------------------------------------
-    
     --[[
     find_yaoqi(海坊主)
     find_yaoqi(小黑)

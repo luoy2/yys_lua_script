@@ -38,7 +38,7 @@ function find_xuanshang()
 	keepScreen(true)
 	for i = 1,3,1 do
 		sysLog(i..':')
-		for j = 1, 7, 1 do
+		for j = 1, 8, 1 do
 			local x, y = xsFindColor(f_num[j], xuanshang_t_table[i])
 			sysLog(j-1)
 		end

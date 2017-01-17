@@ -178,7 +178,7 @@ function if_refresh(input_ss_table)
 		sysLog('找到刷新')
 		tap(refresh_x, refresh_y)
 		--sysLog('是否有妖气')
-		mSleep(100)
+		mSleep(_G.refresh_lag)
 		return if_monster(input_ss_table)
 	else
 		sysLog('未找到刷新')
@@ -282,6 +282,7 @@ function main_yqfy(yqfy_ret, yqfy_results)
 	local fight_times = tonumber(yqfy_results['100'])
 	local ss_index = str_split((yqfy_results['101']))														--ui返回选择的项目index
 	_G.time_left = tonumber(yqfy_results['102'])*60*1000												--用户输入的石距剩余时间
+	_G.refresh_lag = tonumber(yqfy_results['99'])*100+100
 	local initial_t = mTime()																										--当前时间
 	sysLog(_G.time_left)
 	--初始化战斗次数

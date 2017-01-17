@@ -71,10 +71,11 @@ end
 function enter_jiyang()
   enter_main_function()
 	sub_function:case('guild')
+	wait_for_state(结界点击)
 	tap(1549, 1220)
-	mSleep(3000)									
+	wait_for_state(式神育成)									
 	tap(1050, 700)			                     --点开结界
-	mSleep(3000)	
+	wait_for_state(第一灯笼)		
 end
 
 
@@ -83,9 +84,7 @@ function if_jiyang()
 	local x, y = findColorInRegionFuzzy(0x272420, 95, 1798, 874, 1802, 876)	 --寄养的黑色+号
 	if x > -1 then
 		tap(1800, 875)														--点击寄存
-		mSleep(3000)
-		my_swip_2(1008, 1354, 1008, 1306, 40, 50, 5)
-		mSleep(1000)
+		wait_for_state(好友寄养)
 		return true
 	else
 		return false
@@ -144,51 +143,65 @@ function check_one_friend()
 		return true
 	end
 	while if_has_card_x == -1 do
-	mSleep(1000)
-	if_has_card_x, if_has_card_y = myFindColor(不动风车)
+		mSleep(200)
+		if_has_card_x, if_has_card_y = myFindColor(不动风车)
 	end
-	tap(1868, 727)
-	if_has_card_x, if_has_card_y = myFindColor(不动风车)
-	while if_has_card_x > -1 do
-	mSleep(1000)
-	tap(1868, 727)
+	local s = ColorCheck:new_ColorCheckSystem({{1926,580},{1938,588}},nil,10)
+	if s:ColorCheck_TF() then 
+		sysLog("无变化")
+		my_toast(id, '好友没有结界卡(风车没转)')
+		tap(67, 71)
+	else 
+		my_toast(id, '好友有结界卡(风车在转)')
+		sysLog("有变化") 
+		tap(1868, 727)
+		if_has_card_x, if_has_card_y = myFindColor(不动风车)
+		while if_has_card_x > -1 do
+			mSleep(200)
+			tap(1868, 727)
+		end
+		local red_cross_x, _ = findMultiColorInRegionFuzzy(0x612c32,"0|26|0xe8d4cf,3|54|0x753743", 95, 1849, 264, 1939, 346)
+		while red_cross_x == -1 do
+			mSleep(200)
+			red_cross_x, _ = findMultiColorInRegionFuzzy(0x612c32,"0|26|0xe8d4cf,3|54|0x753743", 95, 1849, 264, 1939, 346)
+		end
+		keepScreen(true)
+		local douyu_x, douyu_y = myFindColor(斗鱼)
+		local taigu_x, taigu_y = myFindColor(太鼓)
+		keepScreen(false)
+		tap(red_cross_x, _)
+		if card_type == '0' then
+			if douyu_x > -1 then
+				return found_card()
+			else
+				my_toast(id, '没找到车')
+				wait_for_state(寄养)
+				tap(67, 71)
+			end
+		elseif card_type == '1' then
+			if taigu_x>-1 then
+				return found_card()
+			else
+				my_toast(id, '没找到车')
+				wait_for_state(寄养)
+				tap(67, 71)
+			end
+		else
+			if taigu_x> - 1 or douyu_x > -1 then
+				return found_card()
+			else
+				my_toast(id, '没找到车')
+				wait_for_state(寄养)
+				tap(67, 71)
+			end
+		end
 	end
-	mSleep(1000)
-	keepScreen(true)
-	local douyu_x, douyu_y = myFindColor(斗鱼)
-	local taigu_x, taigu_y = myFindColor(太鼓)
-	keepScreen(false)
-	tap(1890, 306)
-	if card_type == '0' then
-		if douyu_x > -1 then
-			return found_card()
-		else
-			my_toast(id, '没找到车')
-			mSleep(2000)
-			tap(67, 71)
-		end
-	elseif card_type == '1' then
-		if taigu_x>-1 then
-			return found_card()
-		else
-			my_toast(id, '没找到车')
-			mSleep(2000)
-			tap(67, 71)
-		end
-	else
-		if taigu_x> - 1 or douyu_x > -1 then
-			return found_card()
-		else
-			my_toast(id, '没找到车')
-			mSleep(2000)
-			tap(67, 71)
-		end
-	end
-	mSleep(3000)
+	wait_for_leaving_state(好友结界)
+	wait_for_state(式神育成)
 	tap(1043, 750) -- 式神育成中间
-	mSleep(3000)
+	wait_for_state(第一灯笼)
 	tap(1800, 875)
-	mSleep(3000)
+	wait_for_state(好友寄养)
 	return false
 end
 
@@ -235,19 +248,19 @@ end
 function jiyang_once()
 	enter_jiyang()
 	if if_jiyang() then
-		my_toast(id, '检测好友页数')
-		local friend_page = jiyang_nextpage(100)
-		my_toast(id, '可用好友页数为'..friend_page)
-		sysLog(friend_page)
-		tap(1800, 880)
+		--my_toast(id, '检测好友页数')
+		--local friend_page = jiyang_nextpage(100)
+		--my_toast(id, '可用好友页数为'..friend_page)
+		--sysLog(friend_page)
+		--tap(1800, 880)
 		mSleep(3000)
 		my_toast(id, '开始找车')
-		if_jiyang()
-		for pages = 0, friend_page, 1 do
+		--if_jiyang()
+		for pages = 0, 10, 1 do
 			for single_friend = 1, 10 ,1 do
-				my_toast(id, '找第'..pages..'页第'..single_friend..'个好友的车')
+				my_toast(id, '找第'..(pages+1)..'页第'..single_friend..'个好友的车')
 				my_swip_2(1008, 1354, 1008, 1306, 40, 50, 5)
-				mSleep(1000)
+				mSleep(500)
 				jiyang_nextpage(pages)
 				tap(jiejie_friend[single_friend][1], jiejie_friend[single_friend][2])
 				mSleep(3000)
