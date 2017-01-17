@@ -52,7 +52,8 @@ function main()
       main_yh(yh_ret,yh_results)
       -------------------------------------------阴阳寮续车--------------------------------------	
     elseif results['100'] == '3' then
-      xu_che()
+      xuche_ret, xuche_results = showUI("xuche.json")
+			main_xuche(xuche_ret, xuche_results)
       -------------------------------------------探索--------------------------------------
     elseif results['100'] == '4' then
       ts_ret,ts_results = showUI("tansuo.json")
@@ -84,8 +85,8 @@ function main()
     my_exist(true)
   end
 end
+
 main()
---main()
 --my_swip_2(1305, 1241, 1305, 380, 10, 200, 40)
 
 --]]
@@ -98,31 +99,44 @@ enter_main_function()
   if feng_x > -1 then tap(feng_x, feng_y) else sysLog('couldnt find feng') end
   ]]--
   
-  
-  
+
+
+--[[
+my_swip_2(1008, 1354, 1008, 1306, 40, 50, 5)
+mSleep(3000)
+tap(jiejie_friend[1][1], jiejie_friend[1][2])
+mSleep(3000)
+local if_can_jiyang_x, if_can_jiyang_y = myFindColor(寄养)
+if if_can_jiyang_x > -1 then
+	
+else
+	return false
+end
+--]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--enter_jiyang()
+--if_jiyang()
   --[[
-  
-  斗鱼 = {0x3d3934,"0|12|0x34312c,7|-6|0xccc4ba,13|-3|0x33302b,7|6|0x2d2925,12|7|0x58544e,20|5|0x4e4a45,23|9|0x4c4843",90,1245,726,1588,778}
-  太鼓 = {0x807a73,"6|0|0x3e3a36,4|3|0x494540,0|8|0x625e58,10|7|0x37342f,13|5|0xc9c1b8,19|5|0x36322e,19|0|0x312e29,18|15|0x3b3732,8|-12|0x5a554f",90,1245,726,1588,778}
-  
-  local d_x, d_y = myFindColor(斗鱼)
-  local t_x, t_y = myFindColor(太鼓)
-  enter_main_function()
-    sub_function:case('guild')
-    tap(1549, 1220)
-    sleepRandomLag(3000)									
-    tap(1050, 700)			                     --点开结界
-    sleepRandomLag(3000)	
-    
-    accept_quest()
-    local x, y = findColorInRegionFuzzy(0x272420, 95, 1798, 874, 1802, 876)	 --寄养的黑色+号
-    if x > -1 then
-      tap(1800, 875)														--点击寄存
-      sleepRandomLag(2000)	
-      tap(777,712)
-    end
-    
-    
+      
     x, y = myFindColor(不动风车)
     if x > -1 then
       sysLog('没有结界卡')
