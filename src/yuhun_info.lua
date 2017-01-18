@@ -297,15 +297,16 @@ end
     
     
     -------------------------------------------yh标记设置--------------------------------------
-function custom_mark_combat(mark_array)
-	--sysLog('custom_mark_combat')
+function custom_mark_combat(mark_array, round_limit)
+	round_limit = 30000 or round_limit
+	sysLog(round_limit)
 	accept_quest()
 	ready()
 	mSleep(1000)
 	round = 1
 	while round <= 2 do
 		if_mark(mark_array[round])
-		if_other_round()
+		if_other_round(round_limit)
 		round = round + 1
 		mSleep(1000)
 	end
@@ -314,8 +315,9 @@ function custom_mark_combat(mark_array)
 end
     
     
-function if_other_round()
-	--sysLog('if_other_round')
+function if_other_round(round_limit)
+	round_limit = 30000 or round_limit
+	sysLog(round_limit)
 	local x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
 	local initial_t = mTime()	
 	local force_skip_t = mTime() - initial_t
@@ -326,7 +328,7 @@ function if_other_round()
 		x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
 		force_skip_t = mTime() - initial_t
 		--sysLog(force_skip_t)
-		if force_skip_t >= 30000 then
+		if force_skip_t >= round_limit then
 			my_toast(id, '回合超时')
 			break end
 	end
@@ -472,7 +474,7 @@ function yeyuanhuo(times, difficulty)
 	mSleep(500)
 	tap(1527, 982)
 	mSleep(2000)
-	results = custom_mark_combat({2,2,3})
+	results = custom_mark_combat({2,2,3}, 600000)
 	if results == 'win' then
 		times = times -1
 	end

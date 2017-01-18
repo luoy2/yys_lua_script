@@ -35,6 +35,9 @@ function main()
   else
     toast_screensize()
     --↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓获取UI配置↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+		_G.friend_quest_action = results['01']
+		sysLog('接受悬赏状态: '.._G.friend_quest_action)
+		my_toast(id, '接受悬赏状态: '.._G.friend_quest_action)
     -------------------------------------------个人突破--------------------------------------
     if results['100'] == '0' then	
       tupo_ret,tupo_results = showUI("tupo.json")
@@ -87,9 +90,6 @@ function main()
 end
 
 main()
-
-
-
 
 
     --[[

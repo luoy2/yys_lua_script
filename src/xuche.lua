@@ -3,6 +3,7 @@ function get_lag(result)
 	minutes = tonumber(results[3].text)*10 + tonumber(results[4].text) + 0.5
 	microseconds = (hours*60+minutes)*60*1000
 	sysLog('need to wait '..hours..' hours and '..minutes..' minutes('..microseconds..' microseconds)')
+	my_toast(id, '需要等待'..hours..'小时'..minutes..'分钟')
 	return microseconds
 end
 	--[[
@@ -114,32 +115,34 @@ end
 function found_card()
 	sysLog('找到斗鱼或者太鼓')
 	my_toast(id, '找到斗鱼或者太鼓')
+	sysLog(_G.ss_type)
 	mSleep(2000)
 	tap(1048, 336)
 	mSleep(2000)
 	tap(100, 1427)
 	mSleep(500)
-	if ss_type == '0' then
+	if _G.ss_type == 0 then
 		tap(73, 1077)
-	elseif ss_type == '1' then
+	elseif _G.ss_type == 1 then
 		tap(222, 1100)
-	elseif ss_type == '2' then
+	elseif _G.ss_type == 2 then
 		tap(346, 1182)
-	elseif ss_type == '3' then
+	elseif _G.ss_type == 3 then
 		tap(423, 1309)
 	else
 		tap(440, 1455)
 	end
-	mSleep(500)
+	mSleep(2000)
 	return ss_jiyang()
 end
 
 
 function check_one_friend()
+	mSleep(_G.refresh_lag)
 	local if_has_card_x, if_has_card_y = myFindColor(不动风车)
 	local if_jiyang_x, if_jiyang_y = myFindColor(寄养)
 	if if_jiyang_x == -1 then 
-		my_toast(id, '好友已经没有车可以上了, 请过一会再尝试')
+		my_toast(id, '此好友没有车可以上了')
 		return true
 	end
 	while if_has_card_x == -1 do
@@ -170,7 +173,7 @@ function check_one_friend()
 		local taigu_x, taigu_y = myFindColor(太鼓)
 		keepScreen(false)
 		tap(red_cross_x, _)
-		if card_type == '0' then
+		if _G.card_type == '0' then
 			if douyu_x > -1 then
 				return found_card()
 			else
@@ -178,7 +181,7 @@ function check_one_friend()
 				wait_for_state(寄养)
 				tap(67, 71)
 			end
-		elseif card_type == '1' then
+		elseif _G.card_type == '1' then
 			if taigu_x>-1 then
 				return found_card()
 			else
@@ -234,7 +237,7 @@ function ss_jiyang()
 				x, y = findMultiColorInRegionFuzzy(0xf3b25e,"-321|-4|0xdf6851,-1|57|0xf3b25e,-316|53|0xdf6851", 95, 1089, 979, 1276, 1067)
 			end
 			tap(x, y)
-			return true
+			lua_exit()
     else
       sysLog(i..'号位未找到')
     end
@@ -248,14 +251,10 @@ end
 function jiyang_once()
 	enter_jiyang()
 	if if_jiyang() then
-		--my_toast(id, '检测好友页数')
-		--local friend_page = jiyang_nextpage(100)
-		--my_toast(id, '可用好友页数为'..friend_page)
-		--sysLog(friend_page)
-		--tap(1800, 880)
-		mSleep(3000)
+		wait_for_state(好友寄养)
 		my_toast(id, '开始找车')
 		--if_jiyang()
+		local end_condition = 0 --连续三次找不到寄养则为
 		for pages = 0, 10, 1 do
 			for single_friend = 1, 10 ,1 do
 				my_toast(id, '找第'..(pages+1)..'页第'..single_friend..'个好友的车')
@@ -263,14 +262,39 @@ function jiyang_once()
 				mSleep(500)
 				jiyang_nextpage(pages)
 				tap(jiejie_friend[single_friend][1], jiejie_friend[single_friend][2])
-				mSleep(3000)
-				if check_one_friend() then
-					do return end
+				if not wait_for_state(好友结界, 10000) then
+					sysLog('10秒没找到, 好友没有结界')
+				else
+					if check_one_friend() then
+						tap(67, 71)
+						wait_for_leaving_state(好友结界)
+						wait_for_state(式神育成)
+						tap(1043, 750) -- 式神育成中间
+						wait_for_state(第一灯笼)
+						tap(1800, 875)
+						wait_for_state(好友寄养)
+						end_condition = end_condition + 1
+						sysLog(end_condition)
+						if end_condition == 3 then
+						 my_toast(id, '连续三次没车上, 本次已经找完')
+						 do return end
+						end
+					else
+						end_condition = 0
+					end
 				end
 			end
 		end
 	else
 		my_toast(id, '不能寄养')
+		accept_quest()
+		results = ocrText(dict, 1735,952,1818,985, {"0x37332e-0x505050"}, 95, 1, 1)
+		waiting_time = get_lag(results)
+		tap(70, 70)
+		enter_main_function()
+		get_lag(results)
+		mSleep(waiting_time)
+		return jiyang_once()
 	end
 end
 
@@ -280,8 +304,9 @@ function main_xuche(xuche_ret, xuche_results)
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
-  card_type = tonumber(xuche_results['10'])
-  ss_type = tonumber(xuche_results['100'])
+  _G.card_type = tonumber(xuche_results['10'])
+  _G.ss_type = tonumber(xuche_results['100'])
+	_G.refresh_lag = tonumber(xuche_results['101'])*1000
 	return jiyang_once()
 end
 

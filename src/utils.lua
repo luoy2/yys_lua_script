@@ -351,11 +351,17 @@ end
 function accept_quest()
   --x, y = findImageInRegionFuzzy("悬赏.png", 70, 1323,822,1407,877, 0);
   local accept_x, accept_y = findMultiColorInRegionFuzzy(0x60ba6b,"1|-16|0x342325,-12|-1|0x58b563,22|-4|0x60ba6b,2|41|0x322124", 95, 1357, 847, 1361, 851)
-  if accept_x > -1 then
+	if accept_x > -1 then
     sysLog("找到悬赏")
-    touchDown(1, accept_x, accept_y)
-    mSleep(30)
-    touchUp(1, accept_x,accept_y)
+		if _G.friend_quest_action == '0' then
+			touchDown(1, accept_x, accept_y)
+			mSleep(30)
+			touchUp(1, accept_x,accept_y)
+		else
+			touchDown(1, 1365, 1010)
+			mSleep(30)
+			touchUp(1, 1365, 1010)
+		end
     sleepRandomLag(300)
   end
 end
@@ -368,7 +374,7 @@ function ColorCheck:new_ColorCheckSystem(rigion,point_tab,n,p)
 	
 	local function get_ColorCheckF(rigion,point_tab,n,p)
 		local p = p or 1
-		local n = n or 5
+		local n = n or 5 --5
 		local tab = {}
 		local point_tab = point_tab
 		if not point_tab then
@@ -422,23 +428,27 @@ end
 
 
 
-function wait_for_state(input_table)
+function wait_for_state(input_table, limit_seconds)
+	local limit_seconds = limit_seconds or 99999999999
+	local qTime = mTime()
 	local wait_x, wait_y = myFindColor(input_table)
-	sysLog(wait_x)
-	while wait_x == -1 do
-		keepScreen(false)
-		sysLog(wait_x)
+	while (mTime() - qTime) <= limit_seconds do
 		mSleep(100)
+		--sysLog(mTime() - qTime)
 		wait_x, wait_y = myFindColor(input_table)
+		if wait_x ~= -1 then
+			return true
+		end
 	end
+	return false
 end
 
 function wait_for_leaving_state(input_table)
 	local wait_x, wait_y = myFindColor(input_table)
-	sysLog(wait_x)
+	--sysLog(wait_x)
 	while wait_x > -1 do
 		keepScreen(false)
-		sysLog(wait_x)
+		--sysLog(wait_x)
 		mSleep(100)
 		wait_x, wait_y = myFindColor(input_table)
 	end
