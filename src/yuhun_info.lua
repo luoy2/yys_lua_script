@@ -298,7 +298,7 @@ end
     
     -------------------------------------------yh标记设置--------------------------------------
 function custom_mark_combat(mark_array, round_limit)
-	round_limit = 30000 or round_limit
+	local round_limit = round_limit or 30000
 	sysLog(round_limit)
 	accept_quest()
 	ready()
@@ -316,7 +316,7 @@ end
     
     
 function if_other_round(round_limit)
-	round_limit = 30000 or round_limit
+	local round_limit = round_limit or 30000
 	sysLog(round_limit)
 	local x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
 	local initial_t = mTime()	
