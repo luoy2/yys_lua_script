@@ -4,7 +4,7 @@ function enter_party_yuhun(yuhun_floor)
 	enter_party()
 	mSleep(500)
 	tap(400, 1130)
-	mSleep(1000)
+	wait_for_state(组队刷新)
 	return choose_yuhun_floor(yuhun_floor)
 end
 
@@ -20,7 +20,7 @@ function choose_yuhun_floor(yuhun_floor)
 		mSleep(500)
 		tap(765, y)
 	end
-	mSleep(500)
+	wait_for_state(组队刷新)
 end
 
 function create_party(visible)
@@ -57,6 +57,7 @@ function create_party(visible)
 	my_toast(id, '创建队伍')
 	tap(creat_x, creat_y)
 	if_outof_sushi()
+	wait_for_state(队长等待)
 end
 
 
@@ -95,6 +96,7 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 			my_toast(id,"重新邀请")
 			tap(1184, 877)
 			if_outof_sushi()
+			wait_for_state(队长等待)
 			current_party_statue = party_statue()
 			sysLog(current_party_statue)
 			while current_party_statue == 4 do
@@ -205,7 +207,7 @@ function solo_yh(mark_case)
   tap(627, 810)
   mSleep(1000)
   tap(1540, 990)
-  return custom_mark_combat(mark_case)
+  return custom_mark_combat(mark_case, 120000)
 end
 
 

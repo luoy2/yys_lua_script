@@ -276,8 +276,8 @@ function jiyang_once()
 						end_condition = end_condition + 1
 						sysLog(end_condition)
 						if end_condition == 3 then
-						 my_toast(id, '连续三次没车上, 本次已经找完')
-						 do return end
+						 my_toast(id, '连续三次没车上, 休息两分钟再找')
+						 return jiyang_once()
 						end
 					else
 						end_condition = 0
@@ -304,7 +304,7 @@ function main_xuche(xuche_ret, xuche_results)
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
-  _G.card_type = tonumber(xuche_results['10'])
+  _G.card_type = xuche_results['10']
   _G.ss_type = tonumber(xuche_results['100'])
 	_G.refresh_lag = tonumber(xuche_results['101'])*1000
 	return jiyang_once()

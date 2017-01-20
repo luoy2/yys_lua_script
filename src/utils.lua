@@ -354,10 +354,12 @@ function accept_quest()
 	if accept_x > -1 then
     sysLog("找到悬赏")
 		if _G.friend_quest_action == '0' then
+			sysLog("接受悬赏")
 			touchDown(1, accept_x, accept_y)
 			mSleep(30)
 			touchUp(1, accept_x,accept_y)
 		else
+			sysLog("拒绝悬赏")
 			touchDown(1, 1365, 1010)
 			mSleep(30)
 			touchUp(1, 1365, 1010)
@@ -433,7 +435,7 @@ function wait_for_state(input_table, limit_seconds)
 	local qTime = mTime()
 	local wait_x, wait_y = myFindColor(input_table)
 	while (mTime() - qTime) <= limit_seconds do
-		mSleep(100)
+		mSleep(10)
 		--sysLog(mTime() - qTime)
 		wait_x, wait_y = myFindColor(input_table)
 		if wait_x ~= -1 then
@@ -449,7 +451,7 @@ function wait_for_leaving_state(input_table)
 	while wait_x > -1 do
 		keepScreen(false)
 		--sysLog(wait_x)
-		mSleep(100)
+		mSleep(10)
 		wait_x, wait_y = myFindColor(input_table)
 	end
 end

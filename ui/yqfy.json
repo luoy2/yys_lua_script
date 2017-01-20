@@ -24,7 +24,7 @@
 								{
 										"id" : "99",
 										"select" : "0",
-										"list" : "100ms, 200ms, 300ms, 400ms, 500ms, 600ms, 700ms, 800ms, 900ms, 1000ms",
+										"list" : "0ms, 100ms, 200ms, 300ms, 400ms, 500ms, 600ms, 700ms, 800ms, 900ms, 1000ms",
 										"size" : "1",
 										"type" : "ComboBox"
 										

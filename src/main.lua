@@ -89,8 +89,7 @@ function main()
   end
 end
 
-results = custom_mark_combat({2,2,3}, 600000)
-
+main()
     --[[
     find_yaoqi(海坊主)
     find_yaoqi(小黑)
