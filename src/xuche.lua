@@ -268,17 +268,22 @@ function jiyang_once()
 					if check_one_friend() then
 						tap(67, 71)
 						wait_for_leaving_state(好友结界)
+						end_condition = end_condition + 1
+						sysLog(end_condition)
+						if end_condition == 3 then
+						 my_toast(id, '连续三次没车上, 休息两分钟再找')
+						 wait_for_state(式神育成)
+						 tap(67, 71)
+						 enter_main_function()
+						 mSleep(12000)
+						 return jiyang_once()
+						end
 						wait_for_state(式神育成)
 						tap(1043, 750) -- 式神育成中间
 						wait_for_state(第一灯笼)
 						tap(1800, 875)
 						wait_for_state(好友寄养)
-						end_condition = end_condition + 1
-						sysLog(end_condition)
-						if end_condition == 3 then
-						 my_toast(id, '连续三次没车上, 休息两分钟再找')
-						 return jiyang_once()
-						end
+
 					else
 						end_condition = 0
 					end
