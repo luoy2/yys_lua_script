@@ -237,6 +237,8 @@ function ss_jiyang()
 				x, y = findMultiColorInRegionFuzzy(0xf3b25e,"-321|-4|0xdf6851,-1|57|0xf3b25e,-316|53|0xdf6851", 95, 1089, 979, 1276, 1067)
 			end
 			tap(x, y)
+			mSleep(3000)
+			lockDevice()
 			lua_exit()
     else
       sysLog(i..'号位未找到')
