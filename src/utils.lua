@@ -366,7 +366,6 @@ end
 
 
 function accept_quest()
-  --x, y = findImageInRegionFuzzy("悬赏.png", 70, 1323,822,1407,877, 0);
   local accept_x, accept_y = findMultiColorInRegionFuzzy(0x60ba6b,"1|-16|0x342325,-12|-1|0x58b563,22|-4|0x60ba6b,2|41|0x322124", 95, 1357, 847, 1361, 851)
 	if accept_x > -1 then
     sysLog("找到悬赏")

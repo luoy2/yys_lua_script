@@ -140,9 +140,8 @@ function tupo(refresh_count, total_avaliable)
     seconds = tonumber(waiting_orc[3].text)*10 + tonumber(waiting_orc[4].text) + 0.5
     microseconds = (minutes*60+seconds)*1000
     my_toast(id, '等待'..minutes..'分'..seconds..'秒...')
-		waiting_clock(microseconds)
     sysLog('need to wait '..minutes..' minutes and '..seconds..' seconds('..microseconds..' microseconds)')
-    mSleep(microseconds + math.random(1000, 3000))
+		waiting_clock(microseconds+ math.random(1000, 3000))
   end
   tap(1700, 1070)  --点击刷新
   sleepRandomLag(1000)
@@ -324,13 +323,12 @@ function main_liaotupo(mode, base_metal)
 		if _G.time_pass <= 12*60*1000 then
 			local wait_time = 12*60*1000 - _G.time_pass
 			my_toast(id, '等待'..wait_time/(60*1000)..'分钟')
-			waiting_clock(wait_time)
 			sysLog('等待'..wait_time..'毫秒')
 			if mode == 'pure' then
 				if _G.if_liaotupo == false then 
 					do return end
 				else
-					mSleep(wait_time)
+					waiting_clock(wait_time)
 				end
 			else
 				do return end

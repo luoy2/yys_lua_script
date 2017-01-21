@@ -19,6 +19,12 @@
                "type" : "RadioGroup"
             },
 						{
+               "id" : "105",
+               "list" : "刷17(9878 exp), 刷番外1(8012 exp)",
+               "size" : "25",
+               "type" : "RadioGroup"
+            },
+						{
                "type" : "Label",
                "text" : "请选择探索间隔是否进行突破(可多选)",
                "size" : 25,

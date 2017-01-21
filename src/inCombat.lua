@@ -1,6 +1,4 @@
 
-
-
 -------------------------------------------标记类型a--------------------------------------
 mark_cases = switch {
   [0] = function() end,
@@ -91,8 +89,6 @@ function if_start_combat_intime()
 end
 
 function ready()
-	--sysLog('ready')
-  --x, y = findImageInRegionFuzzy("准备.png", 40, 1722,1415,2025,1525, 0);
 	accept_quest()
   local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
 	if ready_x > -1 then

@@ -73,6 +73,7 @@ function give_friend_heart()
 	end
 end
 
+ 
 -----------------------------------------------------买厕纸--------------------------------------------------
 function buy_toilet_paper()
 	enter_main_function()
@@ -102,6 +103,28 @@ function buy_toilet_paper()
 	end
 end
 	
+
+-----------------------------------------------------召唤--------------------------------------------------
+function summon()
+ enter_main_function()
+ sub_function:case('ss')
+ wait_for_state(式神界面)
+ mSleep(1000)
+ local if_summon_x, _ = findMultiColorInRegionFuzzy(0xff4f4f,"4|7|0xff0a0a,2|15|0xd40000,-11|6|0xd3bfa0,14|7|0xd6b496", 95, 227, 1182, 255, 1213)
+ while if_summon_x > -1 do
+		my_toast(id, '可以召唤')
+		tap(197, 1221)
+		wait_for_state(召唤碎片界面)
+		my_toast(id, '正在召唤')
+		tap(1565, 840)
+		wait_for_leaving_state(召唤碎片界面)
+		if_summon_x, _ = findMultiColorInRegionFuzzy(0xff4f4f,"4|7|0xff0a0a,2|15|0xd40000,-11|6|0xd3bfa0,14|7|0xd6b496", 95, 227, 1182, 255, 1213)
+	end
+	my_toast(id, '召唤完成')
+	tap(98, 52)
+end
+
+		
 -----------------------------------------------------日常汇总--------------------------------------------------
 
 function sub_richang(richang_results)
@@ -109,6 +132,8 @@ function sub_richang(richang_results)
 			give_friend_heart()
 		elseif richang_results['100'] == '1' then
 			buy_toilet_paper()
+		elseif richang_results['100'] == '2' then
+			summon()
 		end
 		mSleep(1000)
 		end

@@ -115,7 +115,6 @@ function refresh()
 	if x > -1 then
 		join_party:case(1)
 		sleepRandomLag(500)
-		--x, y = findImageInRegionFuzzy("refresh.png", 50, 1143, 1264, 1297, 1331, 0); 
 		accept_quest()
 		x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
 		if x == -1 then
