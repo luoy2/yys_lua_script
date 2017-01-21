@@ -134,6 +134,8 @@ function sub_richang(richang_results)
 			buy_toilet_paper()
 		elseif richang_results['100'] == '2' then
 			summon()
+		elseif richang_results['100'] == '3' then
+			nearby_monster()
 		end
 		mSleep(1000)
 		end
@@ -191,3 +193,12 @@ function main_afk()
   tansuo(0, _G.tupo_sep)
 end	
 		
+function nearby_monster()
+	while true do
+	enter_party()
+	swip(400, 1250, 400, 600)
+	mSleep(200)
+	tap(416, 1139)
+	refresh()
+	end
+end

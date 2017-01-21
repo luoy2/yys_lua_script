@@ -96,21 +96,4 @@ end
 
 
 main()
-    --[[
-    find_yaoqi(海坊主)
-    find_yaoqi(小黑)
-    find_yaoqi(经验)
-    find_yaoqi(金币)
-    find_yaoqi(椒图)
-    find_yaoqi(二口女)
-    find_yaoqi(骨女)
-    find_yaoqi(哥哥)
-    find_yaoqi(饿鬼)
-    --snapshot("invite_na.png", 697,693,805,734); --全屏截图（分辨率1080*1920）
-    --]]
-    
-    --/User/Library/XXIDEHelper/xsp/Temp/5星.png
-    
-    --page 2
-    
-   
+
