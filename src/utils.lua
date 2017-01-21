@@ -48,7 +48,8 @@ end
 
 
 function my_toast(id, my_string)
-  showHUD(id, my_string ,50,"0xffffffff",'hud2.png',0,100,95,600,78)    
+  --showHUD(id, my_string ,50,"0xffffffff",'hud2.png',0,100,95,600,78)    
+	showHUD(id, my_string ,35,"0xffffffff",'hud1.png',0,100,95,600,78)    
 end
 
 
@@ -244,9 +245,10 @@ end
 
 function check_current_state()
 	keepScreen(true)
-	local scroll_x, scroll_y = findMultiColorInRegionFuzzy(0xda5b39,"-10|10|0x521611,-19|26|0x361b0c,23|-48|0xd9cbc4,38|-86|0x86221f,64|-114|0xd9cbc4,85|-143|0xc8a172,92|-162|0x9d6847,1|-15|0xa5704c", 90, 1739, 1259, 2045, 1538)
-  local main_x, main_y = findMultiColorInRegionFuzzy(0x8f5ea0,"-45|-4|0xbdb5a4,-38|45|0xf8f3e0,59|17|0x603d3a", 90, 434,1413, 438, 1417)
-  local intansuo_x, intansuo_y = findColorInRegionFuzzy(0x2e4432, 95, 3, 1525, 9, 1531); --战斗界面左下角绿色
+	local scroll_x, scroll_y = myFindColor(主界面卷轴)
+  --local main_x, main_y = findMultiColorInRegionFuzzy(0x8f5ea0,"-45|-4|0xbdb5a4,-38|45|0xf8f3e0,59|17|0x603d3a", 90, 434,1413, 438, 1417)
+  local main_x, main_y = myFindColor(组队)
+	local intansuo_x, intansuo_y = findColorInRegionFuzzy(0x2e4432, 95, 3, 1525, 9, 1531); --战斗界面左下角绿色
   local tansuo_x, tansuo_y = findColorInRegionFuzzy(0x1e1ea6, 95, 314, 1493, 340, 1509) -- 探索yuhun下方蓝色
   local incombat_x, incombat_y = findColorInRegionFuzzy(0x856e56, 95, 86, 1485, 110, 1494) --战斗左下角小齿轮颜色
   local tupo_x, tupo_y = findMultiColorInRegionFuzzy(0xc7241c,"-13|8|0xf7f2df,-14|-35|0xf4efe1", 95, 888, 1078, 888, 1078)  --3次达摩周边色
@@ -260,6 +262,8 @@ function check_current_state()
 	local win_x, win_y = findMultiColorInRegionFuzzy(0x79180f,"49|74|0x951b11,6|52|0xcebfab,-67|124|0xdaceb6,15|112|0xd3c5af,103|115|0xcfbfa9,26|149|0xd8c9b0,20|206|0x580f01,14|238|0x902117,-24|73|0x971b11", 90, 583, 159, 980, 508)  --鼓的红色
 	local chat_cross_x, chat_cross_y = myFindColor(聊天红叉)
 	local creat_x = myFindColor(创建队伍)
+	local 好友结界_x, 好友结界_y = myFindColor(好友结界)
+	local 第一灯笼_x, 第一灯笼_y = myFindColor(第一灯笼)
 	
 	
 	keepScreen(false)
@@ -282,13 +286,26 @@ function check_current_state()
 			sysLog('当前处于庭院')
 			return 1
     end
+	elseif 好友结界_x > -1 then
+		sysLog("好友结界")
+		tap(67, 71)
+		mSleep(1000)
+		return check_current_state()
   elseif intansuo_x > -1 then
     if incombat_x > -1 then
       sysLog("当前处于战斗中。。。")
 			end_combat(0)
 			mSleep(2000)
 			return check_current_state()
-    else 
+    elseif 第一灯笼_x > -1 then
+			sysLog('好友寄养界面')
+			my_toast(id, '寄养界面')
+			tap(67, 71)
+			wait_for_state(式神育成)
+			tap(67, 71)
+			mSleep(2000)
+			return check_current_state()
+		else
       sysLog('当前处于探索副本里。。。')
       return 22
     end
@@ -455,3 +472,19 @@ function wait_for_leaving_state(input_table)
 		wait_x, wait_y = myFindColor(input_table)
 	end
 end
+
+function waiting_clock(wait_time)
+	local qTime = mTime()
+	local time_passed = mTime() - qTime
+	local need_wait = (wait_time - time_passed)/1000
+	local output_s = string.format("%.2d:%.2d:%.2d", need_wait/(60*60), need_wait/60%60, need_wait%60)
+	while time_passed <= wait_time do
+		my_toast(id, '需要等待'..output_s)
+		mSleep(1000)
+		time_passed = mTime() - qTime
+		need_wait = (wait_time - time_passed)/1000
+		output_s = string.format("%.2d:%.2d:%.2d", need_wait/(60*60), need_wait/60%60, need_wait%60)
+	end
+end
+
+

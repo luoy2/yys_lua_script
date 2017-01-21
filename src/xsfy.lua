@@ -170,7 +170,9 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 	local fy_order_3 = {tonumber(悬赏封印_results['121']), tonumber(悬赏封印_results['120'])}
 	local fy_order_4 = {tonumber(悬赏封印_results['131']), tonumber(悬赏封印_results['130'])}
 	local fy_order = {fy_order_1, fy_order_2, fy_order_3, fy_order_4}
-	fy_all(fy_order, skip_lines)
+	if fy_order_1[1] ~= 0 or fy_order_2[1] ~= 0  or fy_order_3[1] ~= 0  or fy_order_4[1] ~= 0 then
+		fy_all(fy_order, skip_lines)
+	end
 	if 悬赏封印_results['200'] ~= '0' then
 		fengyin_toast = createHUD()
 		local fy_monster = tostring(mystery_table[tonumber(悬赏封印_results['200'])][1])
