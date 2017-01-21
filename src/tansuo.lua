@@ -529,7 +529,7 @@ function main_tansuo(ts_ret, ts_results)
   end
   _G.fighttime = tonumber(ts_results['99'])
   _G.skiplines = tonumber(ts_results['100'])
-  _G.searchtime = tonumber(ts_results['101'])
+  --_G.searchtime = tonumber(ts_results['101'])
   _G.tupo_sep = tonumber(ts_results['102'])
   _G.if_liaotupolist = {true, true, true}
   _G.liaotupo_t = 10

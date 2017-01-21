@@ -53,13 +53,18 @@ function my_toast(id, my_string)
 end
 
 
-function if_outof_sushi()
+function if_outof_sushi(if_lock)
+	local if_lock = if_lock or true
 	mSleep(500)
   x, y = findMultiColorInRegionFuzzy(0xe32e16,"-24|-124|0x60466e,-16|14|0xc6a98a,91|4|0xf3b25e", 93, 976, 931, 1023, 974)
   if x > -1 then
     my_toast(id, '已经没有体力啦！')
-    lockDevice()
-		lua_exit()
+		if if_lock then
+			my_exist(true)
+		else
+			tap(1500, 500)
+			wait_for_leaving_state({0xd6c4a1,"3|-6|0x888259,4|-19|0xd6c4a1",96,1820,33,1852,67})
+		end
   end
 end
 
