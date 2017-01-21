@@ -208,6 +208,10 @@ function jiyang_once()
 				tap(jiejie_friend[single_friend][1], jiejie_friend[single_friend][2])
 				if not wait_for_state(好友结界, 10000) then
 					sysLog('10秒没找到, 好友没有结界')
+					tap(1800, 875)														--点击寄存
+					wait_for_state(第一灯笼)
+					tap(1800, 875)														--点击寄存
+					wait_for_state(好友寄养)
 				else
 					if check_one_friend() then
 						tap(67, 71)

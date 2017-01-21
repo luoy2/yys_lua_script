@@ -228,7 +228,6 @@ function team_leader(mark_case, member_number)
       tap(1547, 1157)
 			if_outof_sushi()
       combat_result = custom_mark_combat(mark_case)
-      sleepRandomLag(1000)
       while true do
         accept_quest()
         invite_color_1, y_2 = findColorInRegionFuzzy(0xdf6851, 95, 897, 876, 937, 897)
@@ -238,10 +237,10 @@ function team_leader(mark_case, member_number)
           tap(1184, 877)
           mSleep(2000)
           break end
-          sleepRandomLag(1000)
+          mSleep(100)
         end
 		else
-			sleepRandomLag(3000)
+			mSleep(100)
 			my_toast(id,'等待队友加入')
 			team_leader(mark_case, member_number)
 		end

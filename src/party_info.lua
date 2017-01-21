@@ -18,21 +18,27 @@ function party_statue()
 	keepScreen(false)
 	if ifstart_x > -1 and full_color == -1 and full_color_2 == -1 then
 		sysLog('三人满')
+		my_toast(id, '三人满')
 		return 5
 	elseif ifstart_x > -1 then 
 		sysLog('可以开始队伍')
+		my_toast(id, '可以开始队伍')
 		return 0
 	elseif leader_wait_x > -1 then
 		sysLog('等待人来')
+		my_toast(id, '等待人来')
 		return 2
 	elseif refresh_x > -1 then
 		sysLog('可以刷新')
+		my_toast(id, '可以刷新')
 		return 3
 	elseif ifwait_x > -1 then
 		sysLog('等待队伍开始')
+		my_toast(id, '等待队伍开始')
 		return 1
 	else
 		sysLog('离开组队界面')
+		my_toast(id, '离开队伍页面')
 		return 4
 	end
 end
@@ -44,7 +50,7 @@ function in_party(case, input_ss_table)
 	sysLog('队伍状态: '..statue)
 	while statue == 1 do
 			mSleep(500)
-			my_toast(id, '等待队伍开始')
+			--my_toast(id, '等待队伍开始')
 			statue = party_statue()
 	end
 	if statue == 2 or statue == 0 then
@@ -66,7 +72,7 @@ function in_party(case, input_ss_table)
 		elseif case == 'yaoqi' then return refresh_yaoqi(input_ss_table)
 		end
 	elseif statue == 4 then
-		mSleep(1000)
+		mSleep(2000)
 	end
 	sysLog('final statu')
 	statue = party_statue()
@@ -81,19 +87,16 @@ function enter_party()
 	sysLog('enter_party')
   local current_state = check_current_state()
   if current_state == 'party' then
-		mSleep(500)
+		my_toast(id, '组队界面')
 		my_swip(411, 547, 647, 1035, 30)
-		mSleep(500)
+		mSleep(200)
 	elseif current_state == 1 or current_state == 'machi' then
-		mSleep(500)
 		sub_function:case('party')
-		mSleep(1000)
 		return enter_party()
   else
     enter_main_function()
-		mSleep(500)
+		wait_for_state(组队)
 		sub_function:case('party')
-		mSleep(1000)
 		return enter_party()
 	end
 end
@@ -111,15 +114,18 @@ function refresh()
 	wait_for_state(组队刷新)
 	tap(1200, 1300)
 	wait_for_state(组队刷新)
-	x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
+	keepScreen(true)
+	local x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
+	keepScreen(false)
 	if x > -1 then
 		join_party:case(1)
 		sleepRandomLag(1000)
 		accept_quest()
-		x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		keepScreen(true)
+		local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		keepScreen(false)
 		if x == -1 then
 			toast("已加入队伍")
-			mSleep(1000)
 			in_party('shiju', {0})
 			return start_combat(0)
 		else

@@ -199,6 +199,7 @@ function nearby_monster()
 	swip(400, 1250, 400, 600)
 	mSleep(200)
 	tap(416, 1139)
+	my_toast(id, '开始刷附近妖怪')
 	refresh()
 	end
 end

@@ -25,6 +25,12 @@
                "type" : "RadioGroup"
             },
 						{
+               "id" : "106",
+							"list" : "击杀boss, 不杀boss",
+               "size" : "25",
+               "type" : "RadioGroup"
+            },
+						{
                "type" : "Label",
                "text" : "请选择探索间隔是否进行突破(可多选)",
                "size" : 25,

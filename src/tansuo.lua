@@ -348,14 +348,6 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
 					sysLog('战斗未开始, 跳出战斗循环')
 					return search_for_exp(fight_count, tupo_sep, if_extra)
 				end
-				--[[
-        combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, 0, 0, 1535, 2047)
-        if combat_x > -1 then																			--如果还能找到 说明有问题 重新找经验怪
-          sysLog('还能找到战斗')
-          return search_for_exp(fight_count, tupo_sep, if_extra)
-        end
-				--]]
-        --sysLog('11:'..fight_count)
         my_toast(id, '检测狗粮')
         accept_quest()
         local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -368,7 +360,6 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
         --sysLog('12:'..fight_count)
         start_combat(0)
 				wait_for_state(副本里面)
-				mSleep(1000)
         --sysLog('13:'..fight_count)
         local boss_bool = if_boss(fight_count)
         if boss_bool then
@@ -394,41 +385,44 @@ end
 
 ----------------------------------------------------Step 4: 汇总---------------------------------------------------
 function if_boss(fight_count)
+	mSleep(1000)
   --sysLog('20:'..fight_count)
-  sysLog('if_boss')
-  my_toast(id, '寻找boss中。。。')
-  local boss_x, boss_y = findMultiColorInRegionFuzzy(0x8f1c1e,"32|27|0x8c4f24,29|-4|0xf8e5d6,13|-17|0x455280,19|8|0xede8e3", 90, 768, 400, 1262, 693)
-  if boss_x > -1 then
-    my_toast(id, '找到boss')
-    tap(boss_x, boss_y)
-    if_outof_sushi()
-    accept_quest()
-    my_toast(id, '检测狗粮')
-    accept_quest()
-    local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
-    while ready_x == -1 do
-      mSleep(500)
-      accept_quest()
-      ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
-    end
-    if_change(slot, _G.skiplines)
-    boss_result = start_combat(0)
-		if boss_result == 'win' then
-			mSleep(7000)
-			sysLog('21:'..fight_count)
-			pick_loot()
-			sysLog('22:'..fight_count)
-			return true
-		else
-			mSleep(2000)
-			return if_boss(fight_count)
+	if _G.if_fight_boss == 0 then
+		sysLog('if_boss')
+		my_toast(id, '寻找boss中。。。')
+		local boss_x, boss_y = findMultiColorInRegionFuzzy(0x8f1c1e,"32|27|0x8c4f24,29|-4|0xf8e5d6,13|-17|0x455280,19|8|0xede8e3", 90, 768, 400, 1262, 693)
+		if boss_x > -1 then
+			my_toast(id, '找到boss')
+			tap(boss_x, boss_y)
+			if_outof_sushi()
+			accept_quest()
+			my_toast(id, '检测狗粮')
+			accept_quest()
+			local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
+			while ready_x == -1 do
+				mSleep(500)
+				accept_quest()
+				ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
 			end
-  else
-    my_toast(id, '未找到boss, 继续刷怪')
-    mSleep(1000)
-    --sysLog('23:'..fight_count)
-    return false, fight_count
-  end
+			if_change(slot, _G.skiplines)
+			boss_result = start_combat(0)
+			if boss_result == 'win' then
+				mSleep(7000)
+				sysLog('21:'..fight_count)
+				pick_loot()
+				sysLog('22:'..fight_count)
+				return true
+			else
+				mSleep(2000)
+				return if_boss(fight_count)
+				end
+		else
+			my_toast(id, '未找到boss, 继续刷怪')
+			mSleep(1000)
+			--sysLog('23:'..fight_count)
+			return false, fight_count
+		end
+	end
 end
 
 
@@ -545,7 +539,7 @@ function main_tansuo(ts_ret, ts_results)
 	else
 		target_chapter = 19
 	end
-	
+		_G.if_fight_boss = tonumber(ts_results['106'])
 	
   if ts_results['98'] == '0' then
     _G.if_tupo = true

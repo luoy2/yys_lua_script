@@ -78,9 +78,9 @@ function if_start_combat_intime()
 			sysLog('可以开始战斗')
 			return true
 		else
-			my_toast(id, '经过'..(limit_t/1000)..'秒仍未开始战斗')
-			sysLog('经过'..limit_t..'仍未开始战斗')
-			mSleep(1000)
+			local count_limit = 15000 - limit_t
+			my_toast(id, '防卡死倒计时: '..string.format("%.2d:%.2d", 0, count_limit/1000))
+			--sysLog('经过'..limit_t..'仍未开始战斗')
 			ready_x, ready_y = myFindColor(准备)
 		end
 		limit_t = mTime() - initial_t
