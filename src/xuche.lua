@@ -101,11 +101,7 @@ function check_one_friend()
 		my_toast(id, '好友有结界卡(风车在转)')
 		sysLog("有变化") 
 		tap(1868, 727)
-		if_has_card_x, if_has_card_y = myFindColor(不动风车)
-		while if_has_card_x > -1 do
-			mSleep(200)
-			tap(1868, 727)
-		end
+		wait_for_state(结界卡)
 		local red_cross_x, _ = findMultiColorInRegionFuzzy(0x612c32,"0|26|0xe8d4cf,3|54|0x753743", 95, 1849, 264, 1939, 346)
 		while red_cross_x == -1 do
 			mSleep(200)

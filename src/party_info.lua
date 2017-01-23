@@ -18,23 +18,23 @@ function party_statue()
 	keepScreen(false)
 	if ifstart_x > -1 and full_color == -1 and full_color_2 == -1 then
 		sysLog('三人满')
-		my_toast(id, '三人满')
+		--my_toast(id, '三人满')
 		return 5
 	elseif ifstart_x > -1 then 
 		sysLog('可以开始队伍')
-		my_toast(id, '可以开始队伍')
+		--my_toast(id, '可以开始队伍')
 		return 0
 	elseif leader_wait_x > -1 then
 		sysLog('等待人来')
-		my_toast(id, '等待人来')
+		--my_toast(id, '等待人来')
 		return 2
 	elseif refresh_x > -1 then
 		sysLog('可以刷新')
-		my_toast(id, '可以刷新')
+		--my_toast(id, '可以刷新')
 		return 3
 	elseif ifwait_x > -1 then
 		sysLog('等待队伍开始')
-		my_toast(id, '等待队伍开始')
+		--my_toast(id, '等待队伍开始')
 		return 1
 	else
 		sysLog('离开组队界面')
