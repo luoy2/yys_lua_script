@@ -125,6 +125,30 @@ function summon()
 end
 
 		
+		-----------------------------------------------------过剧情--------------------------------------------------
+function 过剧情()
+	while true do
+		keepScreen(true)
+		local conver_x, conver_y = myFindColor(对话)
+		local combat_x, combat_y = myFindColor(战斗图标)
+		local 快进_x, 快进_y = myFindColor(快进)
+		local skip_x, skip_y = myFindColor({0xa0998a,"-52|6|0x4f35dd,76|2|0x144ca1",90,1339,1218,1512,1278})
+		local 声优_x, 声优_y = myFindColor(声优)
+		keepScreen(false)
+		sysLog(conver_x..conver_y..combat_x..快进_x..声优_x)
+		if 快进_x > -1 then
+			tap(快进_x, 快进_y)
+		elseif conver_x > -1 then 
+			tap(conver_x, conver_y)
+			elseif skip_x > -1 or 声优_x >-1 then
+			tap(1434, 1245)
+		elseif combat_x > -1 then
+			tap(combat_x, combat_y)
+			start_combat(0)
+		end
+		mSleep(300)
+	end
+end
 -----------------------------------------------------日常汇总--------------------------------------------------
 
 function sub_richang(richang_results)
@@ -136,6 +160,8 @@ function sub_richang(richang_results)
 			summon()
 		elseif richang_results['100'] == '3' then
 			nearby_monster()
+		elseif richang_results['100'] == '4' then
+			过剧情()
 		end
 		mSleep(1000)
 		end

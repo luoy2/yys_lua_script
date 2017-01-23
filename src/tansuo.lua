@@ -10,6 +10,16 @@ chapter_tap = switch {
   --[18] = function() tap(1900, 950) end
 }
 
+qucik_chapter = {
+  --[1] = {0xddd7c5,"4|-2|0xf0ebd8,4|0|0xece6d4,4|3|0xe9e4d1,4|6|0xe9e4d1,4|8|0xe9e4d1,4|12|0xebe5d3,4|14|0xf1ecd9,102|-2|0x545158,145|10|0x48464c",93,881,563,937,612},
+  [2] = {0x2c3e50,"0|-10|0x030204,11|-19|0xf61f51,24|0|0xe5d5d0,14|48|0xda1742,68|11|0xc4ab81,-49|11|0x364245",90,921,772,1122,968},
+  --[3] = {0xf4efdc,"2|-2|0xece7d4,5|-3|0xc8c2b1,8|0|0xf6f1de,7|6|0xf8f3e0,3|6|0xece7d4,9|10|0xf5f0dd,7|15|0xeae4d2,4|15|0xe9e4d2,-1|11|0xf8f3e0",93,897,784,915,811},
+  --[4] = {0xf3eddb,"0|5|0xf8f3e0,-2|7|0xf5f0dd,-4|10|0xefead7,-6|14|0xe9e4d1,1|14|0xf8f3e0,5|14|0xd2ccbb,1|19|0xf4efdc,-2|12|0x675f52,0|9|0xf5f0dd",93,1382,440,1405,470},
+	--[5] = {0xd9d3c2,"-4|0|0xf3eddb,-9|0|0xb9b2a2,-9|4|0xf4efdc,-9|9|0xf7f2df,-4|7|0xeee9d6,0|11|0xf8f3e0,-1|16|0xe6e1cf,-5|18|0xdad4c3,-10|15|0xf8f3e0",93,892,523,919,556},
+  --[18] = function() tap(1900, 950) end
+	[17] = {0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 90, 826,534,1184,866},
+	[19] = {0x584e57,"-15|-4|0xd8d8de,14|-4|0xdcdce2,-2|-62|0xfee4cd,-62|-70|0xd9d0bf,-62|-126|0x74409c", 95, 953, 675, 987, 706}
+}
 change_ss_tap = switch {
   [1] = function () 
     tap(1050, 1067)
@@ -149,21 +159,18 @@ end
 
 
 
-function tansuo_to_dungeon(target_chapter)
-	local chapter_x = -1
-	local chapter_y = -1
-	if target_chapter == 19 then
-		chapter_x, chapter_y = findMultiColorInRegionFuzzy(0x584e57,"-15|-4|0xd8d8de,14|-4|0xdcdce2,-2|-62|0xfee4cd,-62|-70|0xd9d0bf,-62|-126|0x74409c", 95, 953, 675, 987, 706)
-	else
-		chapter_x, chapter_y = findMultiColorInRegionFuzzy(0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 90, 826,534,1184,866)
-  end
-	if chapter_x > -1 then
+function tansuo_to_dungeon(target_chapter, difficuty)
+	local difficuty = difficuty or 1
+	local chapter_x, chapter_y = -1, -1
+  chapter_x, chapter_y = myFindColor(qucik_chapter[target_chapter])
+	sysLog(chapter_x..chapter_y)
+  if chapter_x > -1 then
     tap(chapter_x, chapter_y)
     mSleep(500)
   else
     choose_chapter(target_chapter)
   end
-  enter_dungeon()
+  enter_dungeon(difficuty)
 end
 
 
@@ -187,19 +194,19 @@ function if_change(slot, skip_lines)
   local watch_table = {}
   keepScreen(true)
   for i = 1, 5, 1 do
-		if i ~= _G.gouliang_captain then 
-			accept_quest()
-			local ifchange_x, ifchange_y = findMultiColorInRegionFuzzy(0xf9ac14,"7|-1|0xffad15,-1|7|0xf4bf0d,14|10|0xffd30a,14|16|0xffe605,-12|-7|0xf89819,-14|4|0xfebc11,-13|17|0xfbe504,-6|17|0xefd905,3|-6|0xff9f19", 90, slot[i][1], slot[i][2], slot[i][3], slot[i][4])
-			if ifchange_x > -1 then
-				my_toast(id, '需要更换狗粮')
-				sysLog(ifchange_x..','..ifchange_y..'需要更换狗粮')
-				if i <= 3 then
-					table.insert(combat_table, i)
-				else
-					table.insert(watch_table, i)
-				end
-			end
-		end
+    if i ~= _G.gouliang_captain then 
+      accept_quest()
+      local ifchange_x, ifchange_y = findMultiColorInRegionFuzzy(0xf9ac14,"7|-1|0xffad15,-1|7|0xf4bf0d,14|10|0xffd30a,14|16|0xffe605,-12|-7|0xf89819,-14|4|0xfebc11,-13|17|0xfbe504,-6|17|0xefd905,3|-6|0xff9f19", 90, slot[i][1], slot[i][2], slot[i][3], slot[i][4])
+      if ifchange_x > -1 then
+        my_toast(id, '需要更换狗粮')
+        sysLog(ifchange_x..','..ifchange_y..'需要更换狗粮')
+        if i <= 3 then
+          table.insert(combat_table, i)
+        else
+          table.insert(watch_table, i)
+        end
+      end
+    end
   end
   keepScreen(false)
   
@@ -314,22 +321,21 @@ function next_scene()
 end
 
 
-function search_for_exp(fight_count, tupo_sep, if_extra)
+function search_for_exp(fight_count)
   sysLog('search_for_exp')
   local count = 0
   --my_toast(id, '寻找经验怪, 同屏找怪'.. _G.searchtime..'次')
-	my_toast(id, '寻找经验怪, 同屏找怪3秒')
-	local search_t = mTime()
+  my_toast(id, '寻找经验怪, 同屏找怪3秒')
+  local search_t = mTime()
   --while count < _G.searchtime do
-	while mTime() - search_t <= 3000 do
+  while mTime() - search_t <= 3000 do
     local qTime = mTime()
     accept_quest()
     keepScreen(true)
-    local exp_x, exp_y = findMultiColorInRegionFuzzy(0x8c1a1b,"-17|-35|0x307885,16|36|0xa16343", 95, 599, 368, 1613, 1206)
-		local exp_x2, exp_y2 = findMultiColorInRegionFuzzy(0xf99c15,"4|-33|0xad704c,-6|-81|0x901c1b,-9|-121|0x317886", 95, 1496, 1145, 1589, 1235)
+    local exp_x, exp_y = findMultiColorInRegionFuzzy(0x8c1a1b,"-17|-35|0x307885,16|36|0xa16343", 95, 0,444,2046,1385)
     --local exp_x, exp_y = findMultiColorInRegionFuzzy(0xaa724f,"-16|-43|0x8a191b,-36|-83|0x2d7888,127|-44|0xa66746,120|-96|0x8a1919,113|-125|0x2d7481", 90, 599, 368, 1613, 1206)
     keepScreen(false)
-    if exp_x > -1 or exp_x2 > -1 then
+    if exp_x > -1 then
       --sysLog('11:'..fight_count)
       my_toast(id, '找到经验怪')
       sysLog('x:'..exp_x..' y:'..exp_y)
@@ -340,14 +346,14 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
       if combat_x > -1 then 
         sysLog('找到战斗')
         tap(combat_x, combat_y)
-				mSleep(1000)
+        mSleep(1000)
         if_outof_sushi()
         --check_current_state()	
-				if if_start_combat_intime() then
-				else
-					sysLog('战斗未开始, 跳出战斗循环')
-					return search_for_exp(fight_count, tupo_sep, if_extra)
-				end
+        if if_start_combat_intime() then
+        else
+          sysLog('战斗未开始, 跳出战斗循环')
+          return search_for_exp(fight_count)
+        end
         my_toast(id, '检测狗粮')
         accept_quest()
         local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -359,18 +365,18 @@ function search_for_exp(fight_count, tupo_sep, if_extra)
         if_change(slot, tonumber(_G.skiplines))
         --sysLog('12:'..fight_count)
         start_combat(0)
-				wait_for_state(副本里面)
+        wait_for_state(副本里面)
         --sysLog('13:'..fight_count)
         local boss_bool = if_boss(fight_count)
         if boss_bool then
           fight_count = fight_count + 1
           sysLog('14:'..fight_count)
-          return tansuo(fight_count, tupo_sep, if_extra)
+          return free_tansuo(fight_count)
         end
-        return search_for_exp(fight_count, tupo_sep)
+        return search_for_exp(fight_count)
       else 
         my_toast(id, '未找到战斗')
-				return search_for_exp(fight_count, tupo_sep, if_extra)
+        return search_for_exp(fight_count)
       end
       --]]
     else
@@ -383,47 +389,49 @@ end
 
 
 
+
 ----------------------------------------------------Step 4: 汇总---------------------------------------------------
 function if_boss(fight_count)
-	mSleep(1000)
-  --sysLog('20:'..fight_count)
-	if _G.if_fight_boss == 0 then
-		sysLog('if_boss')
-		my_toast(id, '寻找boss中。。。')
-		local boss_x, boss_y = findMultiColorInRegionFuzzy(0x8f1c1e,"32|27|0x8c4f24,29|-4|0xf8e5d6,13|-17|0x455280,19|8|0xede8e3", 90, 768, 400, 1262, 693)
-		if boss_x > -1 then
-			my_toast(id, '找到boss')
-			tap(boss_x, boss_y)
-			if_outof_sushi()
-			accept_quest()
-			my_toast(id, '检测狗粮')
-			accept_quest()
-			local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
-			while ready_x == -1 do
-				mSleep(500)
-				accept_quest()
-				ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
-			end
-			if_change(slot, _G.skiplines)
-			boss_result = start_combat(0)
-			if boss_result == 'win' then
-				mSleep(7000)
-				sysLog('21:'..fight_count)
-				pick_loot()
-				sysLog('22:'..fight_count)
-				return true
-			else
-				mSleep(2000)
-				return if_boss(fight_count)
-				end
+  mSleep(2000)
+  my_toast(id, '寻找boss中。。。')
+  local boss_x, boss_y = findMultiColorInRegionFuzzy(0x8f1c1e,"32|27|0x8c4f24,29|-4|0xf8e5d6,13|-17|0x455280,19|8|0xede8e3", 90, 768, 400, 1262, 693)
+  if boss_x > -1 then
+    my_toast(id, '找到boss')
+    if _G.if_fight_boss == 0 then
+      tap(boss_x, boss_y)
+      if_outof_sushi()
+      accept_quest()
+      my_toast(id, '检测狗粮')
+      accept_quest()
+      local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
+      while ready_x == -1 do
+        mSleep(500)
+        accept_quest()
+        ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
+      end
+      if_change(slot, _G.skiplines)
+      boss_result = start_combat(0)
+      if boss_result == 'win' then
+        mSleep(7000)
+        sysLog('21:'..fight_count)
+        pick_loot()
+        sysLog('22:'..fight_count)
+        return true
+      else
+        mSleep(2000)
+        return if_boss(fight_count)
+      end
 		else
-			my_toast(id, '未找到boss, 继续刷怪')
-			mSleep(1000)
-			--sysLog('23:'..fight_count)
-			return false, fight_count
+			enter_tansuo()
+			return true
 		end
+	else
+		my_toast(id, '未找到boss, 继续刷怪')
+		--sysLog('23:'..fight_count)
+		return false, fight_count
 	end
 end
+
 
 
 
@@ -439,16 +447,6 @@ function pick_loot()
   else
     my_toast(id, '未找到小纸人...')
     wait_for_state(探索地图)
-    --[[
-    local chest_x, chest_y = myFindColor(地图宝箱)
-    if chest_x > -1 then
-      my_toast(id, '找到宝箱')
-      tap(chest_x, chest_y)
-      mSleep(3000)
-      tap(1738, 1406)
-      mSleep(2000)
-    end
-    --]]
   end
 end
 
@@ -477,7 +475,7 @@ function tansuo(fight_count, tupo_sep, if_extra)
   tansuo_to_dungeon(target_chapter)
   --进入副本
   --Initialize chapter
-	wait_for_state(副本里面)
+  wait_for_state(副本里面)
   sysLog('检测锁定')
   my_toast(id, '检测是否锁定出战式神')
   local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
@@ -488,11 +486,11 @@ function tansuo(fight_count, tupo_sep, if_extra)
   mSleep(500)
   my_toast(id, '准备开始刷经验怪')
   mSleep(1000)										-- waiting for
-  search_for_exp(fight_count, tupo_sep, if_extra)
+  search_for_exp(fight_count)
   for find_time = 1, 4, 1 do
     my_toast(id, '找怪第'..find_time..'次')
     my_swip(1977, 1346, 1400, 1346, 35)  --4次
-    search_for_exp(fight_count, tupo_sep, if_extra)
+    search_for_exp(fight_count)
   end
   my_toast(id, '一轮完成, 退出探索')
   tap(78, 103)													--退出探索
@@ -529,18 +527,18 @@ function main_tansuo(ts_ret, ts_results)
   _G.liaotupo_t = 10
   _G.time_pass = mTime() - _G.liaotupo_t
   _G.if_extra = tonumber(ts_results['103'])
-	_G.gouliang_captain = tonumber(ts_results['104'])
-	if tonumber(ts_results['105']) == 0 then
-		if if_extra == 0 then
-			target_chapter = 17
-		else 
-			target_chapter = 171
-		end
-	else
-		target_chapter = 19
-	end
-		_G.if_fight_boss = tonumber(ts_results['106'])
-	
+  _G.gouliang_captain = tonumber(ts_results['104'])
+  if tonumber(ts_results['105']) == 0 then
+    if if_extra == 0 then
+      target_chapter = 17
+    else 
+      target_chapter = 171
+    end
+  else
+    target_chapter = 19
+  end
+  _G.if_fight_boss = tonumber(ts_results['106'])
+  
   if ts_results['98'] == '0' then
     _G.if_tupo = true
     _G.if_liaotupo = false
@@ -571,3 +569,168 @@ function main_tansuo(ts_ret, ts_results)
   tansuo(0, _G.tupo_sep, if_extra)
 end
 
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------自由探索-------------------------------------------------------------
+
+function search_for_all(fight_count)
+  sysLog('search_for_all')
+  my_toast(id, '寻找怪物')
+  local search_t = mTime()
+  while mTime() - search_t <= 2000 do
+    local qTime = mTime()
+    accept_quest()
+		local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, 0, 0, 1535, 2047)
+		if combat_x > -1 then 
+			sysLog('找到战斗')
+			tap(combat_x, combat_y)
+			mSleep(1000)
+			if_outof_sushi()
+			if if_start_combat_intime() then
+			else
+				sysLog('战斗未开始, 跳出战斗循环')
+				return search_for_all(fight_count)
+			end
+			my_toast(id, '检测狗粮')
+			accept_quest()
+			if_change(slot, tonumber(_G.skiplines))
+			start_combat(0)
+			wait_for_state(副本里面)
+			--sysLog('13:'..fight_count)
+			local boss_bool = if_boss(fight_count)
+			if boss_bool then
+				fight_count = fight_count + 1
+				sysLog('14:'..fight_count)
+				return free_tansuo(fight_count)
+			end
+			return search_for_all(fight_count)
+		else 
+			my_toast(id, '未找到战斗')
+		end
+  end
+end
+
+
+function free_tansuo(fight_count)
+  if _G.if_liaotupo then
+    _G.time_pass = mTime() - _G.liaotupo_t
+    sysLog('已过去时间'.._G.time_pass)
+    sysLog('突破保底'..tonumber(tupo_results['200']))
+    main_liaotupo('combine', tonumber(tupo_results['200']))
+  end
+  
+  my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
+  sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
+  if fight_count >= _G.fighttime then
+    sysLog('探索任务完成')
+    do return end
+  end
+  
+  enter_tansuo()
+	tansuo_to_dungeon(_G.target_chapter, _G.difficuty)
+  wait_for_state(副本里面)
+  sysLog('检测锁定')
+  my_toast(id, '检测是否锁定出战式神')
+  local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
+  if lockss_x > -1 then
+    sysLog('解锁')
+    tap(lockss_x, lockss_y)
+  end
+  my_toast(id, '准备刷怪')
+	
+	sysLog(_G.search_method)
+	if _G.search_method == 0 then 
+	  search_for_all(fight_count)
+		for find_time = 1, 4, 1 do
+			my_toast(id, '找怪第'..find_time..'次')
+			my_swip(1977, 1346, 1400, 1346, 35)  --4次
+			search_for_all(fight_count)
+		end
+	else
+		search_for_exp(fight_count)
+		for find_time = 1, 4, 1 do
+			my_toast(id, '找怪第'..find_time..'次')
+			my_swip(1977, 1346, 1400, 1346, 35)  --4次
+			search_for_exp(fight_count)
+		end
+	end
+	
+
+  my_toast(id, '一轮完成, 退出探索')
+  tap(78, 103)													--退出探索
+  wait_for_state(确认退出)
+  tap(1244, 842)
+  wait_for_state(探索地图)
+  local this_fight_count = fight_count + 1
+  
+  if _G.if_tupo then
+    if_tupo = this_fight_count - math.floor(this_fight_count/tupo_sep)*tupo_sep
+    sysLog(if_tupo)
+    my_toast(id, '当前探索次数'..this_fight_count..'; 突破间隔'..tupo_sep)
+    if if_tupo == 0 then
+      sysLog('已经刷完'..this_fight_count..'次, 开始结界突破')
+      my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始个人结界突破')
+      main_gerentupo(tupo_results)
+    end
+  end
+  return free_tansuo(fight_count)
+end
+
+
+function main_freets(zyts_ret, zyts_results)
+  if zyts_ret==0 then	
+    toast("您选择了取消，停止脚本运行")
+    lua_exit()
+  end
+  _G.fighttime = tonumber(zyts_results['99'])
+  _G.skiplines = tonumber(zyts_results['100'])
+	_G.difficuty = tonumber(zyts_results['101'])
+  _G.tupo_sep = tonumber(zyts_results['102'])
+  _G.gouliang_captain = tonumber(zyts_results['104'])
+  _G.target_chapter = tonumber(zyts_results['105'])+1
+  _G.if_fight_boss = tonumber(zyts_results['106'])
+	_G.search_method = tonumber(zyts_results['107'])
+
+	
+	_G.if_liaotupolist = {true, true, true}
+	_G.liaotupo_t = 10
+  _G.time_pass = mTime() - _G.liaotupo_t
+	
+  if zyts_results['98'] == '0' then
+    _G.if_tupo = true
+    _G.if_liaotupo = false
+  elseif zyts_results['98'] == '1' then
+    _G.if_tupo = false
+    _G.if_liaotupo = true
+  elseif zyts_results['98'] == '0@1' then
+    _G.if_tupo = true
+    _G.if_liaotupo = true
+  else
+    _G.if_tupo = false
+    _G.if_liaotupo = false
+  end
+  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
+  
+  if _G.if_tupo or _G.if_liaotupo then
+    tupo_ret,tupo_results = showUI("tupo.json")
+    if tupo_ret==0 then	
+      toast("突破未设置, 请从探索页面选择取消突破")
+      lua_exit()
+    end
+  end
+	
+  
+  if _G.fighttime == 0 then
+    _G.fighttime = 999999
+  end
+--main()
+	free_tansuo(0)
+end

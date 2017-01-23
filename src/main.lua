@@ -64,8 +64,8 @@ function main()
 			main_xuche(xuche_ret, xuche_results)
       -------------------------------------------探索--------------------------------------
     elseif results['100'] == '4' then
-      ts_ret,ts_results = showUI("tansuo.json")
-      main_tansuo(ts_ret, ts_results)
+      ts_ret,ts_results = showUI("free_tansuo.json")
+      main_freets(ts_ret, ts_results)
       
       -------------------------------------------业原火--------------------------------------	
     elseif results['100'] == '5' then
@@ -82,10 +82,12 @@ function main()
       richang_ret,richang_results = showUI("richang.json")
       main_richang(richang_ret,richang_results)
       -------------------------------------------一条龙挂机--------------------------------------	
-    elseif results['100'] == '8' then
+    elseif results['100'] == '9' then
       dialog('功能马上完成, 敬请期待')
       -------------------------------------------开发中--------------------------------------	
-      
+		elseif results['100'] == '8' then
+			--zyts_ret,zyts_results = showUI("free_tansuo.json")
+      --main_freets(zyts_ret, zyts_results)
     else 
       toast("您什么都没有设置")
       lua_exit()
@@ -94,6 +96,25 @@ function main()
   end
 end
 
-
-main()
-
+--main()
+while true do
+	keepScreen(true)
+	local conver_x, conver_y = myFindColor(对话)
+	local combat_x, combat_y = myFindColor(战斗图标)
+	local 快进_x, 快进_y = myFindColor(快进)
+	local skip_x, skip_y = myFindColor({0xa0998a,"-52|6|0x4f35dd,76|2|0x144ca1",90,1339,1218,1512,1278})
+	local 声优_x, 声优_y = myFindColor(声优)
+	keepScreen(false)
+	sysLog(conver_x..conver_y..combat_x..快进_x..声优_x)
+	if 快进_x > -1 then
+		tap(快进_x, 快进_y)
+	elseif conver_x > -1 then 
+		tap(conver_x, conver_y)
+		elseif skip_x > -1 or 声优_x >-1 then
+		tap(1434, 1245)
+	elseif combat_x > -1 then
+		tap(combat_x, combat_y)
+		start_combat(0)
+	end
+	mSleep(300)
+end

@@ -2,9 +2,13 @@
 -- 时间: 2016-12-28
 function myFindColor(input_table)
 	accept_quest()
-	local x, y = findMultiColorInRegionFuzzy(input_table[1], input_table[2], input_table[3], input_table[4], input_table[5], input_table[6], input_table[7])
-	return x, y
+	if input_table == nil then
+		return -1, -1
+	else
+		local x, y = findMultiColorInRegionFuzzy(input_table[1], input_table[2], input_table[3], input_table[4], input_table[5], input_table[6], input_table[7])
+		return x, y
 	end
+end
 
 function toast_screensize()
   width,height = getScreenSize()
@@ -49,7 +53,7 @@ end
 
 function my_toast(id, my_string)
   --showHUD(id, my_string ,50,"0xffffffff",'hud2.png',0,100,95,600,78)    
-	showHUD(id, my_string ,35,"0xffffffff",'hud1.png',0,100,95,600,78)    
+	showHUD(id, my_string ,35,"0xffffffff",'hud.png',0,100,95,600,78)    
 end
 
 
@@ -111,8 +115,6 @@ function tap(x, y)
   touchDown(index,rand_x, rand_y)
   mSleep(math.random(60,80))                --某些特殊情况需要增大延迟才能模拟点击效果
   touchUp(index, rand_x, rand_y)
-  mSleep(100)
-	local lag_x, lag_y = myFindColor(延迟白点)
 	--sysLog(lag_x)
 end
 
