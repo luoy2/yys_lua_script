@@ -95,6 +95,7 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 			end
 			my_toast(id,"重新邀请")
 			tap(1184, 877)
+			mSleep(2000)
 			if_outof_sushi()
 			wait_for_state(队长等待)
 			current_party_statue = party_statue()

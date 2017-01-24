@@ -329,9 +329,20 @@ end
 
 
 	------------------------------------------------------觉醒--------------------------------------------------------
-function enter_juexing()
+function juexing(fight_times, juexing_floor)
+	while fight_times < 3 do
+		enter_party()
+		this_awaken = math.random(1, 4)
+		tap(觉醒位置[this_awaken][1], 觉醒位置[this_awaken][2])
+		wait_for_state(组队刷新)
+		if juexing_floor ~= 0 then
+			choose_yuhun_floor(juexing_floor)
+		end
+		mSleep(500)
+		refresh()
+		fight_times = fight_times + 1
+	end
 end
-
 
 
 

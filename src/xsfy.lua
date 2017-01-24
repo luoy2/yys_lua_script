@@ -119,27 +119,11 @@ end
 
 function fy_one_monster(monster_chapter, skip_lines, difficuty)
 	enter_tansuo()
-	choose_chapter(monster_chapter)
-	enter_dungeon(difficuty)
+	tansuo_to_dungeon(monster_chapter, difficuty)
 	mSleep(3000)
 	while one_dungeon_fengyin(skip_lines) do 	
 		enter_tansuo()
-		local currentchapter_x, currentchapter_y = findMultiColorInRegionFuzzy(0xa88341,"0|-6|0x4c3828,0|9|0xd9d0bf", 95, 835, 534, 1173, 859)
-		if currentchapter_x > -1 then
-			sysLog('找到快捷入口')
-			mSleep(1000)
-			tap(1010, 710)
-			mSleep(1000)
-			currentchapter_x, currentchapter_y = findMultiColorInRegionFuzzy(0xa88341,"0|-6|0x4c3828,0|9|0xd9d0bf", 95, 835, 534, 1173, 859)
-			while currentchapter_x > -1 do
-				tap(1010, 710)
-				mSleep(1000)
-				currentchapter_x, currentchapter_y = findMultiColorInRegionFuzzy(0xa88341,"0|-6|0x4c3828,0|9|0xd9d0bf", 95, 835, 534, 1173, 859)
-				end
-		else
-			choose_chapter(monster_chapter)
-		end
-		enter_dungeon(difficuty)
+		tansuo_to_dungeon(monster_chapter, difficuty)
 	end
 	my_toast(id, '封印一次完成')
 end
