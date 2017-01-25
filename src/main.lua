@@ -86,8 +86,8 @@ function main()
       dialog('功能马上完成, 敬请期待')
       -------------------------------------------开发中--------------------------------------	
 		elseif results['100'] == '8' then
-			--zyts_ret,zyts_results = showUI("free_tansuo.json")
-      --main_freets(zyts_ret, zyts_results)
+			jx_ret,jx_results = showUI("juexing.json")
+      main_jx(jx_ret,jx_results)
     else 
       toast("您什么都没有设置")
       lua_exit()
@@ -97,5 +97,3 @@ function main()
 end
 
 main()
-
-

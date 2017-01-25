@@ -258,13 +258,8 @@ end
 --跳过指定前几行
 function skip_ss(lines)							
   for i = 1, lines, 1 do																							
-    local new = pos:new(1519, 1380)
-    local move = {x=265, y=1380}
-    local step = 28
-    local sleep1,sleep2 = 500,20
-    --表示以坐标0,0为原点滑动到100,200坐标上
-    new:touchMoveTo(move,step,sleep1,sleep2)
-    mSleep(2000)
+		my_swip_2(1666, 1350, 537, 1350, 0, 50, 30)
+    mSleep(1000)
   end
 end
 

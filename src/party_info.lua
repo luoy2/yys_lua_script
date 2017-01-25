@@ -329,20 +329,75 @@ end
 
 
 	------------------------------------------------------觉醒--------------------------------------------------------
-function juexing(fight_times, juexing_floor)
-	while fight_times < 3 do
+function juexing(juexing_floor)
 		enter_party()
-		this_awaken = math.random(1, 4)
+		local this_awaken = math.random(1, 4)
+		if _G.jx_type ~= 0 then
+			this_awaken = _G.jx_type
+		end
 		tap(觉醒位置[this_awaken][1], 觉醒位置[this_awaken][2])
 		wait_for_state(组队刷新)
 		if juexing_floor ~= 0 then
 			choose_yuhun_floor(juexing_floor)
 		end
-		mSleep(500)
-		refresh()
-		fight_times = fight_times + 1
+		wait_for_state(组队刷新)
+		tap(1462, 639)
+		wait_for_state(组队刷新)
+		return refresh()
+end
+
+function if_accept_invite(combat_result)
+	wait_for_state(组队)
+	if combat_result == 'win' then
+		my_toast(id, '等待15秒内邀请')
+		local limit_seconds = 15000
+		local qTime = mTime()
+		while (mTime() - qTime) <= limit_seconds do
+			mSleep(10)
+			my_toast(id, '等待邀请: '..string.format("%.2d:%.2d", 0, (limit_seconds - mTime() + qTime)/1000))
+			invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+			if invite_x ~= -1 then
+				my_toast(id, '接受邀请')
+				tap(invite_x, invite_y)
+				mSleep(1000)
+				in_party('shiju', {0})
+				combat_result = start_combat(0)
+				_G.fight_times = _G.fight_times + 1
+				my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.jx_times)
+				if _G.fight_times < _G.jx_times then
+					return if_accept_invite(combat_result)
+				else
+				end
+			end
+		end
+		my_toast(id, '邀请超时, 自行加入')
+	else
+		my_toast(id, '战斗失败, 重新加入')
 	end
 end
 
+function juexing_all()
+	while _G.fight_times < _G.jx_times do
+		my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.jx_times)
+	  local combat_result = juexing(_G.jx_floor)
+		_G.fight_times = _G.fight_times + 1
+		if_accept_invite(combat_result)
+	end
+end
 
+function main_jx(jx_ret,jx_results)
+	if jx_ret==0 then	
+		toast("您选择了取消，停止脚本运行")
+		lua_exit()
+	end
+	_G.jx_times = tonumber(jx_results['100'])
+	_G.jx_type = tonumber(jx_results['101'])
+	_G.jx_floor = tonumber(jx_results['102'])
+	_G.fight_times = 0
+	
+	if _G.jx_times == 0 then
+		_G.jx_times = 99999999
+	end
+	juexing_all()
 
+end

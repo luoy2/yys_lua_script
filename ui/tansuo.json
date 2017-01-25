@@ -60,17 +60,17 @@
             },
 						{
                "type" : "Label",
-               "text" : "请输入数字，设置总共战斗次数（0为无限）",
+               "text" : "请选择总共战斗次数（0为无限）",
                "size" : 25,
                "align" : "center",
                "width" : 100
             },
 						{
                "id" : "99",
-               "kbtype" : "number",
-               "size" : "25",
-               "text" : "0",
-               "type" : "Edit"
+							 "list" : "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+               "select" : "9",
+               "size" : "30",
+               "type" : "ComboBox"
             },
             {
                "type" : "Label",
@@ -104,7 +104,7 @@
             },
 						{
                "type" : "Label",
-               "text" : "请输入数字，设置个人突破间隔",
+               "text" : "请选择数字，设置个人突破间隔",
                "size" : 25,
                "align" : "center",
                "width" : 100

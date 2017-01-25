@@ -92,14 +92,16 @@ function search_for_fy(fight_times, search_times, skip_lines)
 	return if_fight
 end
 
+
 function slow_next_scene()
 	sysLog('next_scene')
   my_swip(1977, 1346, 1700, 1346, 10)
 end
 
+
 function one_dungeon_fengyin(skip_lines)
 	local bool_table = {}
-	for find_time = 1, 8, 1 do
+	for find_time = 1, 9, 1 do
 		slow_next_scene()  --4次
 		table.insert(bool_table, search_for_fy(0, 3, skip_lines))
 	end
@@ -116,17 +118,34 @@ end
 
 
 
-
 function fy_one_monster(monster_chapter, skip_lines, difficuty)
 	enter_tansuo()
 	tansuo_to_dungeon(monster_chapter, difficuty)
-	mSleep(3000)
+	wait_for_state(副本里面)
+  sysLog('检测锁定')
+  my_toast(id, '检测是否锁定出战式神')
+  local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
+  if lockss_x > -1 then
+    sysLog('解锁')
+    tap(lockss_x, lockss_y)
+  end
+  mSleep(500)
 	while one_dungeon_fengyin(skip_lines) do 	
 		enter_tansuo()
 		tansuo_to_dungeon(monster_chapter, difficuty)
+		wait_for_state(副本里面)
+		sysLog('检测锁定')
+		my_toast(id, '检测是否锁定出战式神')
+		local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
+		if lockss_x > -1 then
+			sysLog('解锁')
+			tap(lockss_x, lockss_y)
+		end
+		mSleep(500)
 	end
 	my_toast(id, '封印一次完成')
 end
+
 
 function fy_all(fy_order, skip_lines)
 	for _, v in pairs(fy_order) do
@@ -166,7 +185,7 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,100,180,600,80)
 		mSleep(30*600000)
 	end
-	end
+end
 
 
 

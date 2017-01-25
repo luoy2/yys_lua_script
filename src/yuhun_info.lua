@@ -95,9 +95,10 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 			end
 			my_toast(id,"重新邀请")
 			tap(1184, 877)
-			mSleep(2000)
+			wait_for_state(组队)
+			mSleep(500)
 			if_outof_sushi()
-			wait_for_state(队长等待)
+			wait_for_leaving_state(组队)
 			current_party_statue = party_statue()
 			sysLog(current_party_statue)
 			while current_party_statue == 4 do

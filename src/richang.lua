@@ -162,8 +162,6 @@ function sub_richang(richang_results)
 			nearby_monster()
 		elseif richang_results['100'] == '4' then
 			过剧情()
-		elseif richang_results['100'] == '5' then
-			juexing(0, 0)
 		end
 		mSleep(1000)
 		end
