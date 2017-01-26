@@ -167,6 +167,7 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
+	_G.ts_hero = tonumber(悬赏封印_results['11']) + 1
 	local skip_lines = tonumber(悬赏封印_results['01'])
 	local fy_order_1 = {tonumber(悬赏封印_results['101']), tonumber(悬赏封印_results['100'])}
 	local fy_order_2 = {tonumber(悬赏封印_results['111']), tonumber(悬赏封印_results['110'])}

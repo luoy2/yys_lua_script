@@ -11,6 +11,22 @@ local dict = createOcrDict("dict.txt")
 results = ocrText(dict, 1735,952,1818,985, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
 --]]
 
+function if_windmill()
+	local x_1, _ = findColorInRegionFuzzy(0x516290, 95, 1903, 555, 1903, 556)
+	mSleep(10)
+	local x_2, _ = findColorInRegionFuzzy(0x516290, 95, 1903, 555, 1903, 556)
+	mSleep(10)
+	local x_3, _ = findColorInRegionFuzzy(0x516290, 95, 1903, 555, 1903, 556)
+	mSleep(10)
+	if x_1 + x_2 + x_3 ~= 1903*3 then
+		sysLog('颜色有变换')
+		return true
+	else
+		sysLog('颜色无变换')
+		return false
+	end
+end
+
 
 function enter_jiyang()
   enter_main_function()
@@ -92,14 +108,15 @@ function check_one_friend()
 		mSleep(200)
 		if_has_card_x, if_has_card_y = myFindColor(不动风车)
 	end
-	local s = ColorCheck:new_ColorCheckSystem({{1926,580},{1938,588}},nil,10)
-	if s:ColorCheck_TF() then 
-		sysLog("无变化")
+	--local s = ColorCheck:new_ColorCheckSystem({{1926,580},{1938,588}},nil,10)
+	--if s:ColorCheck_TF() then 
+	if not if_windmill() then
+		--sysLog("无变化")
 		my_toast(id, '好友没有结界卡(风车没转)')
 		tap(67, 71)
 	else 
 		my_toast(id, '好友有结界卡(风车在转)')
-		sysLog("有变化") 
+		--sysLog("有变化") 
 		tap(1868, 727)
 		wait_for_state(结界卡)
 		local red_cross_x, _ = findMultiColorInRegionFuzzy(0x612c32,"0|26|0xe8d4cf,3|54|0x753743", 95, 1849, 264, 1939, 346)

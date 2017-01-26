@@ -485,6 +485,7 @@ function waiting_clock(wait_time)
 	local need_wait = (wait_time - time_passed)/1000
 	local output_s = string.format("%.2d:%.2d:%.2d", need_wait/(60*60), need_wait/60%60, need_wait%60)
 	while time_passed <= wait_time do
+		accept_quest()
 		my_toast(id, '需要等待'..output_s)
 		mSleep(1000)
 		time_passed = mTime() - qTime

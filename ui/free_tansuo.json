@@ -77,6 +77,20 @@
             },
 						{
                "type" : "Label",
+               "text" : "出战阴阳师",
+               "size" : 25,
+               "align" : "center",
+               "width" : 100
+            },	
+						{
+               "id" : "1041",
+               "list" : "晴明, 神乐, 博雅, 比丘尼",
+               "size" : "25",
+							 "select" : "1",
+               "type" : "RadioGroup"
+            },
+						{
+               "type" : "Label",
                "text" : "狗粮设置",
                "size" : 30,
                "align" : "center",

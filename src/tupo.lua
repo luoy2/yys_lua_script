@@ -108,8 +108,7 @@ function tupo(refresh_count, total_avaliable)
       tap(all_enemy[tupo_order[j]][1], all_enemy[tupo_order[j]][2])
       sleepRandomLag(1000)
       tap(all_enemy[tupo_order[j]][1]+187, all_enemy[tupo_order[j]][2]+131)
-      sleepRandomLag(1000)
-      start_combat(0)
+      start_combat(0, _G.tupo_hero)
 			sleepRandomLag(3000)
 			tap(690, 270)
       sleepRandomLag(2000)
@@ -151,6 +150,7 @@ function tupo(refresh_count, total_avaliable)
 end
 
 function main_gerentupo(tupo_results)
+	_G.tupo_hero = tonumber(tupo_results['11'])+1
 	enter_tupo()
 	accept_quest()
 	local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
@@ -175,6 +175,8 @@ function main_tupo(tupo_ret,tupo_results)
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
+	_G.tupo_hero = tonumber(tupo_results['11'])+1
+	sysLog(_G.tupo_hero)
 	if tupo_results['10'] == '0' then
 		main_gerentupo(tupo_results)
 	elseif tupo_results['10'] == '1' then
@@ -256,8 +258,7 @@ function one_liaotupo(base_metal, which_liao)
 				tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
 				sleepRandomLag(1000)
 				tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
-				sleepRandomLag(1000)
-				start_combat(0)
+				start_combat(0, _G.tupo_hero)
 				do return end
 			end
 		end
@@ -280,8 +281,7 @@ function one_liaotupo(base_metal, which_liao)
 					tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
 					sleepRandomLag(1000)
 					tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
-					sleepRandomLag(1000)
-					start_combat(0)
+					start_combat(0, _G.tupo_hero)
 					do return end
 				end
 			end
@@ -317,6 +317,7 @@ end
 
 
 function main_liaotupo(mode, base_metal)
+	_G.tupo_hero = tonumber(tupo_results['11'])+1
 	while true do
 		sysLog(mode)
 		sysLog(_G.time_pass)

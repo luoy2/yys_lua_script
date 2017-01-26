@@ -201,9 +201,11 @@ end
 --]]
 
 -------------------------------------------汇总--------------------------------------
-function start_combat(tap_situation)
+function start_combat(tap_situation, hero_num)
+	local hero_num = hero_num or 0
 	accept_quest()
 	if if_start_combat_intime() then
+		if_change_hero(hero_num)
 		ready()
 	else
 		sysLog('战斗未开始, 跳出战斗循环')

@@ -29,6 +29,13 @@
 										"type" : "ComboBox"
 								},
 								{
+										"id" : "200",
+										"list" : "晴明出战, 神乐出战, 博雅出战, 比丘尼出战",
+										"select" : "1",
+										"size" : "30",
+										"type" : "RadioGroup"
+								},
+								{
 										"type": "Label",
 										"text": "挑战:",
 										"size": 25, 

@@ -31,6 +31,7 @@ qucik_chapter = {
 	[18] = {0xfdfbf6,"36|-1|0x22242b,-90|-9|0x1c1d23,-66|12|0x101113,-59|16|0x48579c,6|25|0xc73351",90,1020,551,1100,603},
 	[19] = {0x584e57,"-15|-4|0xd8d8de,14|-4|0xdcdce2,-2|-62|0xfee4cd,-62|-70|0xd9d0bf,-62|-126|0x74409c", 95, 953, 675, 987, 706}
 }
+
 change_ss_tap = switch {
   [1] = function () 
     tap(1050, 1067)
@@ -59,6 +60,48 @@ change_ss_tap = switch {
   end,
 }
 
+change_hero = switch{
+  [1] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(106, 1450)
+		wait_for_state(更换阴阳师)
+		tap(359, 618)
+		wait_for_state(交替)
+		tap(61, 47)
+		mSleep(1000)
+  end,
+  [2] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(106, 1450)
+		wait_for_state(更换阴阳师)
+		tap(832, 693)
+		wait_for_state(交替)
+		tap(61, 47)
+		mSleep(1000)
+  end,	
+  [3] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(106, 1450)
+		wait_for_state(更换阴阳师)
+		tap(1220, 700)
+		wait_for_state(交替)
+		tap(1685, 583)
+		mSleep(1000)
+  end,
+  [4] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(106, 1450)
+		wait_for_state(更换阴阳师)
+		tap(370, 108)
+		wait_for_state(交替)
+		tap(61, 47)
+		mSleep(1000)
+  end
+	}
 ----------------------------------------------------Step 1: 进入探索---------------------------------------------------
 function enter_tansuo()
   local current_state = check_current_state()
@@ -198,9 +241,40 @@ function if_ncard()
   mSleep(2000)
 end
 
+
+function if_change_hero(target_hero_num)
+	if target_hero_num == 0 then
+		do return end
+	elseif target_hero_num == 1 then
+		target_hero = 晴明
+	elseif target_hero_num == 2 then
+		target_hero = 神乐
+	elseif target_hero_num == 3 then
+		target_hero = 博雅
+	else
+		target_hero = 比丘尼
+	end
+	my_toast(id, '检测是否更换阴阳师')
+	sysLog(target_hero_num)
+	local hero_x, hero_y = myFindColor(target_hero)
+	if hero_x > -1 then
+	else
+		my_toast(id, '更换阴阳师')
+		tap(1091, 1131)
+		change_hero:case(target_hero_num)
+		mSleep(1000)
+	end
+end
+
+
+
+
+
+
 --检测是否需要更换， 从1-5号位开始
 function if_change(slot, skip_lines)
   --sysLog('!!!!!!!!!'..skip_lines)
+	if_change_hero(_G.ts_hero)
   local combat_table = {}
   local watch_table = {}
   keepScreen(true)
@@ -338,7 +412,7 @@ function search_for_exp(fight_count)
     local qTime = mTime()
     accept_quest()
     keepScreen(true)
-    local exp_x, exp_y = findMultiColorInRegionFuzzy(0x8c1a1b,"-17|-35|0x307885,16|36|0xa16343", 95, 0,444,2046,1385)
+    local exp_x, exp_y = myFindColor(经验怪)
     --local exp_x, exp_y = findMultiColorInRegionFuzzy(0xaa724f,"-16|-43|0x8a191b,-36|-83|0x2d7888,127|-44|0xa66746,120|-96|0x8a1919,113|-125|0x2d7481", 90, 599, 368, 1613, 1206)
     keepScreen(false)
     if exp_x > -1 then
@@ -363,11 +437,7 @@ function search_for_exp(fight_count)
         my_toast(id, '检测狗粮')
         accept_quest()
         local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
-        while ready_x == -1 do
-          mSleep(500)
-          accept_quest()
-          ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
-        end
+				wait_for_state(准备)
         if_change(slot, tonumber(_G.skiplines))
         --sysLog('12:'..fight_count)
         start_combat(0)
@@ -525,6 +595,7 @@ function main_tansuo(ts_ret, ts_results)
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
+	_G.tansuo_hero = tonumber(ts_results['1041']) + 1
   _G.fighttime = tonumber(ts_results['99'])
   _G.skiplines = tonumber(ts_results['100'])
   --_G.searchtime = tonumber(ts_results['101'])
@@ -687,7 +758,7 @@ function free_tansuo(fight_count)
       main_gerentupo(tupo_results)
     end
   end
-  return free_tansuo(fight_count)
+  return free_tansuo(this_fight_count)
 end
 
 
@@ -696,6 +767,7 @@ function main_freets(zyts_ret, zyts_results)
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
+	_G.ts_hero = tonumber(zyts_results['1041']) + 1
   _G.fighttime = tonumber(zyts_results['99'])
   _G.skiplines = tonumber(zyts_results['100'])
 	_G.difficuty = tonumber(zyts_results['101'])

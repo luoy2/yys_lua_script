@@ -71,7 +71,7 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 		toast ("开始队伍")
 		tap(1547, 1157)
 		if_outof_sushi()
-		local combat_result = custom_mark_combat(mark_case)
+		local combat_result = custom_mark_combat(mark_case, 30000, _G.yh_hero)
 		if _G.if_tupo then
 			sysLog('需要突破')
 			this_if_tupo = current_fight+1 - math.floor((current_fight+1)/tupo_sep)*_G.tupo_sep
@@ -209,7 +209,7 @@ function solo_yh(mark_case)
   tap(627, 810)
   mSleep(1000)
   tap(1540, 990)
-  return custom_mark_combat(mark_case, 120000)
+  return custom_mark_combat(mark_case, 120000, _G.yh_hero)
 end
 
 
@@ -229,7 +229,7 @@ function team_leader(mark_case, member_number)
       toast ("开始队伍")
       tap(1547, 1157)
 			if_outof_sushi()
-      combat_result = custom_mark_combat(mark_case)
+      combat_result = custom_mark_combat(mark_case, 30000, _G.yh_hero)
       while true do
         accept_quest()
         invite_color_1, y_2 = findColorInRegionFuzzy(0xdf6851, 95, 897, 876, 937, 897)
@@ -251,7 +251,7 @@ function team_leader(mark_case, member_number)
 			my_toast(id, "开始队伍")
 			tap(1547, 1157)
 			if_outof_sushi()
-			custom_mark_combat(mark_case)
+			custom_mark_combat(mark_case, 30000, _G.yh_hero)
 			sleepRandomLag(1000)
 			while true do
 				accept_quest()
@@ -288,7 +288,7 @@ function accept_invite(mark_case)
 		if_outof_sushi()
 		my_toast(id,"接受邀请")
 		sleepRandomLag(3000)
-		return custom_mark_combat(mark_case)
+		return custom_mark_combat(mark_case, 30000, _G.yh_hero)
 	else
 		sleepRandomLag(2000)
 		my_toast(id,'等待邀请')
@@ -300,10 +300,14 @@ end
     
     
     -------------------------------------------yh标记设置--------------------------------------
-function custom_mark_combat(mark_array, round_limit)
+function custom_mark_combat(mark_array, round_limit, combat_hero)
+	local combat_hero = combat_hero or 0
 	local round_limit = round_limit or 30000
 	sysLog(round_limit)
 	accept_quest()
+	wait_for_state(准备)
+	sysLog('换'..combat_hero)
+	if_change_hero(combat_hero)
 	ready()
 	mSleep(1000)
 	round = 1
@@ -374,6 +378,8 @@ function main_yh(yh_ret, yh_results)
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
+	_G.yh_hero = tonumber(yh_results['400']) + 1
+	sysLog(_G.yh_hero)
 	--------------------------------队长2人---------------------------------
 	mark_1 = tonumber(yh_results['201']) + 2
 	mark_2 = tonumber(yh_results['202']) + 2
@@ -477,7 +483,7 @@ function yeyuanhuo(times, difficulty)
 	mSleep(500)
 	tap(1527, 982)
 	mSleep(2000)
-	results = custom_mark_combat({2,2,3}, 600000)
+	results = custom_mark_combat({2,2,3}, 600000, _G.yyh_hero)
 	if results == 'win' then
 		times = times -1
 	end
@@ -490,6 +496,7 @@ function main_yeyuanhuo(yyh_ret, yyh_results)
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
+	_G.yyh_hero = tonumber(yyh_results['200'])+1
 	local times = tonumber(yyh_results['100'])
 	local difficulty = tonumber(yyh_results['101'])+1
 	yeyuanhuo(times, difficulty)
