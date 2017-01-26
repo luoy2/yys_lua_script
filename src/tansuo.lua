@@ -243,7 +243,7 @@ end
 
 
 function if_change_hero(target_hero_num)
-	if target_hero_num == 0 then
+	if target_hero_num == 0 or 5 then
 		do return end
 	elseif target_hero_num == 1 then
 		target_hero = 晴明
@@ -529,125 +529,6 @@ end
 
 
 
-function tansuo(fight_count, tupo_sep, if_extra)
-  --sysLog(_G.liaotupo_t)
-  
-  if _G.if_liaotupo then
-    _G.time_pass = mTime() - _G.liaotupo_t
-    sysLog('已过去时间'.._G.time_pass)
-    sysLog('突破保底'..tonumber(tupo_results['200']))
-    main_liaotupo('combine', tonumber(tupo_results['200']))
-  end
-  
-  my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
-  sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
-  if fight_count >= _G.fighttime then
-    sysLog('探索任务完成')
-    do return end
-  end
-  
-  enter_tansuo()
-  
-  tansuo_to_dungeon(target_chapter)
-  --进入副本
-  --Initialize chapter
-  wait_for_state(副本里面)
-  sysLog('检测锁定')
-  my_toast(id, '检测是否锁定出战式神')
-  local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
-  if lockss_x > -1 then
-    sysLog('解锁')
-    tap(lockss_x, lockss_y)
-  end
-  mSleep(500)
-  my_toast(id, '准备开始刷经验怪')
-  mSleep(1000)										-- waiting for
-  search_for_exp(fight_count)
-  for find_time = 1, 4, 1 do
-    my_toast(id, '找怪第'..find_time..'次')
-    my_swip(1977, 1346, 1400, 1346, 35)  --4次
-    search_for_exp(fight_count)
-  end
-  my_toast(id, '一轮完成, 退出探索')
-  tap(78, 103)													--退出探索
-  mSleep(1500)
-  tap(1244, 842)
-  mSleep(500)
-  enter_tansuo()
-  local this_fight_count = fight_count + 1
-  
-  if _G.if_tupo then
-    if_tupo = this_fight_count - math.floor(this_fight_count/tupo_sep)*tupo_sep
-    sysLog(if_tupo)
-    my_toast(id, '当前探索次数'..this_fight_count..'; 突破间隔'..tupo_sep)
-    if if_tupo == 0 then
-      sysLog('已经刷完'..this_fight_count..'次, 开始结界突破')
-      my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始个人结界突破')
-      main_gerentupo(tupo_results)
-    end
-  end
-  return tansuo(this_fight_count, tupo_sep, if_extra)
-end
-
-
-function main_tansuo(ts_ret, ts_results)
-  if ts_ret==0 then	
-    toast("您选择了取消，停止脚本运行")
-    lua_exit()
-  end
-	_G.tansuo_hero = tonumber(ts_results['1041']) + 1
-  _G.fighttime = tonumber(ts_results['99'])
-  _G.skiplines = tonumber(ts_results['100'])
-  --_G.searchtime = tonumber(ts_results['101'])
-  _G.tupo_sep = tonumber(ts_results['102'])
-  _G.if_liaotupolist = {true, true, true}
-  _G.liaotupo_t = 10
-  _G.time_pass = mTime() - _G.liaotupo_t
-  _G.if_extra = tonumber(ts_results['103'])
-  _G.gouliang_captain = tonumber(ts_results['104'])
-  if tonumber(ts_results['105']) == 0 then
-    if if_extra == 0 then
-      target_chapter = 17
-    else 
-      target_chapter = 171
-    end
-  else
-    target_chapter = 19
-  end
-  _G.if_fight_boss = tonumber(ts_results['106'])
-  
-  if ts_results['98'] == '0' then
-    _G.if_tupo = true
-    _G.if_liaotupo = false
-  elseif ts_results['98'] == '1' then
-    _G.if_tupo = false
-    _G.if_liaotupo = true
-  elseif ts_results['98'] == '0@1' then
-    _G.if_tupo = true
-    _G.if_liaotupo = true
-  else
-    _G.if_tupo = false
-    _G.if_liaotupo = false
-  end
-  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
-  
-  if _G.if_tupo or _G.if_liaotupo then
-    tupo_ret,tupo_results = showUI("tupo.json")
-    if tupo_ret==0 then	
-      toast("突破未设置, 请从探索页面选择取消突破")
-      lua_exit()
-    end
-  end
-  
-  if _G.fighttime == 0 then
-    _G.fighttime = 999999
-  end
-  
-  tansuo(0, _G.tupo_sep, if_extra)
-end
-
-
-
 
 
 
@@ -811,4 +692,147 @@ function main_freets(zyts_ret, zyts_results)
   end
 --main()
 	free_tansuo(0)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------老探索-------------------------------------------
+
+
+
+
+
+function tansuo(fight_count, tupo_sep, if_extra)
+  --sysLog(_G.liaotupo_t)
+  
+  if _G.if_liaotupo then
+    _G.time_pass = mTime() - _G.liaotupo_t
+    sysLog('已过去时间'.._G.time_pass)
+    sysLog('突破保底'..tonumber(tupo_results['200']))
+    main_liaotupo('combine', tonumber(tupo_results['200']))
+  end
+  
+  my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
+  sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
+  if fight_count >= _G.fighttime then
+    sysLog('探索任务完成')
+    do return end
+  end
+  
+  enter_tansuo()
+  
+  tansuo_to_dungeon(target_chapter)
+  --进入副本
+  --Initialize chapter
+  wait_for_state(副本里面)
+  sysLog('检测锁定')
+  my_toast(id, '检测是否锁定出战式神')
+  local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
+  if lockss_x > -1 then
+    sysLog('解锁')
+    tap(lockss_x, lockss_y)
+  end
+  mSleep(500)
+  my_toast(id, '准备开始刷经验怪')
+  mSleep(1000)										-- waiting for
+  search_for_exp(fight_count)
+  for find_time = 1, 4, 1 do
+    my_toast(id, '找怪第'..find_time..'次')
+    my_swip(1977, 1346, 1400, 1346, 35)  --4次
+    search_for_exp(fight_count)
+  end
+  my_toast(id, '一轮完成, 退出探索')
+  tap(78, 103)													--退出探索
+  mSleep(1500)
+  tap(1244, 842)
+  mSleep(500)
+  enter_tansuo()
+  local this_fight_count = fight_count + 1
+  
+  if _G.if_tupo then
+    if_tupo = this_fight_count - math.floor(this_fight_count/tupo_sep)*tupo_sep
+    sysLog(if_tupo)
+    my_toast(id, '当前探索次数'..this_fight_count..'; 突破间隔'..tupo_sep)
+    if if_tupo == 0 then
+      sysLog('已经刷完'..this_fight_count..'次, 开始结界突破')
+      my_toast(id, '已经刷完'..this_fight_count..'次副本, 现在开始个人结界突破')
+      main_gerentupo(tupo_results)
+    end
+  end
+  return tansuo(this_fight_count, tupo_sep, if_extra)
+end
+
+
+
+
+
+
+function main_tansuo(ts_ret, ts_results)
+  if ts_ret==0 then	
+    toast("您选择了取消，停止脚本运行")
+    lua_exit()
+  end
+	_G.tansuo_hero = tonumber(ts_results['1041']) + 1
+  _G.fighttime = tonumber(ts_results['99'])
+  _G.skiplines = tonumber(ts_results['100'])
+  --_G.searchtime = tonumber(ts_results['101'])
+  _G.tupo_sep = tonumber(ts_results['102'])
+  _G.if_liaotupolist = {true, true, true}
+  _G.liaotupo_t = 10
+  _G.time_pass = mTime() - _G.liaotupo_t
+  _G.if_extra = tonumber(ts_results['103'])
+  _G.gouliang_captain = tonumber(ts_results['104'])
+  if tonumber(ts_results['105']) == 0 then
+    if if_extra == 0 then
+      target_chapter = 17
+    else 
+      target_chapter = 171
+    end
+  else
+    target_chapter = 19
+  end
+  _G.if_fight_boss = tonumber(ts_results['106'])
+  
+  if ts_results['98'] == '0' then
+    _G.if_tupo = true
+    _G.if_liaotupo = false
+  elseif ts_results['98'] == '1' then
+    _G.if_tupo = false
+    _G.if_liaotupo = true
+  elseif ts_results['98'] == '0@1' then
+    _G.if_tupo = true
+    _G.if_liaotupo = true
+  else
+    _G.if_tupo = false
+    _G.if_liaotupo = false
+  end
+  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
+  
+  if _G.if_tupo or _G.if_liaotupo then
+    tupo_ret,tupo_results = showUI("tupo.json")
+    if tupo_ret==0 then	
+      toast("突破未设置, 请从探索页面选择取消突破")
+      lua_exit()
+    end
+  end
+  
+  if _G.fighttime == 0 then
+    _G.fighttime = 999999
+  end
+  
+  tansuo(0, _G.tupo_sep, if_extra)
 end

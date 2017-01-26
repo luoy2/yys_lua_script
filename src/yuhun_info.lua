@@ -288,7 +288,7 @@ function accept_invite(mark_case)
 		if_outof_sushi()
 		my_toast(id,"接受邀请")
 		sleepRandomLag(3000)
-		return custom_mark_combat(mark_case, 30000, _G.yh_hero)
+		return custom_mark_combat(mark_case, 30000)
 	else
 		sleepRandomLag(2000)
 		my_toast(id,'等待邀请')
