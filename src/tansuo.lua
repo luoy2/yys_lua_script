@@ -243,7 +243,8 @@ end
 
 
 function if_change_hero(target_hero_num)
-	if target_hero_num == 0 or 5 then
+	sysLog('换'..target_hero_num..'号阴阳师')
+	if target_hero_num == 0 or target_hero_num == 5 then
 		do return end
 	elseif target_hero_num == 1 then
 		target_hero = 晴明
@@ -255,7 +256,7 @@ function if_change_hero(target_hero_num)
 		target_hero = 比丘尼
 	end
 	my_toast(id, '检测是否更换阴阳师')
-	sysLog(target_hero_num)
+	sysLog('检测是否更换阴阳师')
 	local hero_x, hero_y = myFindColor(target_hero)
 	if hero_x > -1 then
 	else
@@ -523,12 +524,61 @@ function pick_loot()
   else
     my_toast(id, '未找到小纸人...')
     wait_for_state(探索地图)
+		open_treasury_box()
   end
 end
 
 
 
-
+function open_treasury_box()
+	local treasury_box_x, treasury_box_y = myFindColor(地图宝箱)
+	if treasury_box_x > -1 then
+		tap(treasury_box_x, treasury_box_y)
+		local bool_val = true
+		while bool_val do
+			accept_quest()
+			local x, y = findColorInRegionFuzzy(0x85100f, 85, 1015, 627, 1020, 632)
+			if x > -1 then
+				my_toast(id,"找到达摩1")
+				tap(1020, 850)
+				mSleep(200)
+				tap(1020, 850)
+				mSleep(1000)
+				x, y = findColorInRegionFuzzy(0x85100f, 85, 1015, 627, 1020, 632)
+				while x > -1 do
+				sysLog('还能找到达摩1')
+				tap(1020, 850)
+				mSleep(200)
+				x, y = findColorInRegionFuzzy(0x85100f, 85, 1015, 627, 1020, 632)
+				end
+				bool_val = false
+			else
+				sleepRandomLag(100)
+			end
+		
+		end
+		bool_val = true
+		while bool_val do
+			accept_quest()
+			local x, y = myFindColor(达摩2)
+			if x > -1 then
+				my_toast(id,"找到达摩2")
+				tap(x, y)
+				sleepRandomLag(1000) 
+				x, y = myFindColor(达摩2)
+			else
+				sleepRandomLag(100)
+			end
+			while x > -1 do
+			sysLog('还能找到达摩2')
+			tap(x, y)
+			sleepRandomLag(1000) 
+			x, y = myFindColor(达摩2)
+			end
+			bool_val = false
+		end
+	end
+end
 
 
 
@@ -621,7 +671,7 @@ function free_tansuo(fight_count)
 		end
 	end
 	
-
+	wait_for_state(副本里面)
   my_toast(id, '一轮完成, 退出探索')
   tap(78, 103)													--退出探索
   wait_for_state(确认退出)
