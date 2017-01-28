@@ -64,7 +64,7 @@ function if_outof_sushi(if_lock)
   if x > -1 then
     my_toast(id, '已经没有体力啦！')
 		if if_lock then
-			my_exist(true)
+			my_exist(_G.exist_method)
 		else
 			tap(1500, 500)
 			wait_for_leaving_state({0xd6c4a1,"3|-6|0x888259,4|-19|0xd6c4a1",96,1820,33,1852,67})
@@ -478,6 +478,28 @@ function wait_for_leaving_state(input_table)
 		wait_x, wait_y = myFindColor(input_table)
 	end
 end
+
+
+function state_transit(state_1, state_2, x, y, if_tap)
+	local if_tap = if_tap or false
+	wait_for_state(state_1)
+	tap(x, y)
+	mSleep(500)
+	if if_tap then
+		local state_1x, state_1y = myFindColor(state_1)
+		while state_1x > -1 do
+			tap(x, y)
+			mSleep(1000)
+			state_1x, state_1y = myFindColor(state_1)
+		end
+	end
+	wait_for_state(state_2)
+end
+
+
+
+
+
 
 function waiting_clock(wait_time)
 	local qTime = mTime()

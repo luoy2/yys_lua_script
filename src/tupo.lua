@@ -342,7 +342,6 @@ function main_liaotupo(mode, base_metal)
 			start_liaotupo(base_metal)
 		else
 			my_toast(id, '寮突破已经打完')
-			my_exist(true)
 		end
 		_G.time_pass = mTime() - _G.liaotupo_t
 	end

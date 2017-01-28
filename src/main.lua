@@ -42,6 +42,15 @@ function main()
 			my_toast(id, '接受悬赏: 否')
 		end
 		sysLog('接受悬赏状态: '.._G.friend_quest_action)
+		_G.exist_method = results['02']
+		if _G.exist_method == '0' then
+			my_toast(id, '结束锁屏: 是')
+			_G.exist_method = true
+		else
+			my_toast(id, '结束锁屏: 否')
+			_G.exist_method = false
+		end
+		sysLog('结束锁屏状态: '..tostring(_G.exist_method))
 		
     -------------------------------------------个人突破--------------------------------------
     if results['100'] == '0' then	
@@ -92,7 +101,7 @@ function main()
       toast("您什么都没有设置")
       lua_exit()
     end
-    my_exist(true)
+    my_exist(_G.exist_method)
   end
 end
 

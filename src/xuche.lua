@@ -31,11 +31,8 @@ end
 function enter_jiyang()
   enter_main_function()
 	sub_function:case('guild')
-	wait_for_state(结界点击)
-	tap(1549, 1220)
-	wait_for_state(式神育成)									
-	tap(1050, 700)			                     --点开结界
-	wait_for_state(第一灯笼)		
+	state_transit(结界点击, 式神育成, 1549, 1220)
+	state_transit(式神育成, 第一灯笼, 1050, 700)									
 end
 
 
@@ -58,7 +55,8 @@ function jiyang_nextpage(times)
 	end
 	my_toast(id, '此次翻动'..times..'页')
 	for i = 1, times, 1 do
-	my_swip_2(1008, 1354, 1008, 610, 40, 50, 15)
+	--my_swip_2(1008, 1354, 1008, 610, 40, 50, 15)
+	my_swip_2(1009, 1352, 1009, 900, 200, 50, 60)
 	local x, y = findMultiColorInRegionFuzzy(0xcbb59c,"12|0|0xcbb59c,24|0|0xcbb59c,35|2|0xcbb59c,48|2|0xcbb59c,-21|-12|0xcbb59c,18|-12|0xcbb59c,43|-19|0xcbb59c,63|-24|0xcbb59c,79|-22|0xcbb59c", 95, 595, 1223, 690, 1318)
 	--local x, y = findMultiColorInRegionFuzzy(0x716f6d,"0|2|0xe4e4e4,0|5|0x5a5a5a,0|8|0x454545,0|12|0x29221a,-2|43|0x464646,0|49|0x7f7f7f,0|51|0xd7d7d7", 90, 568, 1185, 698, 1344)
 	if x > -1 then
@@ -113,12 +111,12 @@ function check_one_friend()
 	if not if_windmill() then
 		--sysLog("无变化")
 		my_toast(id, '好友没有结界卡(风车没转)')
-		tap(67, 71)
+		state_transit(不动风车, 式神育成, 67, 71)
+		--tap(67, 71)
 	else 
 		my_toast(id, '好友有结界卡(风车在转)')
 		--sysLog("有变化") 
-		tap(1868, 727)
-		wait_for_state(结界卡)
+		state_transit(不动风车, 结界卡, 1868, 727)
 		local red_cross_x, _ = findMultiColorInRegionFuzzy(0x612c32,"0|26|0xe8d4cf,3|54|0x753743", 95, 1849, 264, 1939, 346)
 		while red_cross_x == -1 do
 			mSleep(200)
@@ -134,33 +132,26 @@ function check_one_friend()
 				return found_card()
 			else
 				my_toast(id, '没找到车')
-				wait_for_state(寄养)
-				tap(67, 71)
+				state_transit(好友结界, 式神育成, 67, 71)
 			end
 		elseif _G.card_type == '1' then
 			if taigu_x>-1 then
 				return found_card()
 			else
 				my_toast(id, '没找到车')
-				wait_for_state(寄养)
-				tap(67, 71)
+				state_transit(好友结界, 式神育成, 67, 71)
 			end
 		else
 			if taigu_x> - 1 or douyu_x > -1 then
 				return found_card()
 			else
 				my_toast(id, '没找到车')
-				wait_for_state(寄养)
-				tap(67, 71)
+				state_transit(好友结界, 式神育成, 67, 71)
 			end
 		end
 	end
-	wait_for_leaving_state(好友结界)
-	wait_for_state(式神育成)
-	tap(1043, 750) -- 式神育成中间
-	wait_for_state(第一灯笼)
-	tap(1800, 875)
-	wait_for_state(好友寄养)
+	state_transit(式神育成, 第一灯笼, 1043, 750, true)
+	state_transit(第一灯笼, 好友寄养, 1800, 875)
 	return false
 end
 
@@ -194,7 +185,7 @@ function ss_jiyang()
 			end
 			tap(x, y)
 			mSleep(3000)
-			my_exist(true)
+			my_exist(_G.exist_method)
     else
       sysLog(i..'号位未找到')
     end
@@ -222,29 +213,21 @@ function jiyang_once()
 				if not wait_for_state(好友结界, 10000) then
 					sysLog('10秒没找到, 好友没有结界')
 					tap(1800, 875)														--点击寄存
-					wait_for_state(第一灯笼)
-					tap(1800, 875)														--点击寄存
-					wait_for_state(好友寄养)
+					state_transit(第一灯笼, 好友寄养, 1800, 875)
 				else
 					if check_one_friend() then
-						tap(67, 71)
-						wait_for_leaving_state(好友结界)
+						state_transit(好友结界, 式神育成, 67, 71)
 						end_condition = end_condition + 1
 						sysLog(end_condition)
 						if end_condition == 3 then
 						 my_toast(id, '连续三次没车上, 休息三分钟再找')
-						 wait_for_state(式神育成)
 						 tap(67, 71)
 						 enter_main_function()
 						 waiting_clock(18000)
 						 return jiyang_once()
 						end
-						wait_for_state(式神育成)
-						tap(1043, 750) -- 式神育成中间
-						wait_for_state(第一灯笼)
-						tap(1800, 875)
-						wait_for_state(好友寄养)
-
+						state_transit(式神育成, 第一灯笼, 1043, 750, true)
+						state_transit(第一灯笼, 好友寄养, 1800, 875)
 					else
 						end_condition = 0
 					end
