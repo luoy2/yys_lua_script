@@ -33,7 +33,7 @@ function main()
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   else
-    toast_screensize()
+    --toast_screensize()
     --↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓获取UI配置↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 		_G.friend_quest_action = results['01']
 		if _G.friend_quest_action == '0' then

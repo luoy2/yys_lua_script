@@ -419,9 +419,9 @@ function search_for_exp(fight_count)
     if exp_x > -1 then
       --sysLog('11:'..fight_count)
       my_toast(id, '找到经验怪')
-      sysLog('x:'..exp_x..' y:'..exp_y)
+      --sysLog('x:'..exp_x..' y:'..exp_y)
       result = '找到经验怪'
-      toast(result .. "　time:" .. mTime() - qTime)
+      --toast(result .. "　time:" .. mTime() - qTime)
       accept_quest()
       local combat_x, combat_y = findMultiColorInRegionFuzzy(0xf8f9ff,"18|16|0x343b6b,-19|14|0xe2e4fc,4|40|0x3e2215,-4|-44|0xf1acb6", 90, exp_x-300, exp_y-350, exp_x+300, exp_y-50)
       if combat_x > -1 then 
@@ -458,7 +458,7 @@ function search_for_exp(fight_count)
       --]]
     else
       result = '未找到'
-      toast(result .. " time:" .. mTime() - qTime)
+      --toast(result .. " time:" .. mTime() - qTime)
     end
     count = count + 1
   end
