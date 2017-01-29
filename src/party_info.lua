@@ -212,7 +212,7 @@ function if_monster(input_ss_table)
 			else
 				mSleep(100)
 				sysLog('加入队伍失败')
-				return if_monster(input_ss_table)
+				return if_refresh(input_ss_table)
 			end
 		end
 	end

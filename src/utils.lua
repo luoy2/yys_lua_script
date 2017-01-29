@@ -284,7 +284,7 @@ function check_current_state()
   if main_x > -1 then        
     sysLog('当前处于庭院或者町中。。。')
     my_toast(id, '当前处于庭院或者町中')
-		my_swip_2(1800, 1250, 200, 1250, 0, 0, 100)
+		my_swip_2(1800, 1250, 200, 1250, 0, 30, 50)
 		local machi_x, machi_y = findMultiColorInRegionFuzzy(0xbeb6b3,"3|25|0xb9b5c3,1|40|0x141412,-1|228|0x979793", 95, 1540,460,1550,480)
     if machi_x > -1 then
 			sysLog('当前处于町中。。。')

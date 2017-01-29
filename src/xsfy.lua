@@ -55,8 +55,9 @@ function search_for_fy(fight_times, search_times, skip_lines)
 	sysLog('search_for_fy')
 	local if_fight = false
   local count = 0
+	local search_t = mTime()
   my_toast(id, '寻找封印怪。。。')
-  while count < search_times do
+  while mTime() - search_t <= 2000 do
 		local qTime = mTime()
     accept_quest()
 		keepScreen(true)
@@ -68,8 +69,20 @@ function search_for_fy(fight_times, search_times, skip_lines)
       result = '找到封印怪'
       --toast("s:" .. result .. "time:" .. mTime() - qTime)
 			tap(f_x, f_y)
+			mSleep(1000)
 			if_outof_sushi()
-			mSleep(500)
+			combat_x, combat_y = myFindColor(战斗图标)
+			if combat_x > -1 then
+				my_toast(id, '进入战斗失败')
+				check_current_state()
+				return search_for_fy(fight_times, search_times, skip_lines)
+			end
+			--check_current_state()	
+			if if_start_combat_intime() then
+			else
+				sysLog('战斗未开始, 跳出战斗循环')
+				return search_for_fy(fight_times, search_times, skip_lines)
+			end
 			my_toast(id, '检测狗粮')
 			accept_quest()
 			local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -174,6 +187,7 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 	local fy_order_3 = {tonumber(悬赏封印_results['121']), tonumber(悬赏封印_results['120'])}
 	local fy_order_4 = {tonumber(悬赏封印_results['131']), tonumber(悬赏封印_results['130'])}
 	local fy_order = {fy_order_1, fy_order_2, fy_order_3, fy_order_4}
+	_G.gouliang_captain = tonumber(悬赏封印_results['12'])
 	if fy_order_1[1] ~= 0 or fy_order_2[1] ~= 0  or fy_order_3[1] ~= 0  or fy_order_4[1] ~= 0 then
 		fy_all(fy_order, skip_lines)
 	end

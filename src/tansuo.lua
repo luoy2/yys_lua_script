@@ -429,6 +429,12 @@ function search_for_exp(fight_count)
         tap(combat_x, combat_y)
         mSleep(1000)
         if_outof_sushi()
+				combat_x, combat_y = myFindColor(战斗图标)
+				if combat_x > -1 then
+					my_toast(id, '进入战斗失败')
+					check_current_state()
+					return search_for_exp(fight_count)
+				end
         --check_current_state()	
         if if_start_combat_intime() then
         else
@@ -605,6 +611,12 @@ function search_for_all(fight_count)
 			tap(combat_x, combat_y)
 			mSleep(1000)
 			if_outof_sushi()
+			combat_x, combat_y = myFindColor(战斗图标)
+			if combat_x > -1 then
+				my_toast(id, '进入战斗失败')
+				check_current_state()
+				return search_for_all(fight_count)
+			end
 			if if_start_combat_intime() then
 			else
 				sysLog('战斗未开始, 跳出战斗循环')
