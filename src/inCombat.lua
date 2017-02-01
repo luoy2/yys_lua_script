@@ -113,22 +113,20 @@ function end_combat(tap_situation)
 	accept_quest()
 	--local x_defeat, y_defeat = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
 	--local x_win, y_win = findMultiColorInRegionFuzzy(0x76170f,"-34|39|0x941b11,28|39|0x8e1a11,-2|26|0xcdbeaa,4|129|0xdbcfb8,16|155|0xa78d69,26|181|0x4f0e05,-2|205|0x8d2016", 90, 717, 252, 819, 337)
-	keepScreen(true)
 	local x_win, y_win = myFindColor(战斗胜利)
 	local x_defeat, y_defeat = myFindColor(战斗失败)
-	keepScreen(false)
 	if x_defeat > -1 then
 		--combat_win = false
 		combat_result = 'defeat'
 		sysLog("战斗失败")
 		my_toast(id,"结束战斗")
-		tap(1028, 476)
+		wait_for_leaving_state(战斗失败, {true, 1028, 476})
 		mSleep(2000)
 	elseif x_win > 1 then
 		combat_result = 'win'
 		--combat_win = true
 		sysLog("战斗胜利")
-		tap(1028, 476)
+		wait_for_leaving_state(战斗胜利, {true, 1028, 476})
 		open_damo()
   else
     my_toast(id,"战斗中")

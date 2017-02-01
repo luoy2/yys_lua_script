@@ -271,6 +271,7 @@ function check_current_state()
 	local creat_x = myFindColor(创建队伍)
 	local 好友结界_x, 好友结界_y = myFindColor(好友结界)
 	local 第一灯笼_x, 第一灯笼_y = myFindColor(第一灯笼)
+	local ready_x, ready_y = myFindColor(准备)
 	
 	
 	keepScreen(false)
@@ -310,6 +311,12 @@ function check_current_state()
 			tap(67, 71)
 			wait_for_state(式神育成)
 			tap(67, 71)
+			mSleep(2000)
+			return check_current_state()
+		elseif ready_x > -1 then
+			sysLog('准备界面')
+			my_toast(id, '准备界面')
+			tap(ready_x, ready_y)
 			mSleep(2000)
 			return check_current_state()
 		else
@@ -468,10 +475,14 @@ function wait_for_state(input_table, limit_seconds)
 	return false
 end
 
-function wait_for_leaving_state(input_table)
+function wait_for_leaving_state(input_table, tap_table)
+	local tap_table = tap_table or {false}
 	local wait_x, wait_y = myFindColor(input_table)
 	--sysLog(wait_x)
 	while wait_x > -1 do
+		if tap_table[1] then
+			tap(tap_table[2], tap_table[3])
+		end
 		keepScreen(false)
 		--sysLog(wait_x)
 		mSleep(10)

@@ -360,6 +360,10 @@ function if_accept_invite(combat_result)
 				my_toast(id, '接受邀请')
 				tap(invite_x, invite_y)
 				mSleep(1000)
+				invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+				if invite_x ~= -1 then
+					tap(invite_x, invite_y)
+				end
 				in_party('shiju', {0})
 				combat_result = start_combat(0)
 				_G.fight_times = _G.fight_times + 1
