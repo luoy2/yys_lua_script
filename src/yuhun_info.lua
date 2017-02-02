@@ -37,23 +37,27 @@ function create_party(visible)
 		tap(620, 1010)
 	end
 	mSleep(1000)
-	local lvl_floor = myFindColor(六十底)
-	local lvl_top = myFindColor(六十顶)
-	my_toast(id, '检测等级设置')
-	for i = 1,5,1 do
-		if lvl_floor == -1 then 
-			my_swip(1320, 900, 1320, 0, 50)
+	--魂10检测等级限制
+	if yh_floor == 10 then
+		local lvl_floor = myFindColor(六十底)
+		local lvl_top = myFindColor(六十顶)
+		my_toast(id, '检测等级设置')
+		for i = 1,5,1 do
+			if lvl_floor == -1 then 
+				my_swip(1320, 900, 1320, 0, 50)
+			end
+			if lvl_top == -1 then
+				my_swip(1485, 900, 1485, 0, 50)
+			end
+			mSleep(200)
+			lvl_floor = myFindColor(六十底)
+			lvl_top = myFindColor(六十顶)
+			if lvl_floor > -1 and lvl_top > -1 then
+				break end
 		end
-		if lvl_top == -1 then
-			my_swip(1485, 900, 1485, 0, 50)
-		end
-		mSleep(200)
-		lvl_floor = myFindColor(六十底)
-		lvl_top = myFindColor(六十顶)
-		if lvl_floor > -1 and lvl_top > -1 then
-			break end
+		mSleep(1000)
 	end
-	mSleep(1000)
+	
 	my_toast(id, '创建队伍')
 	tap(creat_x, creat_y)
 	if_outof_sushi()
@@ -126,6 +130,9 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 	end
 
 function create_yuhun(current_fight, fight_count, yuhun_floor, visible, mark_case)
+	if yuhun_floor == 0 then
+		yuhun_floor = math.random(1, 10)
+	end
 	--sysLog('2:'..mark_case[1])
 	if fight_count == 0 then
 		fight_count = 99999
@@ -369,9 +376,108 @@ function first_mark()
 	end
 end
     
+		
+		
+		
+		
+		
+		
+		-------------------------------加入队伍模式---------------------------------------
+function if_accept_invite_yh(mark_case, combat_result, total_fight_times)
+	wait_for_state(组队)
+	if combat_result == 'win' then
+		my_toast(id, '等待15秒内邀请')
+		local limit_seconds = 15000
+		local qTime = mTime()
+		while (mTime() - qTime) <= limit_seconds do
+			mSleep(10)
+			my_toast(id, '等待邀请: '..string.format("%.2d:%.2d", 0, (limit_seconds - mTime() + qTime)/1000))
+			invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+			if invite_x ~= -1 then
+				my_toast(id, '接受邀请')
+				mSleep(1000)
+				invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+				if invite_x ~= -1 then
+					tap(invite_x, invite_y)
+				end
+				in_party('shiju', {0})
+				combat_result = custom_mark_combat(mark_case, 30000)
+				_G.fight_times = _G.fight_times + 1
+				my_toast(id, '战斗次数 '.._G.fight_times..'/'..total_fight_times)
+				if _G.fight_times < total_fight_times then
+					return if_accept_invite_yh(mark_case, combat_result, total_fight_times)
+				else
+				end
+			end
+		end
+		my_toast(id, '邀请超时, 自行加入')
+	else
+		my_toast(id, '战斗失败, 重新加入')
+	end
+end		
+
+
+function refresh_yh()
+	wait_for_state(组队刷新)
+	tap(1200, 1300)
+	wait_for_state(组队刷新)
+	keepScreen(true)
+	local x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
+	keepScreen(false)
+	if x > -1 then
+		join_party:case(1)
+		sleepRandomLag(1000)
+		accept_quest()
+		keepScreen(true)
+		local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		keepScreen(false)
+		if x == -1 then
+			toast("已加入队伍")
+			in_party('shiju', {0})
+			return custom_mark_combat(mark_case, 30000)
+		else
+			wait_for_state(组队刷新)
+			return refresh_yh()
+		end
+	else
+		return refresh_yh()
+	end
+end
+
+
+function yuhun_join_once(yuhun_floor)
+		enter_party()
+		tap(400, 1116)
+		wait_for_state(组队刷新)
+		if yuhun_floor ~= 0 then
+			choose_yuhun_floor(yuhun_floor)
+		end
+		wait_for_state(组队刷新)
+		tap(1462, 639)
+		wait_for_state(组队刷新)
+		return refresh_yh()
+end
+
+
+function yuhun_join()
+	while _G.fight_times < _G.yh_times do
+		sysLog('战斗次数 '.._G.fight_times..'/'.._G.yh_times)
+		my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.yh_times)
+	  local combat_result = yuhun_join_once(_G.yh_floor)
+		_G.fight_times = _G.fight_times + 1
+		if_accept_invite_yh(mark_case, combat_result, _G.yh_times)
+	end
+end
+
+
+
+
+
+
     
     -------------------------------------------御魂汇总--------------------------------------
 function main_yh(yh_ret, yh_results)
+	_G.fight_times = 0
 	if yh_ret==0 then	
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
@@ -382,6 +488,11 @@ function main_yh(yh_ret, yh_results)
 	mark_1 = tonumber(yh_results['201']) + 2
 	mark_2 = tonumber(yh_results['202']) + 2
 	mark_3 = tonumber(yh_results['203']) + 2
+	_G.yh_times = tonumber(yh_results['500'])
+	_G.yh_floor = tonumber(yh_results['501'])
+	if _G.yh_times == 0 then
+		_G.yh_times = 99999999
+	end
 	if mark_2 == 5 then mark_2 = 6 end
 	if mark_3 == 5 then mark_3 = 6 end
 	mark_case = {mark_1, mark_2, mark_3}
@@ -410,7 +521,7 @@ function main_yh(yh_ret, yh_results)
 				lua_exit()
 			end
 		end
-		return create_yuhun(0, 0, 10, 'public', mark_case)
+		return create_yuhun(_G.fight_times, _G.yh_times, _G.yh_floor, 'public', mark_case)
 		--------------------------------等待邀请---------------------------------
 	elseif yh_results["101"] == "3" then
 		toast("开始魂10自动战斗，请等待基友邀请"); 
@@ -418,12 +529,15 @@ function main_yh(yh_ret, yh_results)
 		while true do 
 			accept_invite(mark_case)
 		end
-	elseif yh_results["101"] == "4" then
-		recursive_task()
-	elseif yh_results["101"] == "5" then
-		while true do 
-			solo_yh(mark_case)
-		end
+		elseif yh_results["101"] == "4" then
+		yuhun_join()
+		elseif yh_results["101"] == "5" then
+			recursive_task()
+		elseif yh_results["101"] == "6" then
+			while _G.fight_times < _G.yh_times do
+				solo_yh(mark_case)
+				_G.fight_times = _G.fight_times + 1
+			end
 	else
 		dialog("你tm什么都没设置，玩儿我吧？")
 		lua_exit()

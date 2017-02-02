@@ -19,6 +19,10 @@ function if_mark(tap_situation)
 		local initial_t = mTime()	
 		accept_quest()
 		local x, y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535)
+		if x ~= -1 then
+			my_toast(id, '队友已标记')
+			do return end
+		end
 		local force_skip_t = mTime() - initial_t
 		while x == -1 do
 			sysLog(force_skip_t)
@@ -119,13 +123,14 @@ function end_combat(tap_situation)
 		--combat_win = false
 		combat_result = 'defeat'
 		sysLog("战斗失败")
-		my_toast(id,"结束战斗")
+		my_toast(id,"战斗失败")
 		wait_for_leaving_state(战斗失败, {true, 1028, 476})
 		mSleep(2000)
 	elseif x_win > 1 then
 		combat_result = 'win'
 		--combat_win = true
 		sysLog("战斗胜利")
+		my_toast(id,"战斗胜利")
 		wait_for_leaving_state(战斗胜利, {true, 1028, 476})
 		open_damo()
   else

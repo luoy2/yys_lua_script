@@ -346,7 +346,7 @@ function juexing(juexing_floor)
 		return refresh()
 end
 
-function if_accept_invite(combat_result)
+function if_accept_invite(combat_result, total_fight_times)
 	wait_for_state(组队)
 	if combat_result == 'win' then
 		my_toast(id, '等待15秒内邀请')
@@ -367,9 +367,9 @@ function if_accept_invite(combat_result)
 				in_party('shiju', {0})
 				combat_result = start_combat(0)
 				_G.fight_times = _G.fight_times + 1
-				my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.jx_times)
-				if _G.fight_times < _G.jx_times then
-					return if_accept_invite(combat_result)
+				my_toast(id, '战斗次数 '.._G.fight_times..'/'..total_fight_times)
+				if _G.fight_times < total_fight_times then
+					return if_accept_invite(combat_result, total_fight_times)
 				else
 				end
 			end
@@ -385,7 +385,7 @@ function juexing_all()
 		my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.jx_times)
 	  local combat_result = juexing(_G.jx_floor)
 		_G.fight_times = _G.fight_times + 1
-		if_accept_invite(combat_result)
+		if_accept_invite(combat_result, _G.jx_times)
 	end
 end
 
