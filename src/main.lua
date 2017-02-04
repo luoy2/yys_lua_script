@@ -105,8 +105,5 @@ function main()
   end
 end
 
-
-
 main()
---main()
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png

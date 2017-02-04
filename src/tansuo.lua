@@ -231,13 +231,10 @@ end
 ----------------------------------------------------Step 2: 检测狗粮---------------------------------------------------
 --检测是否是n卡
 function if_ncard()
-  accept_quest()
-  local ncard_x, ncard_y = findMultiColorInRegionFuzzy(0x949597,"1|10|0xb2b1b2,9|25|0xdbd9da", 93, 84, 1235, 133, 1295)
-  if ncard_x == -1 then
-    tap(112, 1273)
-    mSleep(500)
-    tap(125, 922)
-  end
+	local type_table = {[0] = {125, 922}, [1] = {286,958}, [2] = {422, 1089}, [3] = {470,1263}}  
+	tap(112, 1273)
+	mSleep(500)
+	tap(type_table[_G.gouliang_type][1], type_table[_G.gouliang_type][2])
   mSleep(2000)
 end
 
@@ -338,34 +335,55 @@ function skip_ss(lines)
   end
 end
 
+function get_gouliang_star(input_x)
+	keepScreen(true)
+	for i = 5,1,-1 do
+    accept_quest()
+    local x, y = findMultiColorInRegionFuzzy(0x3b332d,"0|-4|0x757474,4|-1|0x767575,0|4|0x7c7b7b", 90, input_x-22+23*i, 1473, input_x+1+23*i, 1502)
+		--sysLog(input_x-22+23*i..',1466,'..input_x+1+23*i..',1485')
+    if x == -1 then
+      star = i+1
+			keepScreen(false)
+      return star
+    end
+  end
+	keepScreen(false)
+	return 8
+end
 
 function change_ss(slot_num)
   sysLog('change_ss')
+	accept_quest()
   keepScreen(true)
   for i = 2, 7, 1 do
-    accept_quest()
     local emty_x, emty_y = findMultiColorInRegionFuzzy(0xf7dfa3,"-1|-1|0xc4a578,-2|-2|0xddb687,-2|3|0xd1ab7e,-2|0|0xa07e59,-1|0|0xd3b684,-5|-5|0xae8c65,-4|6|0xb08a63,-6|-7|0xa68763,-8|-8|0xad8c65",80,gouliang_position[i][1], gouliang_position[i][2], gouliang_position[i][3], gouliang_position[i][4]);
     local full_x, full_y = findMultiColorInRegionFuzzy(0xffca0d,"-8|1|0xfdcc0b,8|-1|0xfbc30e", 95, gouliang_position[i][1], gouliang_position[i][2], gouliang_position[i][3], gouliang_position[i][4])  --满字
     if emty_x > -1  and full_x == -1 then
       accept_quest()
       local watch_x, watch_y = findMultiColorInRegionFuzzy(0xb4dfff,"13|2|0xbae1ff,32|4|0xb0ddff,22|21|0xb6e0ff",95, emty_x+61, emty_y+136, emty_x+139, emty_y+213)
       local in_combat_x, in_combat_y = findMultiColorInRegionFuzzy(0xffe3c0,"1|14|0xffdfbb,26|-1|0xffdab3,31|20|0xffdab3,40|33|0xffdfba",90,emty_x+61, emty_y+136, emty_x+139, emty_y+213)
-      local black_x, black_y = findMultiColorInRegionFuzzy(0xffffff,"35|1|0xedefef,51|0|0xffffff,58|0|0x333130,79|0|0x171615,84|0|0xffffff", 90,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
-      local red_x, red_y = findMultiColorInRegionFuzzy(0xf3efef,"66|-2|0xfdfbfa,35|31|0xfde3ce,-5|40|0x302a2a,81|37|0x363231,49|83|0xfcfaf9,-4|79|0xeb705a,78|82|0xe86555",90,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
-      local blue_x, blue_y  = findMultiColorInRegionFuzzy(0xa5cae4,"1|92|0x8bb9dd,-31|99|0x7dadd6,40|101|0x7bacd5,5|126|0x383230,-28|32|0x723515,35|32|0x773d1f",90,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
-      
+      local black_x, black_y = findMultiColorInRegionFuzzy(0xffffff,"35|1|0xedefef,51|0|0xffffff,58|0|0x333130", 95,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+      local red_x, red_y = findMultiColorInRegionFuzzy(0xf2eeee,"4|-21|0x23191b,19|-38|0xf36052,-13|36|0x3e4141,-1|82|0xe96b58",95,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+      local blue_x, blue_y  = findMultiColorInRegionFuzzy(0xa5cae4,"1|92|0x8bb9dd,-31|99|0x7dadd6,40|101|0x7bacd5",95,emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+      local white_x, white_y = findMultiColorInRegionFuzzy(0x2a2424,"1|-16|0x504543,-26|63|0xf5f5f5,36|71|0xc89f56",95, emty_x-62, emty_y-33, emty_x+121, emty_y+132)
+			
       if watch_x > -1 then
         sysLog('观战gl'..emty_x..','..emty_x..'watch_x:'..watch_x)
       elseif in_combat_x > -1 then
         sysLog('出战gl'..emty_x..','..emty_x..'combat_x:'..in_combat_x)
-      elseif black_x > -1 then
+      elseif black_x > -1 and _G.gouliang_filter[1] then
         sysLog('black'..emty_x..','..emty_x..'combat_x:'..black_x)
-      elseif red_x > -1 then
+      elseif red_x > -1 and _G.gouliang_filter[2] then
         sysLog('red'..emty_x..','..emty_x..'combat_x:'..red_x)
-      elseif blue_x > -1 then
+      elseif blue_x > -1 and _G.gouliang_filter[3] then
         sysLog('blue'..emty_x..','..emty_x..'combat_x:'..red_x)
-      else
+			elseif white_x > -1 and _G.gouliang_filter[0] then
+        sysLog('white'..emty_x..','..emty_x..'combat_x:'..red_x)
+      elseif _G.gouliang_star_filter[get_gouliang_star(emty_x)-2] then
+				sysLog('狗粮星级过滤')
+			else
         sysLog('找到gl'..emty_x..'.'..emty_y)
+				my_toast(id, '找到'..get_gouliang_star(emty_x)..'星狗粮')
         local new_x = emty_x+100
         local new_y = emty_y+100
         sysLog('new_x '..new_x..';new_y '..new_y)
@@ -719,6 +737,7 @@ function main_freets(zyts_ret, zyts_results)
   _G.if_fight_boss = tonumber(zyts_results['106'])
 	_G.search_method = tonumber(zyts_results['107'])
 	_G.if_open_treasury_box = tonumber(zyts_results['108'])
+	_G.gouliang_type = tonumber(zyts_results['999'])
 
 	
 	_G.if_liaotupolist = {true, true, true}
@@ -752,7 +771,27 @@ function main_freets(zyts_ret, zyts_results)
   if _G.fighttime == 0 then
     _G.fighttime = 999999
   end
---main()
+
+-- 达摩过滤--
+	_G.gouliang_filter = {[0] = false, [1] = false, [2] = false, [3] = false}
+	filter_index = str_split(zyts_results['1000'])	
+	if filter_index ~= nil then
+		for k,v in pairs(filter_index) do
+			toast(v)
+			_G.gouliang_filter[v] = true
+		end
+	end
+	
+	-- 狗粮过滤--
+	_G.gouliang_star_filter = {[0] = false, [1] = false, [2] = false, [3] = false, [4] = false}
+	star_filter_index = str_split(zyts_results['1001'])	
+	if star_filter_index ~= nil then
+		for k,v in pairs(star_filter_index) do
+			toast(v)
+			_G.gouliang_star_filter[v] = true
+		end
+	end
+	
 	free_tansuo(0)
 end
 
