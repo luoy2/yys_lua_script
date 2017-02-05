@@ -149,6 +149,173 @@ function 过剧情()
 		mSleep(300)
 	end
 end
+
+
+
+------------------------------------------------------百鬼夜行---------------------------------------------------
+
+function enter_machi()
+
+	local current_state = check_current_state()
+	if current_state == 'machi' then 
+	else 
+		enter_main_function()
+		tap(783, 597)
+		mSleep(1000)
+		return enter_machi()
+	end
+end	
+
+
+function monster_hunt_once()
+	local start_x, start_y = myFindColor(百鬼夜行开始)
+	if start_x > -1 then
+		my_toast(id, '容我选个鬼王')
+		tap(math.random(0,2)*756+275, 971)
+		mSleep(500)
+		tap(start_x, start_y)
+	end
+	wait_for_state(红地毯)
+	my_swip_2(600, 1458, 780, 1458, 50, 40, 30)
+	local end_x, end_y = myFindColor(百鬼结束)
+	repeat
+		buff_table = {概率up, 豆子获取, 减速, 好友概率up}
+		keepScreen(true)
+		for i = 1, 4, 1 do
+			local buff_x, buff_y = myFindColor(buff_table[i])
+			while buff_x > -1 do
+				my_toast(id, '丢个buff先')
+				tap(buff_x-200, buff_y)
+				keepScreen(false)
+				mSleep(100)
+				buff_x, buff_y = myFindColor(buff_table[i])
+			end
+		end
+		keepScreen(false)
+		local target_x, target_y = myFindColor(鬼怪)
+		if target_x > -1 then
+			my_toast(id, '像扔大便一样扔豆子 酸爽!')
+			tap(target_x-200, 945)
+		end
+		end_x, end_y = myFindColor(百鬼结束)
+	until end_x > -1
+	state_transit(百鬼结束, 组队, 7, 926)
+	tap(925, 386)--百鬼夜行
+end
+
+
+function sr_monster_hunt_once()
+	local start_x, start_y = myFindColor(百鬼夜行开始)
+	if start_x > -1 then
+		my_toast(id, '容我选个鬼王')
+		tap(math.random(0,2)*756+275, 971)
+		mSleep(500)
+		tap(start_x, start_y)
+	end
+	wait_for_state(红地毯)
+	my_swip_2(600, 1458, 800, 1458, 50, 40, 30)
+	wait_for_leaving_state(红地毯)
+	local end_x, end_y = myFindColor(百鬼结束)
+	repeat
+		buff_table = {概率up, 豆子获取, 减速, 好友概率up}
+		keepScreen(true)
+		for i = 1, 4, 1 do
+			local buff_x, buff_y = myFindColor(buff_table[i])
+			while buff_x > -1 do
+				my_toast(id, '丢个buff先')
+				tap(buff_x-200, buff_y)
+				mSleep(200)
+				tap(buff_x-200, buff_y)
+				keepScreen(false)
+				mSleep(500)
+				buff_x, buff_y = myFindColor(buff_table[i])
+			end
+		end
+		keepScreen(false)
+		keepScreen(true)
+		for i = 1, 12, 1 do
+			local ss_x, ss_y = myFindColor(百鬼式神[i])
+			while ss_x > -1 do
+				sysLog(i)
+				tap(ss_x-300, ss_y)
+				mSleep(200)
+				tap(ss_x-300, ss_y)
+				keepScreen(false)
+				mSleep(500)
+				ss_x, ss_y = myFindColor(百鬼式神[i])
+			end
+		end
+		keepScreen(false)
+		end_x, end_y = myFindColor(百鬼结束)
+	until end_x > -1
+	state_transit(百鬼结束, 组队, 7, 926)
+	tap(925, 386)--百鬼夜行
+end
+
+
+function monster_hunt_all(count_limit)
+	local current_count = 0
+	local start_x, start_y = myFindColor(百鬼夜行开始)
+	if current_count >= count_limit then
+		my_toast(id, '百鬼完成')
+		do return end
+	end
+	state_transit(百鬼夜行进入界面, 百鬼夜行选择好友, 496, 1038)
+	for friend_page_num = 0, 9, 1 do
+		local x, y = findMultiColorInRegionFuzzy(0xcbb59c,"0|5|0xcbb59c", 98, 654, 552, 663, 565)
+		for friend = 1, 8, 1 do
+			tap(百鬼好友[friend][1], 百鬼好友[friend][2])
+			--
+			my_toast(id, '尝试邀请这个好友')
+			wait_for_state(百鬼夜行进入界面)
+			tap(1531, 1036)
+			mSleep(2000)
+			local start_x, start_y = myFindColor(百鬼夜行进入界面)
+			while start_x == -1 do
+				my_toast(id, '带此好友快乐的丢豆子')
+				monster_hunt_once()
+				current_count = current_count + 1
+				my_toast(id, '百鬼进行次数:　'..current_count..'/'..count_limit)
+				if current_count >= count_limit then
+					my_toast(id, '百鬼完成')
+					do return end
+				end
+				state_transit(百鬼夜行进入界面, 百鬼夜行选择好友, 496, 1038)
+				for curren_page = 0, friend_page_num, 1 do
+					my_swip_2(1002, 1075, 1002, 642, 50, 40, 30)
+					mSleep(1000)
+				end
+				tap(百鬼好友[friend][1], 百鬼好友[friend][2])
+				wait_for_state(百鬼夜行进入界面)
+				tap(1531, 1036)
+				mSleep(2000)
+				start_x, start_y = myFindColor(百鬼夜行进入界面)
+			end
+			my_toast(id, '好友已不能百鬼')
+			state_transit(百鬼夜行进入界面, 百鬼夜行选择好友, 496, 1038)
+		end
+		if x > -1 then
+			my_toast(id, '到底了')
+		else
+			my_swip_2(1002, 1075, 1002, 642, 50, 40, 30)
+			mSleep(1000)
+		end
+	end
+	my_toast(id, '没有好友可以邀请了, 请明日再来')
+end
+
+
+
+function main_baigui()
+	baigui_times = dialogInput("请输入百鬼次数(数字)","20","确认");
+	mSleep(1000);
+	baigui_times = tonumber(baigui_times)
+	my_toast(id,'一共百鬼'..baigui_times..'次')
+	enter_machi()
+	tap(914, 367)
+	wait_for_state(百鬼夜行进入界面)
+	return monster_hunt_all(baigui_times)
+end
 -----------------------------------------------------日常汇总--------------------------------------------------
 
 function sub_richang(richang_results)
@@ -157,14 +324,17 @@ function sub_richang(richang_results)
 		elseif richang_results['100'] == '1' then
 			buy_toilet_paper()
 		elseif richang_results['100'] == '2' then
-			summon()
+			main_baigui()
 		elseif richang_results['100'] == '3' then
-			nearby_monster()
+			summon()
 		elseif richang_results['100'] == '4' then
+			nearby_monster()
+		elseif richang_results['100'] == '5' then
 			过剧情()
 		end
 		mSleep(1000)
 		end
+
 
 function main_richang(richang_ret,richang_results)
 	if richang_ret==0 then	

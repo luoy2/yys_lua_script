@@ -541,7 +541,7 @@ function pick_loot()
   if loot_x > -1 then
     my_toast(id, '找到小纸人...')
     tap(loot_x, loot_y)
-    mSleep(1000)
+    mSleep(1500)
     tap(1635, 1156)
     mSleep(2000)
     return pick_loot()

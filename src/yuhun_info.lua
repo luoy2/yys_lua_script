@@ -314,13 +314,13 @@ function custom_mark_combat(mark_array, round_limit, combat_hero)
 	sysLog('换'..combat_hero)
 	if_change_hero(combat_hero)
 	ready()
-	mSleep(1000)
+	mSleep(1500)
 	round = 1
 	while round <= 2 do
 		if_mark(mark_array[round])
 		if_other_round(round_limit)
 		round = round + 1
-		mSleep(1000)
+		mSleep(1500)
 	end
 	if_mark(mark_array[round])
 	return end_combat(0)
