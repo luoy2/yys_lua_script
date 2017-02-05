@@ -176,6 +176,9 @@ end
 --fy_all(fy_order, 0)
 
 function main_xsfy(悬赏封印_ret,悬赏封印_results)
+	_G.gouliang_type = 0
+	_G.gouliang_star_filter = {[0] = false, [1] = false, [2] = false, [3] = false, [4] = false}
+	_G.gouliang_filter = {[0] = false, [1] = false, [2] = false, [3] = false}
 	if 悬赏封印_ret==0 then	
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()

@@ -147,46 +147,42 @@ function open_damo()
 	local bool_val = true
 	while bool_val do
 		accept_quest()
-		local x, y = findColorInRegionFuzzy(0x85100f, 85, 1015, 627, 1020, 632)
-		if x > -1 then
+		keepScreen(true)
+		local damo_1_x, damo_1_y =  myFindColor(达摩1)
+		local damo_2_x, damo_2_y = myFindColor(达摩2)
+		keepScreen(false)
+		if damo_1_x > -1 then
 			my_toast(id,"找到达摩1")
 			tap(1020, 850)
 			mSleep(200)
 			tap(1020, 850)
 			mSleep(1000)
-			x, y = findColorInRegionFuzzy(0x85100f, 85, 1015, 627, 1020, 632)
-			while x > -1 do
-			sysLog('还能找到达摩1')
-			tap(1020, 850)
-			mSleep(200)
-			x, y = findColorInRegionFuzzy(0x85100f, 85, 1015, 627, 1020, 632)
+			damo_1_x, damo_1_y =  myFindColor(达摩1)
+			while damo_1_x > -1 do
+				sysLog('还能找到达摩1')
+				tap(1020, 850)
+				mSleep(200)
+				damo_1_x, damo_1_y =  myFindColor(达摩1)
 			end
-			bool_val = false
-		else
-			sleepRandomLag(100)
-		end
-	end
-	bool_val = true
-	while bool_val do
-		accept_quest()
-		local x, y = myFindColor(达摩2)
-		if x > -1 then
+			
+		elseif damo_2_x > -1 then
 			my_toast(id,"找到达摩2")
-			tap(x, y)
-			sleepRandomLag(1000) 
-			x, y = myFindColor(达摩2)
+			tap(damo_2_x, damo_2_y)
+			mSleep(1000) 
+			damo_2_x, damo_2_y = myFindColor(达摩2)
+			while damo_2_x > -1 do
+				sysLog('还能找到达摩2')
+				tap(damo_2_x, damo_2_y)
+				mSleep(1000)
+				damo_2_x, damo_2_y = myFindColor(达摩2)
+			end
+			my_toast(id,"结束战斗")
+			bool_val = false
+			
 		else
-			sleepRandomLag(100)
+			mSleep(100)
 		end
-		while x > -1 do
-		sysLog('还能找到达摩2')
-		tap(x, y)
-		sleepRandomLag(1000) 
-		x, y = myFindColor(达摩2)
-		end
-		bool_val = false
 	end
-	my_toast(id,"结束战斗")
 end
 
 -------------------------------------------战斗结果--------------------------------------

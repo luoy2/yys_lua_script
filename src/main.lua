@@ -1,7 +1,7 @@
 --
---init("0", 1)
-setScreenScale(1536,2048)
 init("0", 1)
+setScreenScale(1536,2048)
+--init("0", 1)
 
 
 width,height = getScreenSize()
@@ -23,9 +23,13 @@ pos = require("bblibs/pos")
 dict = createOcrDict("dict.txt") 
 id = createHUD()     --创建一个HUD
 my_toast(id,"欢迎使用大便脚本！")     --显示HUD内容
-
-
-
+init_ret,init_results = showUI("Initial.json")
+if init_ret==0 then	
+	my_toast(id, "您选择了取消，停止脚本运行")
+	lua_exit()
+else
+	init("0", tonumber(init_results['100'])+1)
+end
 
 function main()
   ret,results = showUI("ui.json")

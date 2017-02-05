@@ -555,6 +555,7 @@ end
 
 
 function open_treasury_box()
+	sysLog(_G.if_open_treasury_box)
 	if _G.if_open_treasury_box == 0 then
 		local treasury_box_x, treasury_box_y = myFindColor(地图宝箱)
 		if treasury_box_x > -1 then
