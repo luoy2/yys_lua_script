@@ -179,9 +179,9 @@ function monster_hunt_once()
 	my_swip_2(600, 1458, 780, 1458, 50, 40, 30)
 	local end_x, end_y = myFindColor(百鬼结束)
 	repeat
-		buff_table = {概率up, 豆子获取, 减速, 好友概率up}
+		buff_table = {概率up, 豆子获取, 减速, 好友概率up, 冰冻}
 		keepScreen(true)
-		for i = 1, 4, 1 do
+		for i = 1, 5, 1 do
 			local buff_x, buff_y = myFindColor(buff_table[i])
 			while buff_x > -1 do
 				my_toast(id, '丢个buff先')
@@ -198,62 +198,16 @@ function monster_hunt_once()
 			tap(target_x-200, 945)
 		end
 		end_x, end_y = myFindColor(百鬼结束)
+		mSleep(200)
 	until end_x > -1
 	state_transit(百鬼结束, 组队, 7, 926)
 	tap(925, 386)--百鬼夜行
 end
 
-
-function sr_monster_hunt_once()
-	local start_x, start_y = myFindColor(百鬼夜行开始)
-	if start_x > -1 then
-		my_toast(id, '容我选个鬼王')
-		tap(math.random(0,2)*756+275, 971)
-		mSleep(500)
-		tap(start_x, start_y)
-	end
-	wait_for_state(红地毯)
-	my_swip_2(600, 1458, 800, 1458, 50, 40, 30)
-	wait_for_leaving_state(红地毯)
-	local end_x, end_y = myFindColor(百鬼结束)
-	repeat
-		buff_table = {概率up, 豆子获取, 减速, 好友概率up}
-		keepScreen(true)
-		for i = 1, 4, 1 do
-			local buff_x, buff_y = myFindColor(buff_table[i])
-			while buff_x > -1 do
-				my_toast(id, '丢个buff先')
-				tap(buff_x-200, buff_y)
-				mSleep(200)
-				tap(buff_x-200, buff_y)
-				keepScreen(false)
-				mSleep(500)
-				buff_x, buff_y = myFindColor(buff_table[i])
-			end
-		end
-		keepScreen(false)
-		keepScreen(true)
-		for i = 1, 12, 1 do
-			local ss_x, ss_y = myFindColor(百鬼式神[i])
-			while ss_x > -1 do
-				sysLog(i)
-				tap(ss_x-300, ss_y)
-				mSleep(200)
-				tap(ss_x-300, ss_y)
-				keepScreen(false)
-				mSleep(500)
-				ss_x, ss_y = myFindColor(百鬼式神[i])
-			end
-		end
-		keepScreen(false)
-		end_x, end_y = myFindColor(百鬼结束)
-	until end_x > -1
-	state_transit(百鬼结束, 组队, 7, 926)
-	tap(925, 386)--百鬼夜行
-end
 
 
 function monster_hunt_all(count_limit)
+	sysLog('111')
 	local current_count = 0
 	local start_x, start_y = myFindColor(百鬼夜行开始)
 	if current_count >= count_limit then
@@ -281,9 +235,11 @@ function monster_hunt_all(count_limit)
 					do return end
 				end
 				state_transit(百鬼夜行进入界面, 百鬼夜行选择好友, 496, 1038)
-				for curren_page = 0, friend_page_num, 1 do
-					my_swip_2(1002, 1075, 1002, 642, 50, 40, 30)
-					mSleep(1000)
+				if friend_page_num ~= 0 then
+					for curren_page = 0, friend_page_num, 1 do
+						my_swip_2(1002, 1075, 1002, 642, 50, 40, 30)
+						mSleep(1000)
+					end
 				end
 				tap(百鬼好友[friend][1], 百鬼好友[friend][2])
 				wait_for_state(百鬼夜行进入界面)
