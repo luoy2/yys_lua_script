@@ -1,6 +1,10 @@
 function enter_main_function()
   local current_state = check_current_state()
   if current_state == 1 then
+	elseif curren_state == 'machi' then
+		tap(1550, 572)
+		mSleep(1000)
+		return enter_main_function()
 	elseif current_state == 11 then
   elseif current_state == 21 then
     my_toast(id, '正在战斗中！等待完成战斗进入主界面。。')
@@ -176,12 +180,12 @@ function monster_hunt_once()
 		tap(start_x, start_y)
 	end
 	wait_for_state(红地毯)
-	my_swip_2(600, 1458, 780, 1458, 50, 40, 30)
+	my_swip_2(600, 1458, 750, 1458, 50, 40, 30)
 	local end_x, end_y = myFindColor(百鬼结束)
 	repeat
-		buff_table = {概率up, 豆子获取, 减速, 好友概率up, 冰冻}
+		buff_table = {概率up, 豆子获取, 减速, 好友概率up, 加速, 冰冻}
 		keepScreen(true)
-		for i = 1, 5, 1 do
+		for i = 1, 6, 1 do
 			local buff_x, buff_y = myFindColor(buff_table[i])
 			while buff_x > -1 do
 				my_toast(id, '丢个buff先')
@@ -200,6 +204,7 @@ function monster_hunt_once()
 		end_x, end_y = myFindColor(百鬼结束)
 		mSleep(200)
 	until end_x > -1
+	my_toast(id, '一轮结束')
 	state_transit(百鬼结束, 组队, 7, 926)
 	tap(925, 386)--百鬼夜行
 end
@@ -271,6 +276,19 @@ function main_baigui()
 	tap(914, 367)
 	wait_for_state(百鬼夜行进入界面)
 	return monster_hunt_all(baigui_times)
+end
+
+
+-----------------------------------------------------附近妖怪--------------------------------------------------
+function nearby_monster()
+	while true do
+	enter_party()
+	swip(400, 1250, 400, 600)
+	mSleep(200)
+	tap(416, 1139)
+	my_toast(id, '开始刷附近妖怪')
+	refresh()
+	end
 end
 -----------------------------------------------------日常汇总--------------------------------------------------
 
@@ -345,14 +363,5 @@ function main_afk()
   tansuo(0, _G.tupo_sep)
 end	
 		
-function nearby_monster()
-	while true do
-	enter_party()
-	swip(400, 1250, 400, 600)
-	mSleep(200)
-	tap(416, 1139)
-	my_toast(id, '开始刷附近妖怪')
-	refresh()
-	end
-end
+
 

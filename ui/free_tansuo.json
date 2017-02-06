@@ -13,6 +13,7 @@
          "text" : "自由探索模式",
          "views" : [
 						{
+							
                "type" : "Label",
                "text" : "章节设置",
                "size" : 30,
@@ -71,6 +72,13 @@
 						{
                "id" : "106",
 							"list" : "击杀boss, 不杀boss",
+               "size" : "25",
+               "type" : "RadioGroup",
+							"rect" :"20,500,134,60"
+            },
+						{
+               "id" : "1042",
+							"list" : "不标记, 标记主怪, 标记小怪",
                "size" : "25",
                "type" : "RadioGroup",
 							"rect" :"20,500,134,60"

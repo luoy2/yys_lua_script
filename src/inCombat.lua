@@ -1,5 +1,6 @@
 
 -------------------------------------------标记类型a--------------------------------------
+--[[
 mark_cases = switch {
   [0] = function() end,
   [1] = function() tap(1060, 270) end, --标记主目标
@@ -9,9 +10,27 @@ mark_cases = switch {
 	[4] = function() tap(1580, 535)	end,	--标记右边
 	[5] = function() first_mark()	end, --标记二口女
 	[6] = function() end,　-- 不标记
-	----------yyh---------------
-}
+	----------探索---------------
+	[10] = function() end,
+	[11] = function() tap(1060, 311) end,
+	[12] = function() tap(759, 443) end,
 
+}
+--]]
+mark_cases = switch{
+[0] = function() end,
+[1] = function() tap(1060, 270) end, --标记主目标
+-----yh标记----
+[2] = function() tap(530, 560) end,  --标记左边
+[3] = function() tap(1076, 397) end,  --标记中间(灯，蛇）
+[4] = function() tap(1580, 535)	end,  --标记右边
+[5] = function() first_mark()	end,  --标记二口女
+[6] = function() end,                 --不标记
+----------探索---------------
+[10] = function() end,										
+[11] = function() tap(1060, 311) end,		--标记中间	
+[12] = function() tap(759, 443) end,    --标记左边
+}
 	
 function if_mark(tap_situation)
 	if tap_situation ~= 6 and tap_situation ~= 0 then
@@ -135,7 +154,6 @@ function end_combat(tap_situation)
 		open_damo()
   else
     my_toast(id,"战斗中")
-    if_mark(tap_situation)
     sleepRandomLag(1000)
 		return end_combat(tap_situation)
 	end
@@ -213,6 +231,7 @@ function start_combat(tap_situation, hero_num)
 		sysLog('战斗未开始, 跳出战斗循环')
 		return 'defeat'
 	end
+	if_mark(tap_situation)
   combat_result = end_combat(tap_situation)
 	return combat_result
 end

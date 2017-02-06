@@ -465,7 +465,7 @@ function search_for_exp(fight_count)
 				wait_for_state(准备)
         if_change(slot, tonumber(_G.skiplines))
         --sysLog('12:'..fight_count)
-        start_combat(0)
+        start_combat(_G.mark_case)
         wait_for_state(副本里面)
         --sysLog('13:'..fight_count)
         local boss_bool = if_boss(fight_count)
@@ -511,7 +511,7 @@ function if_boss(fight_count)
         ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
       end
       if_change(slot, _G.skiplines)
-      boss_result = start_combat(0)
+      boss_result = start_combat(_G.mark_case)
       if boss_result == 'win' then
         mSleep(7000)
         sysLog('21:'..fight_count)
@@ -644,7 +644,7 @@ function search_for_all(fight_count)
 			my_toast(id, '检测狗粮')
 			accept_quest()
 			if_change(slot, tonumber(_G.skiplines))
-			start_combat(0)
+			start_combat(_G.mark_case)
 			wait_for_state(副本里面)
 			--sysLog('13:'..fight_count)
 			local boss_bool = if_boss(fight_count)
@@ -792,7 +792,8 @@ function main_freets(zyts_ret, zyts_results)
 			_G.gouliang_star_filter[v] = true
 		end
 	end
-	
+	_G.mark_case = tonumber(zyts_results['1042']) + 10
+	sysLog(_G.mark_case)
 	free_tansuo(0)
 end
 
