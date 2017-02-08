@@ -1,0 +1,82 @@
+{
+    "style": "default", //样式属性。custom为自定义 default为默认。新手可以使用默认
+    "config": "百鬼.dat",
+    "width": 800,
+    "height": 800,   //界面宽高 建议和背景图片尺寸保持一致
+		//"bg": "bg.png",    //这是背景图片（可以不填）
+    "cancelname": "取消",   //这是取消的文字
+    "okname": "开始百鬼夜行", //这是确定的文字
+    "views": [
+        {
+            "type": "Page",
+            "style": "custom",
+            "text": "百鬼夜行设置",
+            "views": [ 
+								{
+										"type": "Label",
+										"text": "请输入百鬼次数:",
+										"size": 25, 
+										"align": "left",
+										"width" : 100,
+										"color": "255,0,0" //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+										//"rect": "55,20,300,80"
+                },
+								{
+										"id" : "001",
+										"size" : "30",
+										"type" : "Edit"
+								},
+								{
+										"type": "Label",
+										"text": "每次撒豆子数量(建议7-10):",
+										"size": 25, 
+										"align": "left",
+										"width" : 100,
+										"color": "255,0,0" //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+										//"rect": "55,20,300,80"
+                },
+								{
+										"id" : "002",
+										"select" : "1",
+										"list" : "0,1,2,3,4,5,6,7,8,9,10",
+										"size" : "30",
+										"type" : "ComboBox"
+								},
+								{
+	                "align" : "left",
+	                "color" : "0,0,0",
+	                "size" : "25",
+	                "text" : "是否检测buff(若丢豆很慢可以考虑取消检测buff)",
+	                "type" : "Label",
+									"color": "255,0,0"
+                },
+								{
+	                  "id" : "003",
+										"list" : "检测buff,不检测buff",
+	                  "select" : "0",
+	                  "size" : "30",
+	                  "type" : "RadioGroup",
+	                  "orientation" : "horizontal"
+								}
+            ]
+        },
+
+			{
+				 "type" : "Page",
+         "style" : "custom",
+         "text" : "百鬼夜行设置说明",
+         "views" : [
+						{
+							"type" : "Label",
+							"text" : "- 选择次数和撒豆数量, 脚本会开始智能百鬼\n\n- 脚本会优先丢飞着的童男童女, 以及智能跟随丢妖怪\n\n- 没有好友邀请后脚本会自动退出",
+							"size" : 30,
+							"align" : "left",
+							"width" : 100,
+							"color" : "255, 0, 0"
+            }
+						]
+					}
+    ]
+}
+
+

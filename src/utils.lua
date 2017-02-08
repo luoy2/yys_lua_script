@@ -493,12 +493,15 @@ end
 
 function state_transit(state_1, state_2, x, y, if_tap)
 	local if_tap = if_tap or false
+	sysLog(tostring(if_tap))
 	wait_for_state(state_1)
 	tap(x, y)
 	mSleep(500)
 	if if_tap then
+		sysLog('need tap to transit state')
 		local state_1x, state_1y = myFindColor(state_1)
 		while state_1x > -1 do
+			sysLog('taping')
 			tap(x, y)
 			mSleep(1000)
 			state_1x, state_1y = myFindColor(state_1)
@@ -508,7 +511,17 @@ function state_transit(state_1, state_2, x, y, if_tap)
 end
 
 
-
+function tap_till_skip(tap_x, tap_y, end_state)
+	local tap_x = tap_x or 780
+	local tap_y = tap_y or 1402
+  local end_state = end_state or 跳过剧情
+  local skip_x, skip_y = myFindColor(end_state)
+  while skip_x == -1 do
+    tap(tap_x, tap_y)
+    mSleep(200)
+    skip_x, skip_y = myFindColor(end_state)
+  end
+end
 
 
 

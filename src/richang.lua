@@ -170,8 +170,16 @@ function enter_machi()
 	end
 end	
 
+function change_mame_num(input)
+	if input < 5 then
+		my_swip_2(615, 1458, 463+(input-1)*40, 1458, 20, 30, 15)
+	elseif input == 5 then
+	else
+		my_swip_2(615, 1458, 615+(input-5)*60, 1458, 20, 30, 15)
+	end
+end
 
-function monster_hunt_once()
+function monster_hunt_once(mame_num)
 	local start_x, start_y = myFindColor(百鬼夜行开始)
 	if start_x > -1 then
 		my_toast(id, '容我选个鬼王')
@@ -180,39 +188,46 @@ function monster_hunt_once()
 		tap(start_x, start_y)
 	end
 	wait_for_state(红地毯)
-	my_swip_2(600, 1458, 750, 1458, 50, 40, 30)
-	local end_x, end_y = myFindColor(百鬼结束)
+	
+	change_mame_num(mame_num)
+
+	local end_x, end_y = myFindColor(百鬼中)
+	local buff_x, buff_y = 0, 0
+	local target_x, target_y = 0, 0
 	repeat
-		buff_table = {概率up, 豆子获取, 减速, 好友概率up, 加速, 冰冻}
-		keepScreen(true)
-		for i = 1, 6, 1 do
-			local buff_x, buff_y = myFindColor(buff_table[i])
-			while buff_x > -1 do
-				my_toast(id, '丢个buff先')
-				tap(buff_x-200, buff_y)
-				keepScreen(false)
-				mSleep(100)
-				buff_x, buff_y = myFindColor(buff_table[i])
+		if _G.if_detect_buff then
+			keepScreen(true)
+			for i,v in ipairs(buff_table) do
+				end_x, end_y = myFindColor(百鬼中)
+				buff_x, buff_y = myFindColor(v)
+				while buff_x > -1 do
+					my_toast(id, '丢个buff先')
+					tap(buff_x-200, buff_y)
+					keepScreen(false)
+					keepScreen(true)
+					buff_x, buff_y = myFindColor(buff_table[i])
+				end
 			end
+			keepScreen(false)
 		end
+		keepScreen(true)
+		target_x, target_y = myFindColor(鬼怪)
+		end_x, end_y = myFindColor(百鬼中)
 		keepScreen(false)
-		local target_x, target_y = myFindColor(鬼怪)
 		if target_x > -1 then
 			my_toast(id, '像扔大便一样扔豆子 酸爽!')
 			tap(target_x-200, 945)
 		end
-		end_x, end_y = myFindColor(百鬼结束)
-		mSleep(200)
-	until end_x > -1
+		end_x, end_y = myFindColor(百鬼中)
+	until end_x == -1
 	my_toast(id, '一轮结束')
-	state_transit(百鬼结束, 组队, 7, 926)
+	tap_till_skip(7, 926, 组队)
 	tap(925, 386)--百鬼夜行
 end
 
 
 
-function monster_hunt_all(count_limit)
-	sysLog('111')
+function monster_hunt_all(count_limit, mame_num)
 	local current_count = 0
 	local start_x, start_y = myFindColor(百鬼夜行开始)
 	if current_count >= count_limit then
@@ -232,7 +247,7 @@ function monster_hunt_all(count_limit)
 			local start_x, start_y = myFindColor(百鬼夜行进入界面)
 			while start_x == -1 do
 				my_toast(id, '带此好友快乐的丢豆子')
-				monster_hunt_once()
+				monster_hunt_once(mame_num)
 				current_count = current_count + 1
 				my_toast(id, '百鬼进行次数:　'..current_count..'/'..count_limit)
 				if current_count >= count_limit then
@@ -268,14 +283,24 @@ end
 
 
 function main_baigui()
-	baigui_times = dialogInput("请输入百鬼次数(数字)","20","确认");
-	mSleep(1000);
-	baigui_times = tonumber(baigui_times)
-	my_toast(id,'一共百鬼'..baigui_times..'次')
-	enter_machi()
-	tap(914, 367)
-	wait_for_state(百鬼夜行进入界面)
-	return monster_hunt_all(baigui_times)
+  baigui_ret,baigui_results = showUI("baigui.json")
+	if baigui_ret==0 then	
+		my_toast(id, "您选择了取消，停止脚本运行")
+		lua_exit()
+	else
+		baigui_times = tonumber(baigui_results['001'])
+		mame_num = tonumber(baigui_results['002'])
+		if tonumber(baigui_results['003']) == 0 then
+			_G.if_detect_buff = true
+		else
+			_G.if_detect_buff = false
+		end
+		my_toast(id,'一共百鬼'..baigui_times..'次, 每轮撒豆'..mame_num..'个')
+		enter_machi()
+		tap(914, 367)
+		wait_for_state(百鬼夜行进入界面)
+		return monster_hunt_all(baigui_times, mame_num)
+	end
 end
 
 
