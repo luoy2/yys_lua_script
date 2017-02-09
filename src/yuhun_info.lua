@@ -377,8 +377,12 @@ function first_mark()
 end
     
 		
-		
-		
+function last_mark()
+	sysLog('last_mark')
+	if_mark(2)
+	wait_for_leaving_state({0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535})
+	if_mark(4)
+end
 		
 		
 		
@@ -473,7 +477,6 @@ end
 
 
 
-
     
     -------------------------------------------御魂汇总--------------------------------------
 function main_yh(yh_ret, yh_results)
@@ -494,7 +497,7 @@ function main_yh(yh_ret, yh_results)
 		_G.yh_times = 99999999
 	end
 	if mark_2 == 5 then mark_2 = 6 end
-	if mark_3 == 5 then mark_3 = 6 end
+	if mark_3 == 5 then mark_3 = 7 end
 	mark_case = {mark_1, mark_2, mark_3}
 	--printTable(mark_case)
 	if yh_results["101"]== "0" then
@@ -529,15 +532,15 @@ function main_yh(yh_ret, yh_results)
 		while true do 
 			accept_invite(mark_case)
 		end
-		elseif yh_results["101"] == "4" then
+	elseif yh_results["101"] == "4" then
 		yuhun_join()
-		elseif yh_results["101"] == "5" then
-			recursive_task()
-		elseif yh_results["101"] == "6" then
-			while _G.fight_times < _G.yh_times do
-				solo_yh(mark_case)
-				_G.fight_times = _G.fight_times + 1
-			end
+	elseif yh_results["101"] == "5" then
+		recursive_task()
+	elseif yh_results["101"] == "6" then
+		while _G.fight_times < _G.yh_times do
+			solo_yh(mark_case)
+			_G.fight_times = _G.fight_times + 1
+		end
 	else
 		dialog("你tm什么都没设置，玩儿我吧？")
 		lua_exit()

@@ -26,6 +26,7 @@ mark_cases = switch{
 [4] = function() tap(1580, 535)	end,  --标记右边
 [5] = function() first_mark()	end,  --标记二口女
 [6] = function() end,                 --不标记
+[7] = function() last_mark() end,			--先左后右
 ----------探索---------------
 [10] = function() end,										
 [11] = function() tap(1060, 311) end,		--标记中间	
@@ -60,7 +61,7 @@ end
 -------------------------------------------开始战斗--------------------------------------
 function begin()
 	accept_quest()
-  x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1457, 1121, 1511, 1128)
+  local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1457, 1121, 1511, 1128)
   if x > -1 then
     tap(1547, 1157)
   end
@@ -82,7 +83,7 @@ end
 --]]
 function if_start_combat()
 	--sysLog('if_start_combat')
-	x, y = findMultiColorInRegionFuzzy(0x3b3233,"18|-4|0xdec198,26|15|0x3b3233,29|-36|0x3b3233", 95, 1770-2, 1278-2, 1770+2, 1278+2)  --已经准备
+	local x, y = findMultiColorInRegionFuzzy(0x3b3233,"18|-4|0xdec198,26|15|0x3b3233,29|-36|0x3b3233", 95, 1770-2, 1278-2, 1770+2, 1278+2)  --已经准备
 	if x > -1 then
 		sleepRandomLag(500)
 		my_toast(id, '等待队友准备中')
