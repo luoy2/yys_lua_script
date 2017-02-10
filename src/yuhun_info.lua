@@ -212,9 +212,12 @@ function solo_yh(mark_case)
   swip(650, 830, 650, 450)
   swip(650, 830, 650, 450)
   tap(627, 810)
-  mSleep(1000)
-  tap(1540, 990)
-  return custom_mark_combat(mark_case, 120000, _G.yh_hero)
+	while _G.fight_times < _G.yh_times do
+		mSleep(1000)
+		tap(1540, 990)
+		custom_mark_combat(mark_case, 120000, _G.yh_hero)
+		_G.fight_times = _G.fight_times + 1
+	end
 end
 
 
@@ -369,7 +372,7 @@ function first_mark()
 		local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
 		while mark_x == -1 do
 			tap(1076, 397)
-			mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 703,7,1772,645)
+			mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
 		end
 		--my_toast(id,'检测到标记')
 		my_toast(id, "已标记中间！")
@@ -378,10 +381,63 @@ end
     
 		
 function last_mark()
+	local initial_t = mTime()
 	sysLog('last_mark')
-	if_mark(2)
-	wait_for_leaving_state({0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535})
-	if_mark(4)
+	local mark_x, mark_y = myFindColor(战斗标记)
+	local force_skip_t = mTime() - initial_t
+	while mark_x == -1 do
+		tap(530, 560)
+		mark_x, mark_y = myFindColor(战斗标记)
+		force_skip_t = mTime() - initial_t
+		if force_skip_t >= 5000 then
+			my_toast(id, '标记超时, 直接下一轮标记')
+			break end
+	end
+	mSleep(1000)
+	
+	
+	my_toast(id, '等待左边死亡')
+	keepScreen(true)
+	local dead_x, dead_y = myFindColor(天狗死亡)
+	local boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+	keepScreen(false)
+	initial_t = mTime()
+	repeat
+		mSleep(200)
+		keepScreen(true)
+		dead_x, dead_y = myFindColor(天狗死亡)
+		boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+		keepScreen(false)
+	until
+		(dead_x > -1 and boss_x > -1) or (mTime() - initial_t >= 5000)
+
+
+			--sysLog('if_mark'..tap_situation)
+	initial_t = mTime()	
+	accept_quest()
+	mark_x, mark_y = myFindColor(战斗标记)
+	if mark_x ~= -1 then
+		my_toast(id, '队友已标记')
+		do return end
+	end
+	force_skip_t = mTime() - initial_t
+	local left_x, left_y = myFindColor({0x342419,"4|-4|0xdddedd,-7|-5|0xfafafa",95,1464,346,1487,369})
+	while mark_x == -1 do
+		sysLog(force_skip_t)
+		if left_x > -1 then 
+			tap(1580, 535)
+		end
+		mark_x, mark_y = myFindColor(战斗标记)
+		left_x, left_y = myFindColor({0x342419,"4|-4|0xdddedd,-7|-5|0xfafafa",95,1464,346,1487,369})
+		force_skip_t = mTime() - initial_t
+		if force_skip_t >= 3000 then
+			my_toast(id, '标记超时, 直接下一轮标记')
+			do return end
+		end
+	end
+	my_toast(id,'为您标记好了')
+	mSleep(1000)
+		
 end
 		
 		
@@ -537,10 +593,7 @@ function main_yh(yh_ret, yh_results)
 	elseif yh_results["101"] == "5" then
 		recursive_task()
 	elseif yh_results["101"] == "6" then
-		while _G.fight_times < _G.yh_times do
-			solo_yh(mark_case)
-			_G.fight_times = _G.fight_times + 1
-		end
+		solo_yh(mark_case)
 	else
 		dialog("你tm什么都没设置，玩儿我吧？")
 		lua_exit()

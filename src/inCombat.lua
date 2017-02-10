@@ -33,12 +33,14 @@ mark_cases = switch{
 [12] = function() tap(759, 443) end,    --标记左边
 }
 	
-function if_mark(tap_situation)
+
+function if_mark(tap_situation, time_limit)
+	local time_limit = time_limit or 10000
 	if tap_situation ~= 6 and tap_situation ~= 0 then
 		--sysLog('if_mark'..tap_situation)
 		local initial_t = mTime()	
 		accept_quest()
-		local x, y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535)
+		local x, y = myFindColor(战斗标记)
 		if x ~= -1 then
 			my_toast(id, '队友已标记')
 			do return end
@@ -47,16 +49,18 @@ function if_mark(tap_situation)
 		while x == -1 do
 			sysLog(force_skip_t)
 			mark_cases:case(tap_situation)
-			x, y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 0, 0, 2047, 1535)
+			x, y = myFindColor(战斗标记)
 			force_skip_t = mTime() - initial_t
-			if force_skip_t >= 10000 then
+			if force_skip_t >= time_limit then
 				my_toast(id, '标记超时, 直接下一轮标记')
-				break end
+				do return end
+			end
 		end
 		my_toast(id,'为您标记好了')
 		mSleep(1000)
 	end
 end
+
 
 -------------------------------------------开始战斗--------------------------------------
 function begin()
