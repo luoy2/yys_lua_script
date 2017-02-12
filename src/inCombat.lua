@@ -87,11 +87,11 @@ end
 --]]
 function if_start_combat()
 	--sysLog('if_start_combat')
-	local x, y = findMultiColorInRegionFuzzy(0x3b3233,"18|-4|0xdec198,26|15|0x3b3233,29|-36|0x3b3233", 95, 1770-2, 1278-2, 1770+2, 1278+2)  --已经准备
+	local x, y = myFindColor(准备完成)  --已经准备
 	if x > -1 then
 		sleepRandomLag(500)
 		my_toast(id, '等待队友准备中')
-		if_start_combat()
+		return if_start_combat()
 	end
 end
 

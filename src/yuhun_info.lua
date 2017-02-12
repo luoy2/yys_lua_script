@@ -339,7 +339,7 @@ function if_other_round(round_limit)
 	--my_toast(id,'检测到回目')
 	while x == -1 do
 		my_toast(id,'等待下一回合的标记')
-		mSleep(100)
+		mSleep(200)
 		x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
 		force_skip_t = mTime() - initial_t
 		--sysLog(force_skip_t)
@@ -354,28 +354,35 @@ end
 function first_mark()
 	sysLog('first_mark')
 	accept_quest()
+	local jue_x, jue_y = myFindColor(觉血条)
 	local blueball_x, blueball_y = findColorInRegionFuzzy(0x9cffee, 95, 475, 518, 593, 545)
-	if blueball_x > -1 then
-		tap(529, 488)
-		accept_quest()
-		local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
-		while mark_x == -1 do
+	if jue_x > -1 then
+		my_toast(id, '检测二口女是否需要被标记')
+		if blueball_x > -1 then
 			tap(529, 488)
-			mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
-		end
-		--my_toast(id,'检测到标记')
-		first_mark()
-		my_toast(id, "已标记二口女")
-	else
-		tap(1076, 397)
-		accept_quest()
-		local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
-		while mark_x == -1 do
+			accept_quest()
+			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
+			while mark_x == -1 do
+				tap(529, 488)
+				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
+			end
+			--my_toast(id,'检测到标记')
+			my_toast(id, "已标记二口女")
+			return first_mark()
+		else
 			tap(1076, 397)
-			mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
+			accept_quest()
+			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
+			while mark_x == -1 do
+				tap(1076, 397)
+				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
+			end
+			--my_toast(id,'检测到标记')
+			my_toast(id, "已标记中间！")
 		end
-		--my_toast(id,'检测到标记')
-		my_toast(id, "已标记中间！")
+	else
+		my_toast(id, '镜头角度有误')
+		mSleep(300)
 	end
 end
     

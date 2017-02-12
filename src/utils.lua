@@ -465,7 +465,7 @@ function wait_for_state(input_table, limit_seconds)
 	local qTime = mTime()
 	local wait_x, wait_y = myFindColor(input_table)
 	while (mTime() - qTime) <= limit_seconds do
-		mSleep(10)
+		mSleep(100)
 		--sysLog(mTime() - qTime)
 		wait_x, wait_y = myFindColor(input_table)
 		if wait_x ~= -1 then
@@ -485,7 +485,7 @@ function wait_for_leaving_state(input_table, tap_table)
 		end
 		keepScreen(false)
 		--sysLog(wait_x)
-		mSleep(10)
+		mSleep(100)
 		wait_x, wait_y = myFindColor(input_table)
 	end
 end
