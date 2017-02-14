@@ -89,7 +89,7 @@ function if_start_combat()
 	--sysLog('if_start_combat')
 	local x, y = myFindColor(准备完成)  --已经准备
 	if x > -1 then
-		sleepRandomLag(500)
+		mSleep(200)
 		my_toast(id, '等待队友准备中')
 		return if_start_combat()
 	end
@@ -122,12 +122,11 @@ function ready()
 	if ready_x > -1 then
     my_toast(id,"您已经准备好了")
     tap(1879, 1285)
-		mSleep(1000)
+		mSleep(200)
 		if_start_combat()
-		sleepRandomLag(200)
   else
     my_toast(id,"准备开始战斗")
-    sleepRandomLag(500)
+    mSleep(200)
     ready()
   end
 end
