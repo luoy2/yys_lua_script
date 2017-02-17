@@ -192,6 +192,7 @@ function ss_jiyang()
   end
   keepScreen(false)
   my_swip_2(1822, 1378, 185, 1378, 50, 40, 15)
+	mSleep(500)
   return ss_jiyang()
 end
 

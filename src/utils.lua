@@ -511,19 +511,18 @@ function state_transit(state_1, state_2, x, y, if_tap)
 end
 
 
-function tap_till_skip(tap_x, tap_y, end_state)
+
+function tap_till_skip(end_state, tap_x, tap_y, lag)
 	local tap_x = tap_x or 780
 	local tap_y = tap_y or 1402
-  local end_state = end_state or 跳过剧情
+	local lag = lag or 300
   local skip_x, skip_y = myFindColor(end_state)
   while skip_x == -1 do
     tap(tap_x, tap_y)
-    mSleep(200)
+    mSleep(lag)
     skip_x, skip_y = myFindColor(end_state)
   end
 end
-
-
 
 function waiting_clock(wait_time)
 	local qTime = mTime()

@@ -179,16 +179,20 @@ function change_mame_num(input)
 	end
 end
 
+function choose_mosnter_king(start_x, start_y)
+	my_toast(id, '容我选个鬼王')
+	tap(math.random(0,2)*756+275, 971)
+	mSleep(500)
+	tap(start_x, start_y)
+	if not wait_for_state(红地毯, 5000) then
+		return choose_mosnter_king(start_x, start_y)
+	end
+end
+
+
 function monster_hunt_once(mame_num)
 	local start_x, start_y = myFindColor(百鬼夜行开始)
-	if start_x > -1 then
-		my_toast(id, '容我选个鬼王')
-		tap(math.random(0,2)*756+275, 971)
-		mSleep(500)
-		tap(start_x, start_y)
-	end
-	wait_for_state(红地毯)
-	
+	choose_mosnter_king(start_x, start_y)
 	change_mame_num(mame_num)
 
 	local end_x, end_y = myFindColor(百鬼中)
@@ -221,7 +225,7 @@ function monster_hunt_once(mame_num)
 		end_x, end_y = myFindColor(百鬼中)
 	until end_x == -1
 	my_toast(id, '一轮结束')
-	tap_till_skip(7, 926, 组队)
+	tap_till_skip(组队, 7, 926)
 	tap(925, 386)--百鬼夜行
 end
 

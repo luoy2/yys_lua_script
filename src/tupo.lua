@@ -195,16 +195,7 @@ function enter_liaotupo()
 	my_toast(id, '进入寮突破')
   local current_state = check_current_state()
 	if current_state == 'tupo' then
-		sleepRandomLag(1000)
-		tap(1978, 742)
-		local liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
-		sysLog(liao_tupo_x)
-		while liao_tupo_x == -1 do
-			sysLog('未进入寮突破')
-			tap(1978, 742)
-			mSleep(1000)
-			liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
-		end
+		tap_till_skip({0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665}, 1978, 724, 500)
 		my_toast(id, '已进入寮突破')
 	elseif current_state == 3 then
 		tap(676, 1457)
@@ -299,12 +290,8 @@ end
 
 function start_liaotupo(base_metal)
 	enter_liaotupo()
-	liao_list = {{478, 463}, {488, 745}, {538, 1100}}
 	for i = 1, 3, 1 do
-		tap(liao_list[i][1], liao_list[i][2])
-		mSleep(1000)
-		tap(liao_list[i][1], liao_list[i][2])
-		mSleep(2000)
+		tap_till_skip(liao_select[i], liao_list[i][1], liao_list[i][2], 1000)
 		one_liaotupo(base_metal, i)
 		mSleep(2000)
 	end
