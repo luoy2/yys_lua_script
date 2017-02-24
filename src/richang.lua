@@ -154,7 +154,24 @@ function 过剧情()
 	end
 end
 
-
+-----------------------------------------------------球赞--------------------------------------------------
+function zan()
+	enter_main_function()
+	state_transit(组队, 聊天发送, 1971, 60, true)
+	tap(314, 1469)
+	mSleep(1000)
+	math.randomseed(mTime())
+	this_joke = jokes[math.random(1, tablelength(jokes))]
+	inputText(this_joke)
+	mSleep(1000)
+	local send_x, send_y = myFindColor(聊天发送)
+	tap(send_x, send_y)
+	mSleep(1000)
+	local send_x, send_y = myFindColor(聊天发送)
+	tap(send_x, send_y)
+	enter_main_function()
+end
+	
 
 ------------------------------------------------------百鬼夜行---------------------------------------------------
 

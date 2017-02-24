@@ -154,6 +154,18 @@ function shiju(time_left)
 end
   
 	------------------------------------------------------妖气封印--------------------------------------------------------
+function random_event()
+	random_num = math.random(1, 100)
+	if random_num <= 10 then
+		my_toast(id, '监测式神召唤')
+		summon()
+	elseif random_num == 100 then
+		my_toast(id, '讲个笑话')
+		zan()
+	end
+end
+	
+	
 function yqfyFindColor(color, position)
 	accept_quest()
 	local x, y = findMultiColorInRegionFuzzy(color[1], color[2], color[3], position[1], position[2], position[3], position[4])
@@ -309,7 +321,40 @@ function main_yqfy(yqfy_ret, yqfy_results)
 		if_shiju = true
 	end
 	
+	_G.if_liaotupolist = {true, true, true}
+	_G.liaotupo_t = 10
+  _G.time_pass = mTime() - _G.liaotupo_t
+	
+	if yqfy_results['01'] == '0' then
+    _G.if_random = true
+    _G.if_liaotupo = false
+  elseif yqfy_results['01'] == '1' then
+    _G.if_random = false
+    _G.if_liaotupo = true
+  elseif yqfy_results['01'] == '0@1' then
+    _G.if_random = true
+    _G.if_liaotupo = true
+  else
+    _G.if_random = false
+    _G.if_liaotupo = false
+  end
+  sysLogLst(tostring(_G.if_random), tostring(_G.if_liaotupo))
+	
+	if _G.if_liaotupo then
+    tupo_ret,tupo_results = showUI("tupo.json")
+    if tupo_ret==0 then	
+      toast("突破未设置, 请从探索页面选择取消突破")
+      lua_exit()
+    end
+  end
+	
 	while current_ss_time < fight_times do
+	  if _G.if_liaotupo then
+			_G.time_pass = mTime() - _G.liaotupo_t
+			my_toast(id, '已过去时间'.._G.time_pass)
+			my_toast(id, '突破保底'..tonumber(tupo_results['200']))
+			main_liaotupo('combine', tonumber(tupo_results['200']))
+		end
 		if if_shiju then
 			local pass_time = mTime() - initial_t
 			local time_left = _G.time_left - pass_time
@@ -318,11 +363,13 @@ function main_yqfy(yqfy_ret, yqfy_results)
 			my_toast(id, '等待'..math.ceil(time_left/1000)..'秒可以打石距')
 			mSleep(1000)
 		end
-		if next(ss_target_table) ~= nil then 
+		if next(ss_target_table) ~= nil then
 			seal_yaoqi(ss_target_table)
 			current_ss_time = current_ss_time + 1
 			sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)
 		end
+		my_toast(id, '进入随机事件')
+		random_event()
 	end
 end
 

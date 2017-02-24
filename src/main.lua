@@ -19,7 +19,7 @@ require "spec"
 require "richang"
 require 'xsfy'
 pos = require("bblibs/pos")
-
+math.randomseed(mTime())
 dict = createOcrDict("dict.txt") 
 id = createHUD()     --创建一个HUD
 my_toast(id,"欢迎使用大便脚本！")     --显示HUD内容
@@ -108,7 +108,9 @@ function main()
     my_exist(_G.exist_method)
   end
 end
-main()
+--main()
+yqfy_ret,yqfy_results = showUI("yqfy.json")
+main_yqfy(yqfy_ret, yqfy_results)
 
 
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png
