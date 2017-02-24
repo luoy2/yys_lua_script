@@ -18,21 +18,27 @@ function party_statue()
 	keepScreen(false)
 	if ifstart_x > -1 and full_color == -1 and full_color_2 == -1 then
 		sysLog('三人满')
+		--my_toast(id, '三人满')
 		return 5
 	elseif ifstart_x > -1 then 
 		sysLog('可以开始队伍')
+		--my_toast(id, '可以开始队伍')
 		return 0
 	elseif leader_wait_x > -1 then
 		sysLog('等待人来')
+		--my_toast(id, '等待人来')
 		return 2
 	elseif refresh_x > -1 then
 		sysLog('可以刷新')
+		--my_toast(id, '可以刷新')
 		return 3
 	elseif ifwait_x > -1 then
 		sysLog('等待队伍开始')
+		--my_toast(id, '等待队伍开始')
 		return 1
 	else
 		sysLog('离开组队界面')
+		my_toast(id, '离开队伍页面')
 		return 4
 	end
 end
@@ -44,7 +50,7 @@ function in_party(case, input_ss_table)
 	sysLog('队伍状态: '..statue)
 	while statue == 1 do
 			mSleep(500)
-			my_toast(id, '等待队伍开始')
+			--my_toast(id, '等待队伍开始')
 			statue = party_statue()
 	end
 	if statue == 2 or statue == 0 then
@@ -66,7 +72,7 @@ function in_party(case, input_ss_table)
 		elseif case == 'yaoqi' then return refresh_yaoqi(input_ss_table)
 		end
 	elseif statue == 4 then
-		mSleep(1000)
+		mSleep(2000)
 	end
 	sysLog('final statu')
 	statue = party_statue()
@@ -81,19 +87,16 @@ function enter_party()
 	sysLog('enter_party')
   local current_state = check_current_state()
   if current_state == 'party' then
-		mSleep(500)
+		my_toast(id, '组队界面')
 		my_swip(411, 547, 647, 1035, 30)
-		mSleep(500)
+		mSleep(200)
 	elseif current_state == 1 or current_state == 'machi' then
-		mSleep(500)
 		sub_function:case('party')
-		mSleep(1000)
 		return enter_party()
   else
     enter_main_function()
-		mSleep(500)
+		wait_for_state(组队)
 		sub_function:case('party')
-		mSleep(1000)
 		return enter_party()
 	end
 end
@@ -108,28 +111,29 @@ function enter_yaoqi()
 end
   
 function refresh()
+	wait_for_state(组队刷新)
 	tap(1200, 1300)
-	sleepRandomLag(500)
-	accept_quest()
-	x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
+	wait_for_state(组队刷新)
+	keepScreen(true)
+	local x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
+	keepScreen(false)
 	if x > -1 then
 		join_party:case(1)
-		sleepRandomLag(500)
-		--x, y = findImageInRegionFuzzy("refresh.png", 50, 1143, 1264, 1297, 1331, 0); 
+		sleepRandomLag(1000)
 		accept_quest()
-		x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		keepScreen(true)
+		local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		keepScreen(false)
 		if x == -1 then
 			toast("已加入队伍")
-			mSleep(1000)
 			in_party('shiju', {0})
-			start_combat(0)
+			return start_combat(0)
 		else
-			sleepRandomLag(200)
-			refresh()
+			wait_for_state(组队刷新)
+			return refresh()
 		end
 	else
-		sleepRandomLag(200)
-		refresh()
+		return refresh()
 	end
 end
 
@@ -150,6 +154,18 @@ function shiju(time_left)
 end
   
 	------------------------------------------------------妖气封印--------------------------------------------------------
+function random_event()
+	random_num = math.random(1, 100)
+	if random_num <= 10 then
+		my_toast(id, '监测式神召唤')
+		summon()
+	elseif random_num == 100 then
+		my_toast(id, '讲个笑话')
+		zan()
+	end
+end
+	
+	
 function yqfyFindColor(color, position)
 	accept_quest()
 	local x, y = findMultiColorInRegionFuzzy(color[1], color[2], color[3], position[1], position[2], position[3], position[4])
@@ -178,7 +194,8 @@ function if_refresh(input_ss_table)
 		sysLog('找到刷新')
 		tap(refresh_x, refresh_y)
 		--sysLog('是否有妖气')
-		mSleep(100)
+		mSleep(_G.refresh_lag)
+		wait_for_state(组队刷新)
 		return if_monster(input_ss_table)
 	else
 		sysLog('未找到刷新')
@@ -207,7 +224,7 @@ function if_monster(input_ss_table)
 			else
 				mSleep(100)
 				sysLog('加入队伍失败')
-				return if_monster(input_ss_table)
+				return if_refresh(input_ss_table)
 			end
 		end
 	end
@@ -282,6 +299,7 @@ function main_yqfy(yqfy_ret, yqfy_results)
 	local fight_times = tonumber(yqfy_results['100'])
 	local ss_index = str_split((yqfy_results['101']))														--ui返回选择的项目index
 	_G.time_left = tonumber(yqfy_results['102'])*60*1000												--用户输入的石距剩余时间
+	_G.refresh_lag = tonumber(yqfy_results['99'])*100
 	local initial_t = mTime()																										--当前时间
 	sysLog(_G.time_left)
 	--初始化战斗次数
@@ -303,7 +321,40 @@ function main_yqfy(yqfy_ret, yqfy_results)
 		if_shiju = true
 	end
 	
+	_G.if_liaotupolist = {true, true, true}
+	_G.liaotupo_t = 10
+  _G.time_pass = mTime() - _G.liaotupo_t
+	
+	if yqfy_results['01'] == '0' then
+    _G.if_random = true
+    _G.if_liaotupo = false
+  elseif yqfy_results['01'] == '1' then
+    _G.if_random = false
+    _G.if_liaotupo = true
+  elseif yqfy_results['01'] == '0@1' then
+    _G.if_random = true
+    _G.if_liaotupo = true
+  else
+    _G.if_random = false
+    _G.if_liaotupo = false
+  end
+  sysLogLst(tostring(_G.if_random), tostring(_G.if_liaotupo))
+	
+	if _G.if_liaotupo then
+    tupo_ret,tupo_results = showUI("tupo.json")
+    if tupo_ret==0 then	
+      toast("突破未设置, 请从探索页面选择取消突破")
+      lua_exit()
+    end
+  end
+	
 	while current_ss_time < fight_times do
+	  if _G.if_liaotupo then
+			_G.time_pass = mTime() - _G.liaotupo_t
+			my_toast(id, '已过去时间'.._G.time_pass)
+			my_toast(id, '突破保底'..tonumber(tupo_results['200']))
+			main_liaotupo('combine', tonumber(tupo_results['200']))
+		end
 		if if_shiju then
 			local pass_time = mTime() - initial_t
 			local time_left = _G.time_left - pass_time
@@ -312,64 +363,92 @@ function main_yqfy(yqfy_ret, yqfy_results)
 			my_toast(id, '等待'..math.ceil(time_left/1000)..'秒可以打石距')
 			mSleep(1000)
 		end
-		if next(ss_target_table) ~= nil then 
+		if next(ss_target_table) ~= nil then
 			seal_yaoqi(ss_target_table)
 			current_ss_time = current_ss_time + 1
 			sysLog('刷怪次数： '..current_ss_time..' 总次数： '..fight_times)
 		end
+		my_toast(id, '进入随机事件')
+		random_event()
 	end
 end
 
 
 
 	------------------------------------------------------觉醒--------------------------------------------------------
-function enter_juexing()
+function juexing(juexing_floor)
+		enter_party()
+		local this_awaken = math.random(1, 4)
+		if _G.jx_type ~= 0 then
+			this_awaken = _G.jx_type
+		end
+		tap(觉醒位置[this_awaken][1], 觉醒位置[this_awaken][2])
+		wait_for_state(组队刷新)
+		if juexing_floor ~= 0 then
+			choose_yuhun_floor(juexing_floor)
+		end
+		wait_for_state(组队刷新)
+		tap(1462, 639)
+		wait_for_state(组队刷新)
+		return refresh()
 end
 
-
-
-
-
-
-
-
-
---[[
-function refresh_yaoqi(input_ss_table)
-	--sysLog('refresh_yaoqi')
-	local refresh_x, refresh_y = myFindColor(组队刷新)
-	if refresh_x > -1 then
-		tap(refresh_x, refresh_y)
-	else
-		enter_yaoqi()
-		sysLog('没找到..refresh_yaoqi')
-		return refresh_yaoqi(input_ss_table)
-	end
-	mSleep(200)
-	accept_quest()
-	for k,v in pairs(input_ss_table) do
-		local slot = find_yaoqi(v)
-		if slot ~= nil then
-			join_party:case(slot)
-			if_outof_sushi()
-			mSleep(200)
-			accept_quest()
-			keepScreen(false)
-			refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
-			--sysLog(refresh_x)
-			if refresh_x == -1 then
-				my_toast(id, "已加入队伍")
-				mSleep(2000)
-				sysLog('函数跳出')
-				do return end
-			else
-				mSleep(100)
-				sysLog('1..refresh_yaoqi(input_ss_table)')
-				return refresh_yaoqi(input_ss_table)
+function if_accept_invite(combat_result, total_fight_times)
+	wait_for_state(组队)
+	if combat_result == 'win' then
+		my_toast(id, '等待15秒内邀请')
+		local limit_seconds = 15000
+		local qTime = mTime()
+		while (mTime() - qTime) <= limit_seconds do
+			mSleep(10)
+			my_toast(id, '等待邀请: '..string.format("%.2d:%.2d", 0, (limit_seconds - mTime() + qTime)/1000))
+			invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+			if invite_x ~= -1 then
+				my_toast(id, '接受邀请')
+				tap(invite_x, invite_y)
+				mSleep(1000)
+				invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+				if invite_x ~= -1 then
+					tap(invite_x, invite_y)
+				end
+				in_party('shiju', {0})
+				combat_result = start_combat(0)
+				_G.fight_times = _G.fight_times + 1
+				my_toast(id, '战斗次数 '.._G.fight_times..'/'..total_fight_times)
+				if _G.fight_times < total_fight_times then
+					return if_accept_invite(combat_result, total_fight_times)
+				else
+				end
 			end
 		end
+		my_toast(id, '邀请超时, 自行加入')
+	else
+		my_toast(id, '战斗失败, 重新加入')
 	end
-	sysLog('2..refresh_yaoqi(input_ss_table)')
-	return refresh_yaoqi(input_ss_table)
 end
---]]
+
+function juexing_all()
+	while _G.fight_times < _G.jx_times do
+		my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.jx_times)
+	  local combat_result = juexing(_G.jx_floor)
+		_G.fight_times = _G.fight_times + 1
+		if_accept_invite(combat_result, _G.jx_times)
+	end
+end
+
+function main_jx(jx_ret,jx_results)
+	if jx_ret==0 then	
+		toast("您选择了取消，停止脚本运行")
+		lua_exit()
+	end
+	_G.jx_times = tonumber(jx_results['100'])
+	_G.jx_type = tonumber(jx_results['101'])
+	_G.jx_floor = tonumber(jx_results['102'])
+	_G.fight_times = 0
+	
+	if _G.jx_times == 0 then
+		_G.jx_times = 99999999
+	end
+	juexing_all()
+
+end

@@ -1,0 +1,25 @@
+{
+	"style" : "default",
+	"config" : "Initial.dat",
+	"width" : 600,
+	"height" : 300,
+	"cancelname" : "取消",
+	"okname" : "确定",
+	"views" : [
+	            {
+               "type" : "Label",
+							 "text" : "home键设置",
+							 "size" : 30,
+               "align" : "left",
+               "color" : "255,0,0", //由于多选框的文字默认为黑色 所以我在这里加了个标签，标签的文字可以自定义颜色
+               "rect" : "80,100,700,530"
+            },
+						{
+               "id" : "100",
+							"list" : "Home键在右, Home键在左",
+               "size" : "25",
+               "type" : "RadioGroup",
+							"rect" : "450,110,300,300"
+            }
+	]
+}

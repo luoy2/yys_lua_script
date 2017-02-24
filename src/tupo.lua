@@ -108,8 +108,7 @@ function tupo(refresh_count, total_avaliable)
       tap(all_enemy[tupo_order[j]][1], all_enemy[tupo_order[j]][2])
       sleepRandomLag(1000)
       tap(all_enemy[tupo_order[j]][1]+187, all_enemy[tupo_order[j]][2]+131)
-      sleepRandomLag(1000)
-      start_combat(0)
+      start_combat(0, _G.tupo_hero)
 			sleepRandomLag(3000)
 			tap(690, 270)
       sleepRandomLag(2000)
@@ -141,7 +140,7 @@ function tupo(refresh_count, total_avaliable)
     microseconds = (minutes*60+seconds)*1000
     my_toast(id, '等待'..minutes..'分'..seconds..'秒...')
     sysLog('need to wait '..minutes..' minutes and '..seconds..' seconds('..microseconds..' microseconds)')
-    mSleep(microseconds + math.random(1000, 3000))
+		waiting_clock(microseconds+ math.random(1000, 3000))
   end
   tap(1700, 1070)  --点击刷新
   sleepRandomLag(1000)
@@ -151,23 +150,24 @@ function tupo(refresh_count, total_avaliable)
 end
 
 function main_gerentupo(tupo_results)
+	_G.tupo_hero = tonumber(tupo_results['11'])+1
 	enter_tupo()
-		accept_quest()
-		local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
-		local tupo_avaliable = 0
-		for k,v in pairs(tupo_avaliable_ocr) do
-			sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
-			tupo_avaliable = tupo_avaliable*10 + tonumber(v.text)
-		end
-		my_toast(id, '挑战卷个数: '..tupo_avaliable)
-		sysLog('挑战卷个数: '..tupo_avaliable)		
-		if tupo_results['100'] == '0' then
-			tupo(3, tupo_avaliable)
-		elseif tupo_results['100'] == '1' then
-			tupo(6, tupo_avaliable)
-		else
-			tupo(9, tupo_avaliable)
-		end
+	accept_quest()
+	local tupo_avaliable_ocr = ocrText(dict, 650,1166,696,1203, {"0x37332e-0x505050"}, 95, 1, 1) -- 表示范围内横向搜索，以table形式返回识别到的所有结果及其坐标
+	local tupo_avaliable = 0
+	for k,v in pairs(tupo_avaliable_ocr) do
+		sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
+		tupo_avaliable = tupo_avaliable*10 + tonumber(v.text)
+	end
+	my_toast(id, '挑战卷个数: '..tupo_avaliable)
+	sysLog('挑战卷个数: '..tupo_avaliable)		
+	if tupo_results['100'] == '0' then
+		tupo(3, tupo_avaliable)
+	elseif tupo_results['100'] == '1' then
+		tupo(6, tupo_avaliable)
+	else
+		tupo(9, tupo_avaliable)
+	end
 end
 
 function main_tupo(tupo_ret,tupo_results)
@@ -175,6 +175,8 @@ function main_tupo(tupo_ret,tupo_results)
     toast("您选择了取消，停止脚本运行")
     lua_exit()
   end
+	_G.tupo_hero = tonumber(tupo_results['11'])+1
+	sysLog(_G.tupo_hero)
 	if tupo_results['10'] == '0' then
 		main_gerentupo(tupo_results)
 	elseif tupo_results['10'] == '1' then
@@ -193,16 +195,7 @@ function enter_liaotupo()
 	my_toast(id, '进入寮突破')
   local current_state = check_current_state()
 	if current_state == 'tupo' then
-		sleepRandomLag(1000)
-		tap(1978, 742)
-		local liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
-		sysLog(liao_tupo_x)
-		while liao_tupo_x == -1 do
-			sysLog('未进入寮突破')
-			tap(1978, 742)
-			mSleep(1000)
-			liao_tupo_x, liao_tupo_y = findMultiColorInRegionFuzzy(0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665)
-		end
+		tap_till_skip({0xf8f2de,"0|5|0x7b471e,0|-5|0x74431a", 95, 1943, 651, 1972, 665}, 1978, 724, 500)
 		my_toast(id, '已进入寮突破')
 	elseif current_state == 3 then
 		tap(676, 1457)
@@ -256,8 +249,7 @@ function one_liaotupo(base_metal, which_liao)
 				tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
 				sleepRandomLag(1000)
 				tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
-				sleepRandomLag(1000)
-				start_combat(0)
+				start_combat(0, _G.tupo_hero)
 				do return end
 			end
 		end
@@ -280,8 +272,7 @@ function one_liaotupo(base_metal, which_liao)
 					tap(liao_enemy[tupo_target][1], liao_enemy[tupo_target][2])
 					sleepRandomLag(1000)
 					tap(liao_enemy[tupo_target][1]+187, liao_enemy[tupo_target][2]+131)
-					sleepRandomLag(1000)
-					start_combat(0)
+					start_combat(0, _G.tupo_hero)
 					do return end
 				end
 			end
@@ -299,12 +290,8 @@ end
 
 function start_liaotupo(base_metal)
 	enter_liaotupo()
-	liao_list = {{478, 463}, {488, 745}, {538, 1100}}
 	for i = 1, 3, 1 do
-		tap(liao_list[i][1], liao_list[i][2])
-		mSleep(1000)
-		tap(liao_list[i][1], liao_list[i][2])
-		mSleep(2000)
+		tap_till_skip(liao_select[i], liao_list[i][1], liao_list[i][2], 1000)
 		one_liaotupo(base_metal, i)
 		mSleep(2000)
 	end
@@ -317,6 +304,7 @@ end
 
 
 function main_liaotupo(mode, base_metal)
+	_G.tupo_hero = tonumber(tupo_results['11'])+1
 	while true do
 		sysLog(mode)
 		sysLog(_G.time_pass)
@@ -328,7 +316,7 @@ function main_liaotupo(mode, base_metal)
 				if _G.if_liaotupo == false then 
 					do return end
 				else
-					mSleep(wait_time)
+					waiting_clock(wait_time)
 				end
 			else
 				do return end
@@ -341,7 +329,6 @@ function main_liaotupo(mode, base_metal)
 			start_liaotupo(base_metal)
 		else
 			my_toast(id, '寮突破已经打完')
-			my_exist(true)
 		end
 		_G.time_pass = mTime() - _G.liaotupo_t
 	end

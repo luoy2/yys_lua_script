@@ -4,7 +4,7 @@ function enter_party_yuhun(yuhun_floor)
 	enter_party()
 	mSleep(500)
 	tap(400, 1130)
-	mSleep(1000)
+	wait_for_state(组队刷新)
 	return choose_yuhun_floor(yuhun_floor)
 end
 
@@ -20,7 +20,7 @@ function choose_yuhun_floor(yuhun_floor)
 		mSleep(500)
 		tap(765, y)
 	end
-	mSleep(500)
+	wait_for_state(组队刷新)
 end
 
 function create_party(visible)
@@ -37,26 +37,31 @@ function create_party(visible)
 		tap(620, 1010)
 	end
 	mSleep(1000)
-	local lvl_floor = myFindColor(六十底)
-	local lvl_top = myFindColor(六十顶)
-	my_toast(id, '检测等级设置')
-	for i = 1,5,1 do
-		if lvl_floor == -1 then 
-			my_swip(1320, 900, 1320, 0, 50)
+	--魂10检测等级限制
+	if yh_floor == 10 then
+		local lvl_floor = myFindColor(六十底)
+		local lvl_top = myFindColor(六十顶)
+		my_toast(id, '检测等级设置')
+		for i = 1,5,1 do
+			if lvl_floor == -1 then 
+				my_swip(1320, 900, 1320, 0, 50)
+			end
+			if lvl_top == -1 then
+				my_swip(1485, 900, 1485, 0, 50)
+			end
+			mSleep(200)
+			lvl_floor = myFindColor(六十底)
+			lvl_top = myFindColor(六十顶)
+			if lvl_floor > -1 and lvl_top > -1 then
+				break end
 		end
-		if lvl_top == -1 then
-			my_swip(1485, 900, 1485, 0, 50)
-		end
-		mSleep(200)
-		lvl_floor = myFindColor(六十底)
-		lvl_top = myFindColor(六十顶)
-		if lvl_floor > -1 and lvl_top > -1 then
-			break end
+		mSleep(1000)
 	end
-	mSleep(1000)
+	
 	my_toast(id, '创建队伍')
 	tap(creat_x, creat_y)
 	if_outof_sushi()
+	wait_for_state(队长等待)
 end
 
 
@@ -70,7 +75,19 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 		toast ("开始队伍")
 		tap(1547, 1157)
 		if_outof_sushi()
-		local combat_result = custom_mark_combat(mark_case)
+		local combat_result = custom_mark_combat(mark_case, 30000, _G.yh_hero)
+		if _G.if_tupo then
+			sysLog('需要突破')
+			this_if_tupo = current_fight+1 - math.floor((current_fight+1)/tupo_sep)*_G.tupo_sep
+			sysLog(this_if_tupo)
+			my_toast(id, '当前御魂次数'..(current_fight+1)..'; 突破间隔'.._G.tupo_sep)
+			if this_if_tupo == 0 then
+				tap(836, 883)
+				sysLog('已经刷完'..(current_fight+1)..'次, 开始结界突破')
+				my_toast(id, '已经刷完'..(current_fight+1)..'次副本, 现在开始个人结界突破')
+				return main_gerentupo(tupo_results)
+			end
+		end
 		sysLog(combat_result)
 		sleepRandomLag(1000)
 		if combat_result == 'win' then
@@ -82,6 +99,7 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 			end
 			my_toast(id,"重新邀请")
 			tap(1184, 877)
+			mSleep(1500)
 			if_outof_sushi()
 			current_party_statue = party_statue()
 			sysLog(current_party_statue)
@@ -112,6 +130,9 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 	end
 
 function create_yuhun(current_fight, fight_count, yuhun_floor, visible, mark_case)
+	if yuhun_floor == 0 then
+		yuhun_floor = math.random(1, 10)
+	end
 	--sysLog('2:'..mark_case[1])
 	if fight_count == 0 then
 		fight_count = 99999
@@ -191,9 +212,12 @@ function solo_yh(mark_case)
   swip(650, 830, 650, 450)
   swip(650, 830, 650, 450)
   tap(627, 810)
-  mSleep(1000)
-  tap(1540, 990)
-  return custom_mark_combat(mark_case)
+	while _G.fight_times < _G.yh_times do
+		mSleep(1000)
+		tap(1540, 990)
+		custom_mark_combat(mark_case, 120000, _G.yh_hero)
+		_G.fight_times = _G.fight_times + 1
+	end
 end
 
 
@@ -213,8 +237,7 @@ function team_leader(mark_case, member_number)
       toast ("开始队伍")
       tap(1547, 1157)
 			if_outof_sushi()
-      combat_result = custom_mark_combat(mark_case)
-      sleepRandomLag(1000)
+      combat_result = custom_mark_combat(mark_case, 30000, _G.yh_hero)
       while true do
         accept_quest()
         invite_color_1, y_2 = findColorInRegionFuzzy(0xdf6851, 95, 897, 876, 937, 897)
@@ -224,10 +247,10 @@ function team_leader(mark_case, member_number)
           tap(1184, 877)
           mSleep(2000)
           break end
-          sleepRandomLag(1000)
+          mSleep(100)
         end
 		else
-			sleepRandomLag(3000)
+			mSleep(100)
 			my_toast(id,'等待队友加入')
 			team_leader(mark_case, member_number)
 		end
@@ -236,7 +259,7 @@ function team_leader(mark_case, member_number)
 			my_toast(id, "开始队伍")
 			tap(1547, 1157)
 			if_outof_sushi()
-			custom_mark_combat(mark_case)
+			custom_mark_combat(mark_case, 30000, _G.yh_hero)
 			sleepRandomLag(1000)
 			while true do
 				accept_quest()
@@ -273,7 +296,7 @@ function accept_invite(mark_case)
 		if_outof_sushi()
 		my_toast(id,"接受邀请")
 		sleepRandomLag(3000)
-		return custom_mark_combat(mark_case)
+		return custom_mark_combat(mark_case, 30000)
 	else
 		sleepRandomLag(2000)
 		my_toast(id,'等待邀请')
@@ -285,36 +308,42 @@ end
     
     
     -------------------------------------------yh标记设置--------------------------------------
-function custom_mark_combat(mark_array)
-	--sysLog('custom_mark_combat')
+function custom_mark_combat(mark_array, round_limit, combat_hero)
+	local combat_hero = combat_hero or 0
+	local round_limit = round_limit or 30000
+	sysLog(round_limit)
 	accept_quest()
+	wait_for_state(准备)
+	sysLog('换'..combat_hero)
+	if_change_hero(combat_hero)
 	ready()
-	mSleep(1000)
+	mSleep(1500)
 	round = 1
 	while round <= 2 do
 		if_mark(mark_array[round])
-		if_other_round()
+		if_other_round(round_limit)
 		round = round + 1
-		mSleep(1000)
+		mSleep(1500)
 	end
 	if_mark(mark_array[round])
 	return end_combat(0)
 end
     
     
-function if_other_round()
-	--sysLog('if_other_round')
+function if_other_round(round_limit)
+	local round_limit = round_limit or 30000
+	sysLog(round_limit)
 	local x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
 	local initial_t = mTime()	
 	local force_skip_t = mTime() - initial_t
 	--my_toast(id,'检测到回目')
 	while x == -1 do
 		my_toast(id,'等待下一回合的标记')
-		mSleep(100)
+		mSleep(200)
 		x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
 		force_skip_t = mTime() - initial_t
 		--sysLog(force_skip_t)
-		if force_skip_t >= 30000 then
+		if force_skip_t >= round_limit then
 			my_toast(id, '回合超时')
 			break end
 	end
@@ -325,44 +354,213 @@ end
 function first_mark()
 	sysLog('first_mark')
 	accept_quest()
+	local jue_x, jue_y = myFindColor(觉血条)
 	local blueball_x, blueball_y = findColorInRegionFuzzy(0x9cffee, 95, 475, 518, 593, 545)
-	if blueball_x > -1 then
-		tap(529, 488)
-		accept_quest()
-		local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
-		while mark_x == -1 do
+	if jue_x > -1 then
+		my_toast(id, '检测二口女是否需要被标记')
+		if blueball_x > -1 then
 			tap(529, 488)
-			mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
-		end
-		--my_toast(id,'检测到标记')
-		first_mark()
-		my_toast(id, "已标记二口女")
-	else
-		tap(1076, 397)
-		accept_quest()
-		local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
-		while mark_x == -1 do
+			accept_quest()
+			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
+			while mark_x == -1 do
+				tap(529, 488)
+				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
+			end
+			--my_toast(id,'检测到标记')
+			my_toast(id, "已标记二口女")
+			return first_mark()
+		else
 			tap(1076, 397)
-			mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 703,7,1772,645)
+			accept_quest()
+			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
+			while mark_x == -1 do
+				tap(1076, 397)
+				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
+			end
+			--my_toast(id,'检测到标记')
+			my_toast(id, "已标记中间！")
 		end
-		--my_toast(id,'检测到标记')
-		my_toast(id, "已标记中间！")
+	else
+		my_toast(id, '镜头角度有误')
+		mSleep(300)
 	end
 end
     
+		
+function last_mark()
+	local initial_t = mTime()
+	sysLog('last_mark')
+	local mark_x, mark_y = myFindColor(战斗标记)
+	local force_skip_t = mTime() - initial_t
+	while mark_x == -1 do
+		tap(530, 560)
+		mark_x, mark_y = myFindColor(战斗标记)
+		force_skip_t = mTime() - initial_t
+		if force_skip_t >= 5000 then
+			my_toast(id, '标记超时, 直接下一轮标记')
+			break end
+	end
+	mSleep(1000)
+	
+	
+	my_toast(id, '等待左边死亡')
+	keepScreen(true)
+	local dead_x, dead_y = myFindColor(天狗死亡)
+	local boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+	keepScreen(false)
+	initial_t = mTime()
+	repeat
+		mSleep(200)
+		keepScreen(true)
+		dead_x, dead_y = myFindColor(天狗死亡)
+		boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+		keepScreen(false)
+	until
+		(dead_x > -1 and boss_x > -1) or (mTime() - initial_t >= 5000)
+
+
+			--sysLog('if_mark'..tap_situation)
+	initial_t = mTime()	
+	accept_quest()
+	mark_x, mark_y = myFindColor(战斗标记)
+	if mark_x ~= -1 then
+		my_toast(id, '队友已标记')
+		do return end
+	end
+	force_skip_t = mTime() - initial_t
+	local left_x, left_y = myFindColor({0x342419,"4|-4|0xdddedd,-7|-5|0xfafafa",95,1464,346,1487,369})
+	while mark_x == -1 do
+		sysLog(force_skip_t)
+		if left_x > -1 then 
+			tap(1580, 535)
+		end
+		mark_x, mark_y = myFindColor(战斗标记)
+		left_x, left_y = myFindColor({0x342419,"4|-4|0xdddedd,-7|-5|0xfafafa",95,1464,346,1487,369})
+		force_skip_t = mTime() - initial_t
+		if force_skip_t >= 3000 then
+			my_toast(id, '标记超时, 直接下一轮标记')
+			do return end
+		end
+	end
+	my_toast(id,'为您标记好了')
+	mSleep(1000)
+		
+end
+		
+		
+		
+		-------------------------------加入队伍模式---------------------------------------
+function if_accept_invite_yh(mark_case, combat_result, total_fight_times)
+	wait_for_state(组队)
+	if combat_result == 'win' then
+		my_toast(id, '等待15秒内邀请')
+		local limit_seconds = 15000
+		local qTime = mTime()
+		while (mTime() - qTime) <= limit_seconds do
+			mSleep(10)
+			my_toast(id, '等待邀请: '..string.format("%.2d:%.2d", 0, (limit_seconds - mTime() + qTime)/1000))
+			invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+			if invite_x ~= -1 then
+				my_toast(id, '接受邀请')
+				mSleep(1000)
+				invite_x, invite_y = findColorInRegionFuzzy(0x52ae5d, 95, 215, 409, 229, 417)
+				if invite_x ~= -1 then
+					tap(invite_x, invite_y)
+				end
+				in_party('shiju', {0})
+				combat_result = custom_mark_combat(mark_case, 30000)
+				_G.fight_times = _G.fight_times + 1
+				my_toast(id, '战斗次数 '.._G.fight_times..'/'..total_fight_times)
+				if _G.fight_times < total_fight_times then
+					return if_accept_invite_yh(mark_case, combat_result, total_fight_times)
+				else
+				end
+			end
+		end
+		my_toast(id, '邀请超时, 自行加入')
+	else
+		my_toast(id, '战斗失败, 重新加入')
+	end
+end		
+
+
+function refresh_yh()
+	wait_for_state(组队刷新)
+	tap(1200, 1300)
+	wait_for_state(组队刷新)
+	keepScreen(true)
+	local x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
+	keepScreen(false)
+	if x > -1 then
+		join_party:case(1)
+		sleepRandomLag(1000)
+		accept_quest()
+		keepScreen(true)
+		local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		keepScreen(false)
+		if x == -1 then
+			toast("已加入队伍")
+			in_party('shiju', {0})
+			return custom_mark_combat(mark_case, 30000)
+		else
+			wait_for_state(组队刷新)
+			return refresh_yh()
+		end
+	else
+		return refresh_yh()
+	end
+end
+
+
+function yuhun_join_once(yuhun_floor)
+		enter_party()
+		tap(400, 1116)
+		wait_for_state(组队刷新)
+		if yuhun_floor ~= 0 then
+			choose_yuhun_floor(yuhun_floor)
+		end
+		wait_for_state(组队刷新)
+		tap(1462, 639)
+		wait_for_state(组队刷新)
+		return refresh_yh()
+end
+
+
+function yuhun_join()
+	while _G.fight_times < _G.yh_times do
+		sysLog('战斗次数 '.._G.fight_times..'/'.._G.yh_times)
+		my_toast(id, '战斗次数 '.._G.fight_times..'/'.._G.yh_times)
+	  local combat_result = yuhun_join_once(_G.yh_floor)
+		_G.fight_times = _G.fight_times + 1
+		if_accept_invite_yh(mark_case, combat_result, _G.yh_times)
+	end
+end
+
+
+
+
+
     
     -------------------------------------------御魂汇总--------------------------------------
 function main_yh(yh_ret, yh_results)
+	_G.fight_times = 0
 	if yh_ret==0 then	
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
+	_G.yh_hero = tonumber(yh_results['400']) + 1
+	sysLog(_G.yh_hero)
 	--------------------------------队长2人---------------------------------
 	mark_1 = tonumber(yh_results['201']) + 2
 	mark_2 = tonumber(yh_results['202']) + 2
 	mark_3 = tonumber(yh_results['203']) + 2
+	_G.yh_times = tonumber(yh_results['500'])
+	_G.yh_floor = tonumber(yh_results['501'])
+	if _G.yh_times == 0 then
+		_G.yh_times = 99999999
+	end
 	if mark_2 == 5 then mark_2 = 6 end
-	if mark_3 == 5 then mark_3 = 6 end
+	if mark_3 == 5 then mark_3 = 7 end
 	mark_case = {mark_1, mark_2, mark_3}
 	--printTable(mark_case)
 	if yh_results["101"]== "0" then
@@ -380,8 +578,16 @@ function main_yh(yh_ret, yh_results)
 		end
 		--------------------------------加入队伍--------------------------------
 	elseif yh_results['101'] == '2' then	
-		sysLog('1:'..mark_case[1])
-		return create_yuhun(0, 0, 10, 'public', mark_case)
+		if yh_results['300'] == '0' then
+			_G.if_tupo = true
+			_G.tupo_sep = tonumber(yh_results['301'])
+			tupo_ret,tupo_results = showUI("tupo.json")
+			if tupo_ret==0 then	
+				toast("突破设置取消，停止脚本运行")
+				lua_exit()
+			end
+		end
+		return create_yuhun(_G.fight_times, _G.yh_times, _G.yh_floor, 'public', mark_case)
 		--------------------------------等待邀请---------------------------------
 	elseif yh_results["101"] == "3" then
 		toast("开始魂10自动战斗，请等待基友邀请"); 
@@ -390,11 +596,11 @@ function main_yh(yh_ret, yh_results)
 			accept_invite(mark_case)
 		end
 	elseif yh_results["101"] == "4" then
-		recursive_task()
+		yuhun_join()
 	elseif yh_results["101"] == "5" then
-		while true do 
-			solo_yh(mark_case)
-		end
+		recursive_task()
+	elseif yh_results["101"] == "6" then
+		solo_yh(mark_case)
 	else
 		dialog("你tm什么都没设置，玩儿我吧？")
 		lua_exit()
@@ -452,7 +658,7 @@ function yeyuanhuo(times, difficulty)
 	mSleep(500)
 	tap(1527, 982)
 	mSleep(2000)
-	results = custom_mark_combat({2,2,3})
+	results = custom_mark_combat({2,2,3}, 600000, _G.yyh_hero)
 	if results == 'win' then
 		times = times -1
 	end
@@ -465,6 +671,7 @@ function main_yeyuanhuo(yyh_ret, yyh_results)
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
+	_G.yyh_hero = tonumber(yyh_results['200'])+1
 	local times = tonumber(yyh_results['100'])
 	local difficulty = tonumber(yyh_results['101'])+1
 	yeyuanhuo(times, difficulty)

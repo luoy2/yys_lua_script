@@ -38,7 +38,7 @@ function find_xuanshang()
 	keepScreen(true)
 	for i = 1,3,1 do
 		sysLog(i..':')
-		for j = 1, 7, 1 do
+		for j = 1, 8, 1 do
 			local x, y = xsFindColor(f_num[j], xuanshang_t_table[i])
 			sysLog(j-1)
 		end
@@ -55,8 +55,9 @@ function search_for_fy(fight_times, search_times, skip_lines)
 	sysLog('search_for_fy')
 	local if_fight = false
   local count = 0
+	local search_t = mTime()
   my_toast(id, '寻找封印怪。。。')
-  while count < search_times do
+  while mTime() - search_t <= 2000 do
 		local qTime = mTime()
     accept_quest()
 		keepScreen(true)
@@ -68,8 +69,20 @@ function search_for_fy(fight_times, search_times, skip_lines)
       result = '找到封印怪'
       --toast("s:" .. result .. "time:" .. mTime() - qTime)
 			tap(f_x, f_y)
+			mSleep(1000)
 			if_outof_sushi()
-			mSleep(500)
+			combat_x, combat_y = myFindColor(战斗图标)
+			if combat_x > -1 then
+				my_toast(id, '进入战斗失败')
+				check_current_state()
+				return search_for_fy(fight_times, search_times, skip_lines)
+			end
+			--check_current_state()	
+			if if_start_combat_intime() then
+			else
+				sysLog('战斗未开始, 跳出战斗循环')
+				return search_for_fy(fight_times, search_times, skip_lines)
+			end
 			my_toast(id, '检测狗粮')
 			accept_quest()
 			local ready_x, ready_y = findMultiColorInRegionFuzzy(0xfffffa,"5|-39|0xfffff9,27|-34|0xfff3d1,27|-1|0xfffaeb,51|-17|0xfff2d0", 90, 1789, 1274, 1798, 1283)
@@ -92,14 +105,16 @@ function search_for_fy(fight_times, search_times, skip_lines)
 	return if_fight
 end
 
+
 function slow_next_scene()
 	sysLog('next_scene')
   my_swip(1977, 1346, 1700, 1346, 10)
 end
 
+
 function one_dungeon_fengyin(skip_lines)
 	local bool_table = {}
-	for find_time = 1, 8, 1 do
+	for find_time = 1, 9, 1 do
 		slow_next_scene()  --4次
 		table.insert(bool_table, search_for_fy(0, 3, skip_lines))
 	end
@@ -116,33 +131,34 @@ end
 
 
 
-
 function fy_one_monster(monster_chapter, skip_lines, difficuty)
 	enter_tansuo()
-	choose_chapter(monster_chapter)
-	enter_dungeon(difficuty)
-	mSleep(3000)
+	tansuo_to_dungeon(monster_chapter, difficuty)
+	wait_for_state(副本里面)
+  sysLog('检测锁定')
+  my_toast(id, '检测是否锁定出战式神')
+  local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
+  if lockss_x > -1 then
+    sysLog('解锁')
+    tap(lockss_x, lockss_y)
+  end
+  mSleep(500)
 	while one_dungeon_fengyin(skip_lines) do 	
 		enter_tansuo()
-		local currentchapter_x, currentchapter_y = findMultiColorInRegionFuzzy(0xa88341,"0|-6|0x4c3828,0|9|0xd9d0bf", 95, 835, 534, 1173, 859)
-		if currentchapter_x > -1 then
-			sysLog('找到快捷入口')
-			mSleep(1000)
-			tap(1010, 710)
-			mSleep(1000)
-			currentchapter_x, currentchapter_y = findMultiColorInRegionFuzzy(0xa88341,"0|-6|0x4c3828,0|9|0xd9d0bf", 95, 835, 534, 1173, 859)
-			while currentchapter_x > -1 do
-				tap(1010, 710)
-				mSleep(1000)
-				currentchapter_x, currentchapter_y = findMultiColorInRegionFuzzy(0xa88341,"0|-6|0x4c3828,0|9|0xd9d0bf", 95, 835, 534, 1173, 859)
-				end
-		else
-			choose_chapter(monster_chapter)
+		tansuo_to_dungeon(monster_chapter, difficuty)
+		wait_for_state(副本里面)
+		sysLog('检测锁定')
+		my_toast(id, '检测是否锁定出战式神')
+		local lockss_x, lockss_y = findColorInRegionFuzzy(0x4b5ee9, 90, 1571, 1386, 1642, 1460)  --检测是否锁定
+		if lockss_x > -1 then
+			sysLog('解锁')
+			tap(lockss_x, lockss_y)
 		end
-		enter_dungeon(difficuty)
+		mSleep(500)
 	end
 	my_toast(id, '封印一次完成')
 end
+
 
 function fy_all(fy_order, skip_lines)
 	for _, v in pairs(fy_order) do
@@ -160,17 +176,24 @@ end
 --fy_all(fy_order, 0)
 
 function main_xsfy(悬赏封印_ret,悬赏封印_results)
+	_G.gouliang_type = 0
+	_G.gouliang_star_filter = {[0] = false, [1] = false, [2] = false, [3] = false, [4] = false}
+	_G.gouliang_filter = {[0] = false, [1] = false, [2] = false, [3] = false}
 	if 悬赏封印_ret==0 then	
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
+	_G.ts_hero = tonumber(悬赏封印_results['11']) + 1
 	local skip_lines = tonumber(悬赏封印_results['01'])
 	local fy_order_1 = {tonumber(悬赏封印_results['101']), tonumber(悬赏封印_results['100'])}
 	local fy_order_2 = {tonumber(悬赏封印_results['111']), tonumber(悬赏封印_results['110'])}
 	local fy_order_3 = {tonumber(悬赏封印_results['121']), tonumber(悬赏封印_results['120'])}
 	local fy_order_4 = {tonumber(悬赏封印_results['131']), tonumber(悬赏封印_results['130'])}
 	local fy_order = {fy_order_1, fy_order_2, fy_order_3, fy_order_4}
-	fy_all(fy_order, skip_lines)
+	_G.gouliang_captain = tonumber(悬赏封印_results['12'])
+	if fy_order_1[1] ~= 0 or fy_order_2[1] ~= 0  or fy_order_3[1] ~= 0  or fy_order_4[1] ~= 0 then
+		fy_all(fy_order, skip_lines)
+	end
 	if 悬赏封印_results['200'] ~= '0' then
 		fengyin_toast = createHUD()
 		local fy_monster = tostring(mystery_table[tonumber(悬赏封印_results['200'])][1])
@@ -180,7 +203,7 @@ function main_xsfy(悬赏封印_ret,悬赏封印_results)
 		showHUD(fengyin_toast, output_text,30,"0xffff0000","0xffffffff",0,100,180,600,80)
 		mSleep(30*600000)
 	end
-	end
+end
 
 
 
