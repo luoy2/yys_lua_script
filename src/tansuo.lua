@@ -415,8 +415,12 @@ end
 
 
 function next_scene()
-  sysLog('next_scene')
-  swip(1977, 1346, 500, 1346)
+  sysLog('滑动进下一界面')
+	if _G.target_chapter == 11 then
+		my_swip(1977, 1346, 1300, 1346, 35)
+	else
+		my_swip(1977, 1346, 1400, 1346, 35)
+	end
 end
 
 
@@ -693,14 +697,14 @@ function free_tansuo(fight_count)
 	  search_for_all(fight_count)
 		for find_time = 1, 4, 1 do
 			my_toast(id, '找怪第'..find_time..'次')
-			my_swip(1977, 1346, 1400, 1346, 35)  --4次
+			next_scene()  --4次
 			search_for_all(fight_count)
 		end
 	else
 		search_for_exp(fight_count)
 		for find_time = 1, 4, 1 do
 			my_toast(id, '找怪第'..find_time..'次')
-			my_swip(1977, 1346, 1400, 1346, 35)  --4次
+			next_scene()  --4次
 			search_for_exp(fight_count)
 		end
 	end

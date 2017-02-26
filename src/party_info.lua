@@ -156,9 +156,13 @@ end
 	------------------------------------------------------妖气封印--------------------------------------------------------
 function random_event()
 	random_num = math.random(1, 100)
+	sysLog('随机事件:'..random_num)
 	if random_num <= 10 then
 		my_toast(id, '监测式神召唤')
 		summon()
+	elseif random_num <= 20 then
+		local waiting_time = math.random(60000, 120000)
+		waiting_clock(waiting_time)
 	elseif random_num == 100 then
 		my_toast(id, '讲个笑话')
 		zan()

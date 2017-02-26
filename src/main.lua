@@ -108,9 +108,9 @@ function main()
     my_exist(_G.exist_method)
   end
 end
---main()
-yqfy_ret,yqfy_results = showUI("yqfy.json")
-main_yqfy(yqfy_ret, yqfy_results)
+
+main()
+
 
 
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png

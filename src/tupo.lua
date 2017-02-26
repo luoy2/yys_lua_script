@@ -309,7 +309,7 @@ function main_liaotupo(mode, base_metal)
 		sysLog(mode)
 		sysLog(_G.time_pass)
 		if _G.time_pass <= 12*60*1000 then
-			local wait_time = 12*60*1000 - _G.time_pass
+			local wait_time = math.random(12*60*1000, 14*60*1000) - _G.time_pass
 			my_toast(id, '等待'..wait_time/(60*1000)..'分钟')
 			sysLog('等待'..wait_time..'毫秒')
 			if mode == 'pure' then
