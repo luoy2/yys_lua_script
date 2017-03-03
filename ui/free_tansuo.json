@@ -163,7 +163,7 @@
             },
 						{
                "type" : "Label",
-               "text" : "请选择探索间隔是否进行突破(可多选)",
+               "text" : "探索间隔是否进行突破(可多选)",
                "size" : 30,
                "align" : "center",
                "width" : 100,
@@ -172,10 +172,10 @@
             },						
 						{
 								"id" : "98",
-								"list" : "个人突破, 寮突破",
-								"select" : "0@1",
+							"list" : "需要突破, 不需要突破",
+								"select" : "0",
 								"size" : "30",
-								"type" : "CheckBoxGroup",
+								"type" : "RadioGroup",
 							"rect" :"20,500,134,60"
             },
 

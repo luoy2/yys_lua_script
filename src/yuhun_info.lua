@@ -25,16 +25,18 @@ end
 
 function create_party(visible)
 	tap(1600, 1300)
-	local creat_x, creat_y = findMultiColorInRegionFuzzy(0xf3b25e,"-9|-50|0xcbb59c,-686|32|0xdf6851", 95, 1303, 1059, 1505, 1159)
+	local creat_x, creat_y = myFindColor(创建)
 	while creat_x == -1 do
 		sysLog('未找到')
 		mSleep(500)
-		creat_x, creat_y = findMultiColorInRegionFuzzy(0xf3b25e,"-9|-50|0xcbb59c,-686|32|0xdf6851", 95, 1303, 1059, 1505, 1159)
+		creat_x, creat_y = myFindColor(创建)
 	end
 	if visible == 'friend' then
-		tap(860, 1010)
+		tap(768, 1020)
+	elseif visible == 'public' then
+		tap(495, 1023)
 	else
-		tap(620, 1010)
+		tap(1223, 1024)
 	end
 	mSleep(1000)
 	--魂10检测等级限制
@@ -57,11 +59,10 @@ function create_party(visible)
 		end
 		mSleep(1000)
 	end
-	
 	my_toast(id, '创建队伍')
 	tap(creat_x, creat_y)
 	if_outof_sushi()
-	wait_for_state(队长等待)
+	wait_for_state(离开队伍)
 end
 
 
@@ -72,7 +73,7 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 	local current_party_statue = party_statue()
 	--sysLog(current_party_statue)
 	if current_party_statue == 5 then
-		toast ("开始队伍")
+		my_toast(id, "开始队伍")
 		tap(1547, 1157)
 		if_outof_sushi()
 		local combat_result = custom_mark_combat(mark_case, 30000, _G.yh_hero)
@@ -364,10 +365,12 @@ function first_mark()
 			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
 			while mark_x == -1 do
 				tap(529, 488)
+				mSleep(500)
 				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
 			end
 			--my_toast(id,'检测到标记')
 			my_toast(id, "已标记二口女")
+			mSleep(300)
 			return first_mark()
 		else
 			tap(1076, 397)
@@ -375,6 +378,7 @@ function first_mark()
 			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
 			while mark_x == -1 do
 				tap(1076, 397)
+				mSleep(500)
 				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
 			end
 			--my_toast(id,'检测到标记')
@@ -383,6 +387,7 @@ function first_mark()
 	else
 		my_toast(id, '镜头角度有误')
 		mSleep(300)
+		return first_mark()
 	end
 end
     

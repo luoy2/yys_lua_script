@@ -9,12 +9,12 @@ join_party = switch {
 -----------------------------------------------------------------------------------------------------------
 function party_statue()
 	keepScreen(true)
-	local ifstart_x, ifstart_y = findMultiColorInRegionFuzzy(0xf3b25e,"-1079|-3|0xdf6851,-436|33|0xc7bdb4,-129|-13|0x973b2e", 95, 1560,1120,1565,1130)					--开始队伍的颜色
+	local ifstart_x, ifstart_y = myFindColor(可以开始)				--开始队伍的颜色
 	local ifwait_x, if_wait_y = myFindColor(组队等待)
 	local leader_wait_x, leader_wait_y = myFindColor(队长等待)
 	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)
-  local full_color, y_full = findColorInRegionFuzzy(0x7c7977, 95, 1773, 466, 1803, 493)					--三人的右上角
-	local full_color_2, y_full_2 = findColorInRegionFuzzy(0x7c7977, 95, 1225, 468, 1258, 501)			--二人的右上角
+  local full_color, y_full = myFindColor(三人满)							--三人的右上角
+	local full_color_2, y_full_2 = myFindColor(二人满)			
 	keepScreen(false)
 	if ifstart_x > -1 and full_color == -1 and full_color_2 == -1 then
 		sysLog('三人满')

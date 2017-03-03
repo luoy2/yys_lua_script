@@ -1,4 +1,3 @@
-
 -------------------------------------------标记类型a--------------------------------------
 --[[
 mark_cases = switch {
@@ -72,27 +71,10 @@ function begin()
 end
 
 -------------------------------------------准备--------------------------------------
---[[
-function ready()
-  x, y = findColorInRegionFuzzy(0xcba87f, 95, 1793, 1219, 1945, 1296)
-  if x > -1 then
-    my_toast(id,"找到准备")
-    tap(1879, 1285)
-  else
-    my_toast(id,"未找到准备")
-    sleepRandomLag(1000)
-    ready()
-  end
-end
---]]
 function if_start_combat()
-	--sysLog('if_start_combat')
-	local x, y = myFindColor(准备完成)  --已经准备
-	if x > -1 then
-		mSleep(200)
-		my_toast(id, '等待队友准备中')
-		return if_start_combat()
-	end
+	my_toast(id, '等待队友准备中...')
+	mSleep(1000)
+	wait_for_leaving_state(准备还有鼓)
 end
 
 function if_start_combat_intime()

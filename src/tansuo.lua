@@ -668,12 +668,11 @@ end
 function free_tansuo(fight_count)
   if _G.if_liaotupo then
     _G.time_pass = mTime() - _G.liaotupo_t
-    sysLog('已过去时间'.._G.time_pass)
-    sysLog('突破保底'..tonumber(tupo_results['200']))
     main_liaotupo('combine', tonumber(tupo_results['200']))
   end
   
   my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
+	mSleep(1000)
   sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
   if fight_count >= _G.fighttime then
     sysLog('探索任务完成')
@@ -750,28 +749,30 @@ function main_freets(zyts_ret, zyts_results)
   _G.time_pass = mTime() - _G.liaotupo_t
 	
   if zyts_results['98'] == '0' then
-    _G.if_tupo = true
-    _G.if_liaotupo = false
-  elseif zyts_results['98'] == '1' then
-    _G.if_tupo = false
-    _G.if_liaotupo = true
-  elseif zyts_results['98'] == '0@1' then
-    _G.if_tupo = true
-    _G.if_liaotupo = true
-  else
-    _G.if_tupo = false
-    _G.if_liaotupo = false
-  end
-  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
-  
-  if _G.if_tupo or _G.if_liaotupo then
-    tupo_ret,tupo_results = showUI("tupo.json")
+		tupo_ret,tupo_results = showUI("tupo.json")
     if tupo_ret==0 then	
       toast("突破未设置, 请从探索页面选择取消突破")
       lua_exit()
     end
+		if tupo_results['10'] == '0' then
+			_G.if_tupo = true
+			_G.if_liaotupo = false
+		elseif tupo_results['10'] == '1' then
+			_G.if_tupo = false
+			_G.if_liaotupo = true
+		elseif tupo_results['10'] == '0@1' then
+			_G.if_tupo = true
+			_G.if_liaotupo = true
+		else
+			_G.if_tupo = false
+			_G.if_liaotupo = false
+		end
+	else
+    _G.if_tupo = false
+    _G.if_liaotupo = false
   end
 	
+  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
   
   if _G.fighttime == 0 then
     _G.fighttime = 999999

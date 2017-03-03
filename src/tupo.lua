@@ -138,9 +138,14 @@ function tupo(refresh_count, total_avaliable)
     minutes = tonumber(waiting_orc[1].text)*10 + tonumber(waiting_orc[2].text)
     seconds = tonumber(waiting_orc[3].text)*10 + tonumber(waiting_orc[4].text) + 0.5
     microseconds = (minutes*60+seconds)*1000
-    my_toast(id, '等待'..minutes..'分'..seconds..'秒...')
     sysLog('need to wait '..minutes..' minutes and '..seconds..' seconds('..microseconds..' microseconds)')
-		waiting_clock(microseconds+ math.random(1000, 3000))
+		if _G.if_need_wait then
+			waiting_clock(microseconds+ math.random(1000, 3000))
+		else
+			my_toast(id, '个人突破需要等待'..minutes..'分'..math.floor(seconds)..'秒...')
+			mSleep(2000)
+			do return end
+		end
   end
   tap(1700, 1070)  --点击刷新
   sleepRandomLag(1000)
@@ -170,7 +175,20 @@ function main_gerentupo(tupo_results)
 	end
 end
 
+function tupo_togther()
+  if _G.if_liaotupo then
+    _G.time_pass = mTime() - _G.liaotupo_t
+    --sysLog('突破保底'..tonumber(tupo_results['200']))
+    main_liaotupo('combine', tonumber(tupo_results['200']))
+		main_gerentupo(tupo_results)
+		return tupo_togther()
+  else
+	end
+end
+
+
 function main_tupo(tupo_ret,tupo_results)
+	_G.if_need_wait = true
   if tupo_ret==0 then	
     toast("您选择了取消，停止脚本运行")
     lua_exit()
@@ -186,6 +204,13 @@ function main_tupo(tupo_ret,tupo_results)
 		_G.time_pass = mTime() - _G.liaotupo_t
 		sysLog('已过去时间'.._G.time_pass)
 		main_liaotupo('pure', tonumber(tupo_results['200']))
+	elseif tupo_results['10'] == '0@1' then
+		_G.if_need_wait = false
+		_G.if_liaotupo = true
+		_G.if_liaotupolist = {true, true, true}
+		_G.liaotupo_t = 0
+		_G.time_pass = mTime() - _G.liaotupo_t
+		tupo_togther()
 	end
 end
 
@@ -306,12 +331,13 @@ end
 function main_liaotupo(mode, base_metal)
 	_G.tupo_hero = tonumber(tupo_results['11'])+1
 	while true do
-		sysLog(mode)
-		sysLog(_G.time_pass)
+		--sysLog(mode)
+		--sysLog(_G.time_pass)
 		if _G.time_pass <= 12*60*1000 then
 			local wait_time = math.random(12*60*1000, 14*60*1000) - _G.time_pass
-			my_toast(id, '等待'..wait_time/(60*1000)..'分钟')
-			sysLog('等待'..wait_time..'毫秒')
+			my_toast(id, '寮突破需要等待'..math.floor(wait_time/(60*1000))..'分钟')
+			mSleep(1000)
+			--sysLog('等待'..wait_time..'毫秒')
 			if mode == 'pure' then
 				if _G.if_liaotupo == false then 
 					do return end
