@@ -10,6 +10,12 @@ function myFindColor(input_table)
 	end
 end
 
+function round(num, numDecimalPlaces)
+  local mult = 10^(numDecimalPlaces or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+
 function toast_screensize()
   width,height = getScreenSize()
   if (width == 960 and height== 640 )or (width==640 and height==960 ) 		then--4

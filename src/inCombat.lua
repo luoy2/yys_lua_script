@@ -48,6 +48,7 @@ function if_mark(tap_situation, time_limit)
 		while x == -1 do
 			sysLog(force_skip_t)
 			mark_cases:case(tap_situation)
+			mSleep(200)
 			x, y = myFindColor(战斗标记)
 			force_skip_t = mTime() - initial_t
 			if force_skip_t >= time_limit then

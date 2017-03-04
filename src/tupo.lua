@@ -68,7 +68,7 @@ function tupo(refresh_count, total_avaliable)
   sysLog(refresh_count..'次刷新')
   if total_avaliable == 0 then
     my_toast(id, "没有挑战卷")
-		do return end
+		return 99999999999
   end  
   star_list = {true, true, true,true, true, true,true, true, true}
   keepScreen(true)
@@ -120,7 +120,7 @@ function tupo(refresh_count, total_avaliable)
       sysLog('挑战卷: '..total_avaliable)
       if total_avaliable == 0 then
         my_toast(id, "已打完挑战卷！")
-				do return end
+				return 999999999
         --lockDevice();
         --lua_exit();
       end
@@ -144,14 +144,14 @@ function tupo(refresh_count, total_avaliable)
 		else
 			my_toast(id, '个人突破需要等待'..minutes..'分'..math.floor(seconds)..'秒...')
 			mSleep(2000)
-			do return end
+			return (microseconds - 2000)
 		end
   end
   tap(1700, 1070)  --点击刷新
   sleepRandomLag(1000)
   tap(1230, 885) --点击确定
   sleepRandomLag(2000)
-  tupo(refresh_count, total_avaliable)
+  return tupo(refresh_count, total_avaliable)
 end
 
 function main_gerentupo(tupo_results)
@@ -167,11 +167,11 @@ function main_gerentupo(tupo_results)
 	my_toast(id, '挑战卷个数: '..tupo_avaliable)
 	sysLog('挑战卷个数: '..tupo_avaliable)		
 	if tupo_results['100'] == '0' then
-		tupo(3, tupo_avaliable)
+		return tupo(3, tupo_avaliable)
 	elseif tupo_results['100'] == '1' then
-		tupo(6, tupo_avaliable)
+		return tupo(6, tupo_avaliable)
 	else
-		tupo(9, tupo_avaliable)
+		return tupo(9, tupo_avaliable)
 	end
 end
 
@@ -180,7 +180,18 @@ function tupo_togther()
     _G.time_pass = mTime() - _G.liaotupo_t
     --sysLog('突破保底'..tonumber(tupo_results['200']))
     main_liaotupo('combine', tonumber(tupo_results['200']))
-		main_gerentupo(tupo_results)
+		_G.寮突破等待时间 = math.random(12*60*1000, 14*60*1000) - _G.time_pass
+		_G.个人突破等待时间 = tonumber(main_gerentupo(tupo_results))
+		_G.time_pass = mTime() - _G.liaotupo_t
+    --sysLog('突破保底'..tonumber(tupo_results['200']))
+    main_liaotupo('combine', tonumber(tupo_results['200']))
+		_G.寮突破等待时间 = math.random(12*60*1000, 14*60*1000) - _G.time_pass
+		sysLog(_G.个人突破等待时间)
+		my_toast(id, '个人突破需要等待'..round(_G.个人突破等待时间/60000, 2))
+		mSleep(1500)
+		my_toast(id, '寮突破需要等待'..round(_G.寮突破等待时间/60000, 2))
+		mSleep(1500)
+		waiting_clock(math.min(_G.个人突破等待时间, _G.寮突破等待时间) - 3000)
 		return tupo_togther()
   else
 	end
