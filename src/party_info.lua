@@ -214,7 +214,9 @@ function if_monster(input_ss_table)
 		local slot = find_yaoqi(v)
 		if slot ~= nil then
 			join_party:case(slot)
-			mSleep(200)
+			sysLog('尝试进入队伍')
+			wait_for_leaving_state(刷新等待)
+			mSleep(500)
 			accept_quest()
 			keepScreen(false)
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
@@ -271,7 +273,7 @@ function check_party_statue(case, input_ss_table)
 		end
 	elseif statue == 4 then
 		sysLog('疑似战斗页面')
-		mSleep(1000)
+		mSleep(3000)
 	end
 	sysLog('检测最终状态')
 	statue = party_statue()
