@@ -108,5 +108,8 @@ function main()
     my_exist(_G.exist_method)
   end
 end
+
 main()
+
+
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png

@@ -4,6 +4,9 @@ function enter_party_yuhun(yuhun_floor)
 	enter_party()
 	mSleep(500)
 	tap(400, 1130)
+	mSleep(200)
+	wait_for_leaving_state(刷新等待)
+	mSleep(200)
 	wait_for_state(组队刷新)
 	return choose_yuhun_floor(yuhun_floor)
 end
@@ -20,11 +23,14 @@ function choose_yuhun_floor(yuhun_floor)
 		mSleep(500)
 		tap(765, y)
 	end
+	mSleep(200)
+	wait_for_leaving_state(刷新等待)
+	mSleep(200)
 	wait_for_state(组队刷新)
 end
 
 function create_party(visible)
-	tap(1600, 1300)
+	state_transit(组队刷新, 创建, 1600, 1300, true)
 	local creat_x, creat_y = myFindColor(创建)
 	while creat_x == -1 do
 		sysLog('未找到')

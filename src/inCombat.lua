@@ -74,7 +74,7 @@ end
 -------------------------------------------准备--------------------------------------
 function if_start_combat()
 	my_toast(id, '等待队友准备中...')
-	mSleep(1000)
+	mSleep(100)
 	wait_for_leaving_state(准备还有鼓)
 end
 
