@@ -23,6 +23,7 @@ math.randomseed(mTime())
 dict = createOcrDict("dict.txt") 
 id = createHUD()     --创建一个HUD
 my_toast(id,"欢迎使用大便脚本！")     --显示HUD内容
+
 init_ret,init_results = showUI("Initial.json")
 if init_ret==0 then	
 	my_toast(id, "您选择了取消，停止脚本运行")
@@ -111,5 +112,10 @@ end
 
 main()
 
+
+
+x, y = myFindColor(斗鱼)
+xx, yy = myFindColor(太鼓)
+sysLog(x..y..xx..yy)
 
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png
