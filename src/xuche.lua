@@ -47,14 +47,7 @@ function if_jiyang()
 		return false
 	end
 end
-  
-  
-function jiyang_nextpage(times)
-	for i = 1, times, 1 do
-	my_swip_2(624, 1258, 624, 740, 200, 50, 60)
-	mSleep(1000)
-	end
-end
+
   
   
 function found_card()
@@ -83,14 +76,15 @@ end
   
   
 function check_one_friend()
-	wait_for_state(出现结界卡)
+	wait_for_state(进入结界)
+	mSleep(200)
 	keepScreen(true)
 	local if_jiyang_x, if_jiyang_y = myFindColor(已占用)
 	local douyu_x, douyu_y = myFindColor(斗鱼)
 	local taigu_x, taigu_y = myFindColor(太鼓)
 	keepScreen(false)
 	if if_jiyang_x > -1 then 
-		my_toast(id, '此好友没有车可以上了')
+		my_toast(id, '没有车可以上了')
 		return 'end'
 	end
 	if _G.card_type == '0' then
@@ -172,7 +166,7 @@ function jiyang_once()
 					my_toast(id, '没有车可以上, 休息三分钟再找')
 					tap(67, 71)
 					enter_main_function()
-					waiting_clock(18000)
+					waiting_clock(180000)
 					return jiyang_once()
 				end
 			end
@@ -202,9 +196,3 @@ function main_xuche(xuche_ret, xuche_results)
 	return jiyang_once()
 end
   
-  --ss_jiyang('2')
-  --[[
-  for k,v in pairs(results) do
-    sysLog(string.format('{x=%d, y=%d, text=%s}', v.x, v.y, v.text))
-  end
-  --]]

@@ -245,7 +245,7 @@ end
 
 
 function find_one_round_metal()
-	star_list = {true, true, true,true, true, true,true, true}
+	star_list = {true, true, true, true, true, true,true, true}
   keepScreen(true)
   for i = 1,8,1 do
 		local this_star = get_star(liao_enemy[i])
@@ -326,6 +326,15 @@ end
 
 function start_liaotupo(base_metal)
 	enter_liaotupo()
+	sysLog('检测是否需要寮突破')
+	mSleep(500)
+	local if_select_liao, _ = myFindColor(选择阴阳寮)
+	sysLog(if_select_liao)
+	if if_select_liao > -1 then
+		my_toast(id, '需要选择阴阳寮')
+		_G.if_liaotupo = false
+		do return end
+	end
 	for i = 1, 3, 1 do
 		tap_till_skip(liao_select[i], liao_list[i][1], liao_list[i][2], 1000)
 		one_liaotupo(base_metal, i)

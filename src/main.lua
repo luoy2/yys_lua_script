@@ -110,12 +110,9 @@ function main()
   end
 end
 
+
 main()
 
 
-
-x, y = myFindColor(斗鱼)
-xx, yy = myFindColor(太鼓)
-sysLog(x..y..xx..yy)
 
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png
