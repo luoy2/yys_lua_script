@@ -106,11 +106,11 @@ function ready()
     my_toast(id,"您已经准备好了")
     tap(1879, 1285)
 		mSleep(200)
-		if_start_combat()
+		return if_start_combat()
   else
     my_toast(id,"准备开始战斗")
     mSleep(200)
-    ready()
+    return ready()
   end
 end
 
@@ -190,22 +190,6 @@ function open_damo()
 	end
 end
 
--------------------------------------------战斗结果--------------------------------------
---[[
-function pla()
-  x_defeat, y_defeat = findColorInRegionFuzzy(0x240b08, 95, 705, 323, 714, 333)  -- 鼓上的裂纹
-  x_win, y_win = findColorInRegionFuzzy(0x9a1c12, 95, 707, 334, 714, 339)
-  if x_defeat > -1 then
-    combat_win = true
-    sysLog("战斗失败")
-    tap(x_defeat, y_defeat)
-  else if x_win > 1 then
-    combat_win = false
-    sysLog("战斗胜利")
-  end
-end
-
---]]
 
 -------------------------------------------汇总--------------------------------------
 function start_combat(tap_situation, hero_num)

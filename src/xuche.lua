@@ -171,6 +171,7 @@ function jiyang_once()
 				end
 			end
 		my_swip_2(624, 1258, 624, 740, 200, 50, 60)
+		mSleep(200)
 		end
 else
 	my_toast(id, '不能寄养')

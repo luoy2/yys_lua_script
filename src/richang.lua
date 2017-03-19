@@ -336,24 +336,53 @@ function nearby_monster()
 	refresh()
 	end
 end
+
+
+
+-----------------------------------------------------斗鸡--------------------------------------------------
+function auto_pvp()
+	enter_machi()
+	tap(614, 248)
+	wait_for_state(斗鸡战)
+	while true do
+		findntap(斗鸡战)
+		mSleep(2000)
+		local if_end, _ = myFindColor(斗鸡战)
+		if if_end > -1 then
+			do break end
+		end
+		ready()
+		my_toast(id, '自动战斗...')
+		wait_for_state(可以使用技能)
+		mSleep(200)
+		tap(100, 1433)
+		mSleep(200)
+		tap_till_skip(斗鸡战, 1010, 577, 2000+math.random(0, 10000))
+		my_toast(id, '开始愉快的上分')
+	end
+end
+
+
 -----------------------------------------------------日常汇总--------------------------------------------------
 
 function sub_richang(richang_results)
-		if richang_results['100'] == '0' then
-			give_friend_heart()
-		elseif richang_results['100'] == '1' then
-			buy_toilet_paper()
-		elseif richang_results['100'] == '2' then
-			main_baigui()
-		elseif richang_results['100'] == '3' then
-			summon()
-		elseif richang_results['100'] == '4' then
-			nearby_monster()
-		elseif richang_results['100'] == '5' then
-			过剧情()
-		end
-		mSleep(1000)
-		end
+	if richang_results['100'] == '0' then
+		give_friend_heart()
+	elseif richang_results['100'] == '1' then
+		buy_toilet_paper()
+	elseif richang_results['100'] == '2' then
+		main_baigui()
+	elseif richang_results['100'] == '3' then
+		summon()
+	elseif richang_results['100'] == '4' then
+		nearby_monster()
+	elseif richang_results['100'] == '5' then
+		过剧情()
+	elseif richang_results['100'] == '6' then
+		auto_pvp()
+	end
+	mSleep(1000)
+end
 
 
 function main_richang(richang_ret,richang_results)
@@ -362,7 +391,7 @@ function main_richang(richang_ret,richang_results)
 		lua_exit()
 	end
 	sysLog(richang_results['101'])
-	if richang_results['101'] == '4' then
+	if richang_results['101'] == '0' then
 		sub_richang(richang_results)
 		enter_main_function()
 		lua_exit()

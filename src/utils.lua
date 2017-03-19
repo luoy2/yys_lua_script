@@ -557,3 +557,13 @@ function isColor(x,y,c,s)   --x,y为坐标值，c为颜色值，s为相似度，
     return false
 end
 
+function findntap(input_color)
+	local x, y = myFindColor(input_color)
+	if x > -1 then
+		tap(x, y)
+	else
+		return -1, -1
+	end
+	return x, y
+end
+

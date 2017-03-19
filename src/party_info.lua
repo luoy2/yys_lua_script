@@ -53,7 +53,7 @@ function in_party(case, input_ss_table)
 			--my_toast(id, '等待队伍开始')
 			statue = party_statue()
 	end
-	if statue == 2 or statue == 0 then
+	if statue == 2 or statue == 0 or statue == 5 then
 		my_toast(id, '队长离开队伍，离开')
 		tap(477,1161)
 		mSleep(500)
@@ -193,9 +193,9 @@ end
 
 function if_refresh(input_ss_table)
 		--sysLog('if_refresh')
-	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1075, 1258, 1348, 1344)
+	local refresh_x, refresh_y = myFindColor(组队刷新)
 	if refresh_x > -1 then
-		sysLog('找到刷新')
+		--sysLog('找到刷新')
 		tap(refresh_x, refresh_y)
 		--sysLog('是否有妖气')
 		mSleep(_G.refresh_lag)
@@ -216,9 +216,9 @@ function if_monster(input_ss_table)
 			join_party:case(slot)
 			sysLog('尝试进入队伍')
 			wait_for_leaving_state(刷新等待)
-			mSleep(500)
-			accept_quest()
+			mSleep(1000)
 			keepScreen(false)
+			my_toast(id, '检测是否加入队伍')
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
 			if refresh_x == -1 then
 				if_outof_sushi()
