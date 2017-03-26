@@ -48,6 +48,18 @@ function if_jiyang()
 	end
 end
 
+function 检测好友结界是否可以寄养()
+	local x,y = myFindColor(可放置式神)
+	if x>-1 then
+		my_toast(id, '好友可以寄养')
+		mSleep(1000)
+		return true
+	else
+		my_toast(id, '好友无法寄养')
+		mSleep(1000)
+		return false
+	end
+end
   
   
 function found_card()
@@ -55,7 +67,10 @@ function found_card()
 	my_toast(id, '找到斗鱼或者太鼓')
 	sysLog(_G.ss_type)
 	mSleep(1000)
-	state_transit(进入结界, 可放置式神, 1310, 1290)
+	state_transit(进入结界, 好友结界第二灯笼, 1310, 1290)
+	if not 检测好友结界是否可以寄养() then
+		return jiyang_once()
+	end
 	mSleep(1000)
 	tap(100, 1427)
 	mSleep(500)
