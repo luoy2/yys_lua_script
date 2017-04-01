@@ -160,8 +160,8 @@ function random_event()
 	if random_num <= 100 then
 		my_toast(id, '监测式神召唤')
 		summon()
-	elseif random_num <= 200 then
-		local waiting_time = math.random(60000, 120000)
+	elseif random_num <= 800 then
+		local waiting_time = math.random(5000, 20000)
 		waiting_clock(waiting_time)
 	elseif random_num == 1000 then
 		my_toast(id, '讲个笑话')

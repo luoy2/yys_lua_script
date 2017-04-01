@@ -268,7 +268,7 @@ function check_current_state()
   local yuhun_x, yuhun_y = findMultiColorInRegionFuzzy(0xf3b25e,"-82|54|0x423a33,-87|-34|0x342f27,-62|9|0x302a23", 95, 1450,980,1460, 990)
 	local yeyuanhuo_x, yeyuanhuo_y = myFindColor(业原火)
 	local yeyuanhuo_challenge_x, yeyuanhuo_challenge_y = myFindColor(业原火挑战)
-	local party_x, party_y = myFindColor(组队界面)
+	local party_x, party_y = myFindColor(组队刷新)
 	local tap_exit_x, tap_exit_y = myFindColor(顶点退出)
 	local redcross_x, redcross_y = myFindColor(右上红叉)
 	local defeat_x, defeat_y = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
