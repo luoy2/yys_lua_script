@@ -1,21 +1,80 @@
--------------------------------------------标记类型a--------------------------------------
---[[
-mark_cases = switch {
-  [0] = function() end,
-  [1] = function() tap(1060, 270) end, --标记主目标
-	-----yh标记----
-	[2] = function() tap(530, 560) end,		--标记左边
-	[3] = function() tap(1076, 397) end,  --标记中间(灯，蛇）
-	[4] = function() tap(1580, 535)	end,	--标记右边
-	[5] = function() first_mark()	end, --标记二口女
-	[6] = function() end,　-- 不标记
-	----------探索---------------
-	[10] = function() end,
-	[11] = function() tap(1060, 311) end,
-	[12] = function() tap(759, 443) end,
 
-}
---]]
+function if_change_hero(target_hero_num)
+	sysLog('换'..target_hero_num..'号阴阳师')
+	if target_hero_num == 0 or target_hero_num == 5 then
+		do return end
+	elseif target_hero_num == 1 then
+		target_hero = 晴明
+	elseif target_hero_num == 2 then
+		target_hero = 神乐
+	elseif target_hero_num == 3 then
+		target_hero = 博雅
+	else
+		target_hero = 比丘尼
+	end
+	my_toast(id, '检测是否更换阴阳师')
+	sysLog('检测是否更换阴阳师')
+	local hero_x, hero_y = myFindColor(target_hero)
+	if hero_x > -1 then
+	else
+		my_toast(id, '更换阴阳师')
+		tap(1108, 1314)
+		change_hero:case(target_hero_num)
+		mSleep(1000)
+	end
+end
+
+
+change_hero = switch{
+  [1] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(128, 1254)
+		wait_for_state(更换阴阳师)
+		tap(359, 618)
+		wait_for_state(交替)
+		tap(61, 47)
+		mSleep(1000)
+  end,
+  [2] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(128, 1254)
+		wait_for_state(更换阴阳师)
+		tap(832, 693)
+		wait_for_state(交替)
+		tap(61, 47)
+		mSleep(1000)
+  end,	
+  [3] = function () 
+		tap(140, 1163)
+		wait_for_state(交替)
+		tap(128, 1254)
+		wait_for_state(更换阴阳师)
+		tap(1220, 700)
+		wait_for_state(交替)
+		tap(1685, 583)
+		mSleep(1000)
+  end,
+  [4] = function () 
+		tap(928, 1163)
+		wait_for_state(交替)
+		tap(128, 1254)
+		wait_for_state(更换阴阳师)
+		tap(370, 108)
+		wait_for_state(交替)
+		tap(61, 47)
+		mSleep(1000)
+  end
+	}
+	
+	
+	
+
+
+-------------------------------------------标记类型a--------------------------------------
+
+
 mark_cases = switch{
 [0] = function() end,
 [1] = function() tap(1060, 270) end, --标记主目标

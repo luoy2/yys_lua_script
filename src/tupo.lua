@@ -54,7 +54,7 @@ function enter_tupo()
 	if current_state == 'tupo' then
 		sleepRandomLag(2000)
 	elseif current_state == 3 then
-		tap(676, 1457)
+		tap(500, 1457)
 		sleepRandomLag(2000)
 		return enter_tupo()
 	else
@@ -107,7 +107,7 @@ function tupo(refresh_count, total_avaliable)
       sysLog('开始突破'..tupo_order[j])
       tap(all_enemy[tupo_order[j]][1], all_enemy[tupo_order[j]][2])
       sleepRandomLag(1000)
-      tap(all_enemy[tupo_order[j]][1]+187, all_enemy[tupo_order[j]][2]+131)
+      tap(all_enemy[tupo_order[j]][1]+208, all_enemy[tupo_order[j]][2]+234)
       start_combat(0, _G.tupo_hero)
 			sleepRandomLag(3000)
 			tap(690, 270)

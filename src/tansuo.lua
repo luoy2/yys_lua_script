@@ -1,11 +1,8 @@
 chapter_tap = switch {
-  [1] = function () tap(1900, 339) end,
-  [2] = function() tap(1900, 520 ) end,		
-  [3] = function() tap(1900, 700) end,  
-  [4] = function() tap(1900, 900)	end,	
-  [17] = function() tap(1900, 556)	end, 
-  [18] = function() tap(1900, 750) end,
-  [19] = function() tap(1900, 950) end,
+  [1] = function () tap(1900, 400) end,
+  [2] = function() tap(1900, 588 ) end,		
+  [3] = function() tap(1900, 780) end,  
+  [4] = function() tap(1900, 970)	end,	
   [171] = function() tap(1900, 750)	end, 
   --[18] = function() tap(1900, 950) end
 }
@@ -61,48 +58,7 @@ change_ss_tap = switch {
   end,
 }
 
-change_hero = switch{
-  [1] = function () 
-		tap(928, 1163)
-		wait_for_state(交替)
-		tap(106, 1450)
-		wait_for_state(更换阴阳师)
-		tap(359, 618)
-		wait_for_state(交替)
-		tap(61, 47)
-		mSleep(1000)
-  end,
-  [2] = function () 
-		tap(928, 1163)
-		wait_for_state(交替)
-		tap(106, 1450)
-		wait_for_state(更换阴阳师)
-		tap(832, 693)
-		wait_for_state(交替)
-		tap(61, 47)
-		mSleep(1000)
-  end,	
-  [3] = function () 
-		tap(928, 1163)
-		wait_for_state(交替)
-		tap(106, 1450)
-		wait_for_state(更换阴阳师)
-		tap(1220, 700)
-		wait_for_state(交替)
-		tap(1685, 583)
-		mSleep(1000)
-  end,
-  [4] = function () 
-		tap(928, 1163)
-		wait_for_state(交替)
-		tap(106, 1450)
-		wait_for_state(更换阴阳师)
-		tap(370, 108)
-		wait_for_state(交替)
-		tap(61, 47)
-		mSleep(1000)
-  end
-	}
+
 ----------------------------------------------------Step 1: 进入探索---------------------------------------------------
 function enter_tansuo()
   local current_state = check_current_state()
@@ -161,13 +117,15 @@ end
 end
 
 function reset_scroll()
-  swip(1900, 250, 1900, 1000)
+  swip(1900, 350, 1900, 1000)
   mSleep(200)
-  swip(1900, 250, 1900, 1000)
+  swip(1900, 350, 1900, 1000)
   mSleep(200)
-  swip(1900, 250, 1900, 1000)
+  swip(1900, 350, 1900, 1000)
   mSleep(200)
-  swip(1900, 250, 1900, 1000)
+  swip(1900, 350, 1900, 1000)
+  mSleep(200)
+  swip(1900, 350, 1900, 1000)
   mSleep(200)
 end
 
@@ -240,30 +198,6 @@ function if_ncard()
 end
 
 
-function if_change_hero(target_hero_num)
-	sysLog('换'..target_hero_num..'号阴阳师')
-	if target_hero_num == 0 or target_hero_num == 5 then
-		do return end
-	elseif target_hero_num == 1 then
-		target_hero = 晴明
-	elseif target_hero_num == 2 then
-		target_hero = 神乐
-	elseif target_hero_num == 3 then
-		target_hero = 博雅
-	else
-		target_hero = 比丘尼
-	end
-	my_toast(id, '检测是否更换阴阳师')
-	sysLog('检测是否更换阴阳师')
-	local hero_x, hero_y = myFindColor(target_hero)
-	if hero_x > -1 then
-	else
-		my_toast(id, '更换阴阳师')
-		tap(1091, 1131)
-		change_hero:case(target_hero_num)
-		mSleep(1000)
-	end
-end
 
 
 
