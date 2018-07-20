@@ -27,9 +27,10 @@ qucik_chapter = {
 	[14] = {0xf3d8c3,"6|5|0xf9e5db,-5|6|0xf9e5db,0|-19|0x231834,13|-18|0x3b6042,-17|-9|0xa80442,-8|21|0x990f2a",90,759,595,819,646},
 	[15] = {0xcae4f2,"-7|-1|0xd24d5a,8|-2|0xd34c5d,1|8|0xc6585f,4|14|0x70719f,7|-19|0xf6c5cf,0|-17|0xf4f488",90,960,581,1053,652},
 	[16] = {0x7b6487,"8|-6|0x8e8158,-7|-21|0x7b6487,-4|-47|0xfde9d0,-4|-57|0xfff7e2,-47|21|0x715c83,28|12|0x2c2a51",90,968,589,1032,654},
-	[17] = {0xb88dda,"38|-2|0xb98ed5,13|32|0x161748,12|43|0x080804,23|39|0x161815,-12|43|0x44b7bd,46|39|0x41a6b0,13|51|0x12283e,43|67|0x40a3ad,21|-13|0xa9d9e4", 90, 826,534,1184,866},
+	[17] = {0x358095,"21|0|0x090e29,40|0|0x358499,17|-19|0x0e0f09,8|4|0x182045",95,980,654,1062,753},
 	[18] = {0xfdfbf6,"36|-1|0x22242b,-90|-9|0x1c1d23,-66|12|0x101113,-59|16|0x48579c,6|25|0xc73351",90,1020,551,1100,603},
-	[19] = {0x584e57,"-15|-4|0xd8d8de,14|-4|0xdcdce2,-2|-62|0xfee4cd,-62|-70|0xd9d0bf,-62|-126|0x74409c", 95, 953, 675, 987, 706}
+	[19] = {0x584e57,"-15|-4|0xd8d8de,14|-4|0xdcdce2,-2|-62|0xfee4cd,-62|-70|0xd9d0bf,-62|-126|0x74409c", 95, 953, 675, 987, 706},
+	[20] = {0xfffff9,"11|-12|0x526776,-5|-21|0xb79874,8|-32|0x6e6697",95,1067,656,1127,720}
 }
 
 change_ss_tap = switch {
@@ -182,7 +183,7 @@ end
 function choose_chapter(chapter)	
   reset_scroll()
   local x  = math.ceil(chapter/4)
-  if chapter <=16 then
+  if chapter <=20 then
     sysLog(x-1)
     scroll(x-1)
     chapter_tap:case(chapter - 4*(x-1))
@@ -415,8 +416,12 @@ end
 
 
 function next_scene()
-  sysLog('next_scene')
-  swip(1977, 1346, 500, 1346)
+  sysLog('滑动进下一界面')
+	if _G.target_chapter == 11 then
+		my_swip(1977, 1346, 1300, 1346, 35)
+	else
+		my_swip(1977, 1346, 1400, 1346, 35)
+	end
 end
 
 
@@ -664,12 +669,11 @@ end
 function free_tansuo(fight_count)
   if _G.if_liaotupo then
     _G.time_pass = mTime() - _G.liaotupo_t
-    sysLog('已过去时间'.._G.time_pass)
-    sysLog('突破保底'..tonumber(tupo_results['200']))
     main_liaotupo('combine', tonumber(tupo_results['200']))
   end
   
   my_toast(id, '当前战斗次数: '..fight_count.."/".._G.fighttime)
+	mSleep(1000)
   sysLog('当前战斗次数: '..fight_count.."/".._G.fighttime)
   if fight_count >= _G.fighttime then
     sysLog('探索任务完成')
@@ -693,14 +697,14 @@ function free_tansuo(fight_count)
 	  search_for_all(fight_count)
 		for find_time = 1, 4, 1 do
 			my_toast(id, '找怪第'..find_time..'次')
-			my_swip(1977, 1346, 1400, 1346, 35)  --4次
+			next_scene()  --4次
 			search_for_all(fight_count)
 		end
 	else
 		search_for_exp(fight_count)
 		for find_time = 1, 4, 1 do
 			my_toast(id, '找怪第'..find_time..'次')
-			my_swip(1977, 1346, 1400, 1346, 35)  --4次
+			next_scene()  --4次
 			search_for_exp(fight_count)
 		end
 	end
@@ -746,28 +750,30 @@ function main_freets(zyts_ret, zyts_results)
   _G.time_pass = mTime() - _G.liaotupo_t
 	
   if zyts_results['98'] == '0' then
-    _G.if_tupo = true
-    _G.if_liaotupo = false
-  elseif zyts_results['98'] == '1' then
-    _G.if_tupo = false
-    _G.if_liaotupo = true
-  elseif zyts_results['98'] == '0@1' then
-    _G.if_tupo = true
-    _G.if_liaotupo = true
-  else
-    _G.if_tupo = false
-    _G.if_liaotupo = false
-  end
-  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
-  
-  if _G.if_tupo or _G.if_liaotupo then
-    tupo_ret,tupo_results = showUI("tupo.json")
+		tupo_ret,tupo_results = showUI("tupo.json")
     if tupo_ret==0 then	
       toast("突破未设置, 请从探索页面选择取消突破")
       lua_exit()
     end
+		if tupo_results['10'] == '0' then
+			_G.if_tupo = true
+			_G.if_liaotupo = false
+		elseif tupo_results['10'] == '1' then
+			_G.if_tupo = false
+			_G.if_liaotupo = true
+		elseif tupo_results['10'] == '0@1' then
+			_G.if_tupo = true
+			_G.if_liaotupo = true
+		else
+			_G.if_tupo = false
+			_G.if_liaotupo = false
+		end
+	else
+    _G.if_tupo = false
+    _G.if_liaotupo = false
   end
 	
+  sysLogLst(tostring(_G.if_tupo), tostring(_G.if_liaotupo))
   
   if _G.fighttime == 0 then
     _G.fighttime = 999999

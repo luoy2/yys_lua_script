@@ -68,7 +68,7 @@ function tupo(refresh_count, total_avaliable)
   sysLog(refresh_count..'次刷新')
   if total_avaliable == 0 then
     my_toast(id, "没有挑战卷")
-		do return end
+		return 99999999999
   end  
   star_list = {true, true, true,true, true, true,true, true, true}
   keepScreen(true)
@@ -120,7 +120,7 @@ function tupo(refresh_count, total_avaliable)
       sysLog('挑战卷: '..total_avaliable)
       if total_avaliable == 0 then
         my_toast(id, "已打完挑战卷！")
-				do return end
+				return 999999999
         --lockDevice();
         --lua_exit();
       end
@@ -138,15 +138,20 @@ function tupo(refresh_count, total_avaliable)
     minutes = tonumber(waiting_orc[1].text)*10 + tonumber(waiting_orc[2].text)
     seconds = tonumber(waiting_orc[3].text)*10 + tonumber(waiting_orc[4].text) + 0.5
     microseconds = (minutes*60+seconds)*1000
-    my_toast(id, '等待'..minutes..'分'..seconds..'秒...')
     sysLog('need to wait '..minutes..' minutes and '..seconds..' seconds('..microseconds..' microseconds)')
-		waiting_clock(microseconds+ math.random(1000, 3000))
+		if _G.if_need_wait then
+			waiting_clock(microseconds+ math.random(1000, 3000))
+		else
+			my_toast(id, '个人突破需要等待'..minutes..'分'..math.floor(seconds)..'秒...')
+			mSleep(2000)
+			return (microseconds - 2000)
+		end
   end
   tap(1700, 1070)  --点击刷新
   sleepRandomLag(1000)
   tap(1230, 885) --点击确定
   sleepRandomLag(2000)
-  tupo(refresh_count, total_avaliable)
+  return tupo(refresh_count, total_avaliable)
 end
 
 function main_gerentupo(tupo_results)
@@ -162,15 +167,39 @@ function main_gerentupo(tupo_results)
 	my_toast(id, '挑战卷个数: '..tupo_avaliable)
 	sysLog('挑战卷个数: '..tupo_avaliable)		
 	if tupo_results['100'] == '0' then
-		tupo(3, tupo_avaliable)
+		return tupo(3, tupo_avaliable)
 	elseif tupo_results['100'] == '1' then
-		tupo(6, tupo_avaliable)
+		return tupo(6, tupo_avaliable)
 	else
-		tupo(9, tupo_avaliable)
+		return tupo(9, tupo_avaliable)
 	end
 end
 
+function tupo_togther()
+  if _G.if_liaotupo then
+    _G.time_pass = mTime() - _G.liaotupo_t
+    --sysLog('突破保底'..tonumber(tupo_results['200']))
+    main_liaotupo('combine', tonumber(tupo_results['200']))
+		_G.寮突破等待时间 = math.random(12*60*1000, 14*60*1000) - _G.time_pass
+		_G.个人突破等待时间 = tonumber(main_gerentupo(tupo_results))
+		_G.time_pass = mTime() - _G.liaotupo_t
+    --sysLog('突破保底'..tonumber(tupo_results['200']))
+    main_liaotupo('combine', tonumber(tupo_results['200']))
+		_G.寮突破等待时间 = math.random(12*60*1000, 14*60*1000) - _G.time_pass
+		sysLog(_G.个人突破等待时间)
+		my_toast(id, '个人突破需要等待'..round(_G.个人突破等待时间/60000, 2))
+		mSleep(1500)
+		my_toast(id, '寮突破需要等待'..round(_G.寮突破等待时间/60000, 2))
+		mSleep(1500)
+		waiting_clock(math.min(_G.个人突破等待时间, _G.寮突破等待时间) - 3000)
+		return tupo_togther()
+  else
+	end
+end
+
+
 function main_tupo(tupo_ret,tupo_results)
+	_G.if_need_wait = true
   if tupo_ret==0 then	
     toast("您选择了取消，停止脚本运行")
     lua_exit()
@@ -186,6 +215,13 @@ function main_tupo(tupo_ret,tupo_results)
 		_G.time_pass = mTime() - _G.liaotupo_t
 		sysLog('已过去时间'.._G.time_pass)
 		main_liaotupo('pure', tonumber(tupo_results['200']))
+	elseif tupo_results['10'] == '0@1' then
+		_G.if_need_wait = false
+		_G.if_liaotupo = true
+		_G.if_liaotupolist = {true, true, true}
+		_G.liaotupo_t = 0
+		_G.time_pass = mTime() - _G.liaotupo_t
+		tupo_togther()
 	end
 end
 
@@ -209,7 +245,7 @@ end
 
 
 function find_one_round_metal()
-	star_list = {true, true, true,true, true, true,true, true}
+	star_list = {true, true, true, true, true, true,true, true}
   keepScreen(true)
   for i = 1,8,1 do
 		local this_star = get_star(liao_enemy[i])
@@ -290,6 +326,15 @@ end
 
 function start_liaotupo(base_metal)
 	enter_liaotupo()
+	sysLog('检测是否需要寮突破')
+	mSleep(500)
+	local if_select_liao, _ = myFindColor(选择阴阳寮)
+	sysLog(if_select_liao)
+	if if_select_liao > -1 then
+		my_toast(id, '需要选择阴阳寮')
+		_G.if_liaotupo = false
+		do return end
+	end
 	for i = 1, 3, 1 do
 		tap_till_skip(liao_select[i], liao_list[i][1], liao_list[i][2], 1000)
 		one_liaotupo(base_metal, i)
@@ -306,12 +351,13 @@ end
 function main_liaotupo(mode, base_metal)
 	_G.tupo_hero = tonumber(tupo_results['11'])+1
 	while true do
-		sysLog(mode)
-		sysLog(_G.time_pass)
+		--sysLog(mode)
+		--sysLog(_G.time_pass)
 		if _G.time_pass <= 12*60*1000 then
-			local wait_time = 12*60*1000 - _G.time_pass
-			my_toast(id, '等待'..wait_time/(60*1000)..'分钟')
-			sysLog('等待'..wait_time..'毫秒')
+			local wait_time = math.random(12*60*1000, 14*60*1000) - _G.time_pass
+			my_toast(id, '寮突破需要等待'..math.floor(wait_time/(60*1000))..'分钟')
+			mSleep(1000)
+			--sysLog('等待'..wait_time..'毫秒')
 			if mode == 'pure' then
 				if _G.if_liaotupo == false then 
 					do return end

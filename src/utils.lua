@@ -5,10 +5,24 @@ function myFindColor(input_table)
 	if input_table == nil then
 		return -1, -1
 	else
-		local x, y = findMultiColorInRegionFuzzy(input_table[1], input_table[2], input_table[3], input_table[4], input_table[5], input_table[6], input_table[7])
-		return x, y
+		if table.getn(input_table) == 6 then
+			local x, y = findColor(input_table[1], input_table[2], input_table[3], input_table[4], input_table[5], input_table[6])
+			return x, y
+		else
+			local x, y = findMultiColorInRegionFuzzy(input_table[1], input_table[2], input_table[3], input_table[4], input_table[5], input_table[6], input_table[7])
+			return x, y
+		end
 	end
 end
+
+
+
+function round(num, numDecimalPlaces)
+  local mult = 10^(numDecimalPlaces or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+point = findMultiColorInRegionFuzzyExt2(0xcf0000, {{x=-37,y=3,color=0x942814},{x=-38,y=20,color=0xeba62d},{x=1,y=54,color=0xf2b054},{x=28,y=22,color=0x8a5707}}, 90, 97, 220, 903, 701)
+
 
 function toast_screensize()
   width,height = getScreenSize()
@@ -47,7 +61,7 @@ function table.contains(table, element)
 end
 
 function printTable(t)
-for key,value in pairs(t) do sysLog(key..': '..value) end
+	for key,value in pairs(t) do sysLog(key..': '..value) end
 end
 
 
@@ -88,7 +102,7 @@ end
 
 
 function sleepRandomLag(default)
-  lag = math.random(default-100,default+100)
+  local lag = math.random(default-100,default+100)
   mSleep(lag)
 end
 
@@ -256,13 +270,13 @@ function check_current_state()
   --local main_x, main_y = findMultiColorInRegionFuzzy(0x8f5ea0,"-45|-4|0xbdb5a4,-38|45|0xf8f3e0,59|17|0x603d3a", 90, 434,1413, 438, 1417)
   local main_x, main_y = myFindColor(组队)
 	local intansuo_x, intansuo_y = findColorInRegionFuzzy(0x2e4432, 95, 3, 1525, 9, 1531); --战斗界面左下角绿色
-  local tansuo_x, tansuo_y = findColorInRegionFuzzy(0x1e1ea6, 95, 314, 1493, 340, 1509) -- 探索yuhun下方蓝色
+  local tansuo_x, tansuo_y = myFindColor(探索地图) -- 探索yuhun下方蓝色
   local incombat_x, incombat_y = findColorInRegionFuzzy(0x856e56, 95, 86, 1485, 110, 1494) --战斗左下角小齿轮颜色
   local tupo_x, tupo_y = findMultiColorInRegionFuzzy(0xc7241c,"-13|8|0xf7f2df,-14|-35|0xf4efe1", 95, 888, 1078, 888, 1078)  --3次达摩周边色
   local yuhun_x, yuhun_y = findMultiColorInRegionFuzzy(0xf3b25e,"-82|54|0x423a33,-87|-34|0x342f27,-62|9|0x302a23", 95, 1450,980,1460, 990)
 	local yeyuanhuo_x, yeyuanhuo_y = myFindColor(业原火)
 	local yeyuanhuo_challenge_x, yeyuanhuo_challenge_y = myFindColor(业原火挑战)
-	local party_x, party_y = myFindColor(组队界面)
+	local party_x, party_y = myFindColor(组队刷新)
 	local tap_exit_x, tap_exit_y = myFindColor(顶点退出)
 	local redcross_x, redcross_y = myFindColor(右上红叉)
 	local defeat_x, defeat_y = findMultiColorInRegionFuzzy(0x5c5266,"21|-70|0x50495a,82|0|0x595063,37|-11|0xb7a58f,42|31|0xc1ae94,62|77|0xbba689,28|109|0x6c5638,27|146|0x201d25,-54|32|0xbca78a,-5|28|0x230a07", 90, 583, 159, 980, 508)  -- 鼓上的裂纹
@@ -539,4 +553,26 @@ function waiting_clock(wait_time)
 	end
 end
 
+
+function isColor(x,y,c,s)   --x,y为坐标值，c为颜色值，s为相似度，范围0~100。
+    local fl,abs = math.floor,math.abs
+    s = fl(0xff*(100-s)*0.01)
+    local r,g,b = fl(c/0x10000),fl(c%0x10000/0x100),fl(c%0x100)
+    local rr,gg,bb = getColorRGB(x,y)
+    if abs(r-rr)<s and abs(g-gg)<s and abs(b-bb)<s then
+        return true
+    end
+    return false
+end
+
+
+function findntap(input_color)
+	local x, y = myFindColor(input_color)
+	if x > -1 then
+		tap(x, y)
+	else
+		return -1, -1
+	end
+	return x, y
+end
 

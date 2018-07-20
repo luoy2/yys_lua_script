@@ -9,12 +9,12 @@ join_party = switch {
 -----------------------------------------------------------------------------------------------------------
 function party_statue()
 	keepScreen(true)
-	local ifstart_x, ifstart_y = findMultiColorInRegionFuzzy(0xf3b25e,"-1079|-3|0xdf6851,-436|33|0xc7bdb4,-129|-13|0x973b2e", 95, 1560,1120,1565,1130)					--开始队伍的颜色
+	local ifstart_x, ifstart_y = myFindColor(可以开始)				--开始队伍的颜色
 	local ifwait_x, if_wait_y = myFindColor(组队等待)
 	local leader_wait_x, leader_wait_y = myFindColor(队长等待)
 	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)
-  local full_color, y_full = findColorInRegionFuzzy(0x7c7977, 95, 1773, 466, 1803, 493)					--三人的右上角
-	local full_color_2, y_full_2 = findColorInRegionFuzzy(0x7c7977, 95, 1225, 468, 1258, 501)			--二人的右上角
+  local full_color, y_full = myFindColor(三人满)							--三人的右上角
+	local full_color_2, y_full_2 = myFindColor(二人满)			
 	keepScreen(false)
 	if ifstart_x > -1 and full_color == -1 and full_color_2 == -1 then
 		sysLog('三人满')
@@ -53,7 +53,7 @@ function in_party(case, input_ss_table)
 			--my_toast(id, '等待队伍开始')
 			statue = party_statue()
 	end
-	if statue == 2 or statue == 0 then
+	if statue == 2 or statue == 0 or statue == 5 then
 		my_toast(id, '队长离开队伍，离开')
 		tap(477,1161)
 		mSleep(500)
@@ -111,8 +111,7 @@ function enter_yaoqi()
 end
   
 function refresh()
-	wait_for_state(组队刷新)
-	tap(1200, 1300)
+	findntap(组队刷新)
 	wait_for_state(组队刷新)
 	keepScreen(true)
 	local x, y = findColorInRegionFuzzy(0xe2c36d, 95, 1615, 594, 1623, 607) --找色是否有队伍
@@ -122,7 +121,7 @@ function refresh()
 		sleepRandomLag(1000)
 		accept_quest()
 		keepScreen(true)
-		local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 1091, 1272, 1108, 1283)  --刷新黄色 如果未找到说明在队伍
+		local x, y = findColorInRegionFuzzy(0xf3b25e, 95, 654, 1252, 923, 1345)  --刷新黄色 如果未找到说明在队伍
 		keepScreen(false)
 		if x == -1 then
 			toast("已加入队伍")
@@ -155,11 +154,15 @@ end
   
 	------------------------------------------------------妖气封印--------------------------------------------------------
 function random_event()
-	random_num = math.random(1, 100)
-	if random_num <= 10 then
+	random_num = math.random(1, 1000)
+	sysLog('随机事件:'..random_num)
+	if random_num <= 100 then
 		my_toast(id, '监测式神召唤')
 		summon()
-	elseif random_num == 100 then
+	elseif random_num <= 800 then
+		local waiting_time = math.random(5000, 20000)
+		waiting_clock(waiting_time)
+	elseif random_num == 1000 then
 		my_toast(id, '讲个笑话')
 		zan()
 	end
@@ -189,9 +192,9 @@ end
 
 function if_refresh(input_ss_table)
 		--sysLog('if_refresh')
-	local refresh_x, refresh_y = findColorInRegionFuzzy(0xf3b25e, 95, 1075, 1258, 1348, 1344)
+	local refresh_x, refresh_y = myFindColor(组队刷新)
 	if refresh_x > -1 then
-		sysLog('找到刷新')
+		--sysLog('找到刷新')
 		tap(refresh_x, refresh_y)
 		--sysLog('是否有妖气')
 		mSleep(_G.refresh_lag)
@@ -210,9 +213,11 @@ function if_monster(input_ss_table)
 		local slot = find_yaoqi(v)
 		if slot ~= nil then
 			join_party:case(slot)
-			mSleep(200)
-			accept_quest()
+			sysLog('尝试进入队伍')
+			wait_for_leaving_state(刷新等待)
+			mSleep(1000)
 			keepScreen(false)
+			my_toast(id, '检测是否加入队伍')
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
 			if refresh_x == -1 then
 				if_outof_sushi()
@@ -267,7 +272,7 @@ function check_party_statue(case, input_ss_table)
 		end
 	elseif statue == 4 then
 		sysLog('疑似战斗页面')
-		mSleep(1000)
+		mSleep(3000)
 	end
 	sysLog('检测最终状态')
 	statue = party_statue()
@@ -390,6 +395,7 @@ function juexing(juexing_floor)
 		wait_for_state(组队刷新)
 		tap(1462, 639)
 		wait_for_state(组队刷新)
+		sysLog('aaa')
 		return refresh()
 end
 

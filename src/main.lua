@@ -23,6 +23,7 @@ math.randomseed(mTime())
 dict = createOcrDict("dict.txt") 
 id = createHUD()     --创建一个HUD
 my_toast(id,"欢迎使用大便脚本！")     --显示HUD内容
+
 init_ret,init_results = showUI("Initial.json")
 if init_ret==0 then	
 	my_toast(id, "您选择了取消，停止脚本运行")
@@ -108,9 +109,7 @@ function main()
     my_exist(_G.exist_method)
   end
 end
---main()
-yqfy_ret,yqfy_results = showUI("yqfy.json")
-main_yqfy(yqfy_ret, yqfy_results)
 
 
+main()
 --/User/Library/XXIDEHelper/xsp/Temp/5星.png

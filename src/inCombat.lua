@@ -1,4 +1,3 @@
-
 -------------------------------------------标记类型a--------------------------------------
 --[[
 mark_cases = switch {
@@ -49,6 +48,7 @@ function if_mark(tap_situation, time_limit)
 		while x == -1 do
 			sysLog(force_skip_t)
 			mark_cases:case(tap_situation)
+			mSleep(200)
 			x, y = myFindColor(战斗标记)
 			force_skip_t = mTime() - initial_t
 			if force_skip_t >= time_limit then
@@ -72,27 +72,10 @@ function begin()
 end
 
 -------------------------------------------准备--------------------------------------
---[[
-function ready()
-  x, y = findColorInRegionFuzzy(0xcba87f, 95, 1793, 1219, 1945, 1296)
-  if x > -1 then
-    my_toast(id,"找到准备")
-    tap(1879, 1285)
-  else
-    my_toast(id,"未找到准备")
-    sleepRandomLag(1000)
-    ready()
-  end
-end
---]]
 function if_start_combat()
-	--sysLog('if_start_combat')
-	local x, y = myFindColor(准备完成)  --已经准备
-	if x > -1 then
-		mSleep(200)
-		my_toast(id, '等待队友准备中')
-		return if_start_combat()
-	end
+	my_toast(id, '等待队友准备中...')
+	mSleep(100)
+	wait_for_leaving_state(准备还有鼓)
 end
 
 function if_start_combat_intime()
@@ -123,11 +106,11 @@ function ready()
     my_toast(id,"您已经准备好了")
     tap(1879, 1285)
 		mSleep(200)
-		if_start_combat()
+		return if_start_combat()
   else
     my_toast(id,"准备开始战斗")
     mSleep(200)
-    ready()
+    return ready()
   end
 end
 
@@ -207,22 +190,6 @@ function open_damo()
 	end
 end
 
--------------------------------------------战斗结果--------------------------------------
---[[
-function pla()
-  x_defeat, y_defeat = findColorInRegionFuzzy(0x240b08, 95, 705, 323, 714, 333)  -- 鼓上的裂纹
-  x_win, y_win = findColorInRegionFuzzy(0x9a1c12, 95, 707, 334, 714, 339)
-  if x_defeat > -1 then
-    combat_win = true
-    sysLog("战斗失败")
-    tap(x_defeat, y_defeat)
-  else if x_win > 1 then
-    combat_win = false
-    sysLog("战斗胜利")
-  end
-end
-
---]]
 
 -------------------------------------------汇总--------------------------------------
 function start_combat(tap_situation, hero_num)

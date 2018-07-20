@@ -4,6 +4,9 @@ function enter_party_yuhun(yuhun_floor)
 	enter_party()
 	mSleep(500)
 	tap(400, 1130)
+	mSleep(200)
+	wait_for_leaving_state(刷新等待)
+	mSleep(200)
 	wait_for_state(组队刷新)
 	return choose_yuhun_floor(yuhun_floor)
 end
@@ -20,21 +23,26 @@ function choose_yuhun_floor(yuhun_floor)
 		mSleep(500)
 		tap(765, y)
 	end
+	mSleep(200)
+	wait_for_leaving_state(刷新等待)
+	mSleep(200)
 	wait_for_state(组队刷新)
 end
 
 function create_party(visible)
-	tap(1600, 1300)
-	local creat_x, creat_y = findMultiColorInRegionFuzzy(0xf3b25e,"-9|-50|0xcbb59c,-686|32|0xdf6851", 95, 1303, 1059, 1505, 1159)
+	state_transit(组队刷新, 创建, 1600, 1300, true)
+	local creat_x, creat_y = myFindColor(创建)
 	while creat_x == -1 do
 		sysLog('未找到')
 		mSleep(500)
-		creat_x, creat_y = findMultiColorInRegionFuzzy(0xf3b25e,"-9|-50|0xcbb59c,-686|32|0xdf6851", 95, 1303, 1059, 1505, 1159)
+		creat_x, creat_y = myFindColor(创建)
 	end
 	if visible == 'friend' then
-		tap(860, 1010)
+		tap(768, 1020)
+	elseif visible == 'public' then
+		tap(495, 1023)
 	else
-		tap(620, 1010)
+		tap(1223, 1024)
 	end
 	mSleep(1000)
 	--魂10检测等级限制
@@ -57,11 +65,10 @@ function create_party(visible)
 		end
 		mSleep(1000)
 	end
-	
 	my_toast(id, '创建队伍')
 	tap(creat_x, creat_y)
 	if_outof_sushi()
-	wait_for_state(队长等待)
+	wait_for_state(离开队伍)
 end
 
 
@@ -72,7 +79,7 @@ function conditional_invite(current_fight, fight_count, yuhun_floor, visible, ma
 	local current_party_statue = party_statue()
 	--sysLog(current_party_statue)
 	if current_party_statue == 5 then
-		toast ("开始队伍")
+		my_toast(id, "开始队伍")
 		tap(1547, 1157)
 		if_outof_sushi()
 		local combat_result = custom_mark_combat(mark_case, 30000, _G.yh_hero)
@@ -333,14 +340,14 @@ end
 function if_other_round(round_limit)
 	local round_limit = round_limit or 30000
 	sysLog(round_limit)
-	local x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
+	local x, y = myFindColor(新回合)
 	local initial_t = mTime()	
 	local force_skip_t = mTime() - initial_t
 	--my_toast(id,'检测到回目')
 	while x == -1 do
 		my_toast(id,'等待下一回合的标记')
-		mSleep(200)
-		x, y = findMultiColorInRegionFuzzy(0x272420,"0|13|0xe6cca0,2|-15|0x272420", 95, 1027-2,794-2,1027+2,794+2)
+		mSleep(100)
+		x, y = myFindColor(新回合)
 		force_skip_t = mTime() - initial_t
 		--sysLog(force_skip_t)
 		if force_skip_t >= round_limit then
@@ -359,30 +366,47 @@ function first_mark()
 	if jue_x > -1 then
 		my_toast(id, '检测二口女是否需要被标记')
 		if blueball_x > -1 then
-			tap(529, 488)
-			accept_quest()
-			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
+			local mark_x, mark_y = myFindColor(二口女标记)
 			while mark_x == -1 do
 				tap(529, 488)
-				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 439,313,677,516)
+				mSleep(300)
+				mark_x, mark_y = myFindColor(二口女标记)
 			end
 			--my_toast(id,'检测到标记')
 			my_toast(id, "已标记二口女")
+			mSleep(300)
 			return first_mark()
 		else
 			tap(1076, 397)
 			accept_quest()
-			local mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
-			while mark_x == -1 do
-				tap(1076, 397)
-				mark_x, mark_y = findMultiColorInRegionFuzzy(0xf9936a,"-2|-4|0xfb826a,7|-4|0xfe8966,-10|-4|0xff9863", 95, 997,295,1136,410)
+			local initial_t = mTime()	
+			local force_skip_t = mTime() - initial_t
+			x = -1
+			while x == -1 do
+				sysLog(force_skip_t)
+				mark_cases:case(3)
+				mSleep(200)
+				x, y = myFindColor(战斗标记)
+				force_skip_t = mTime() - initial_t
+				if force_skip_t >= 5000 then
+					my_toast(id, '标记超时, 直接下一轮标记')
+					do return end
+				end
 			end
 			--my_toast(id,'检测到标记')
 			my_toast(id, "已标记中间！")
 		end
 	else
 		my_toast(id, '镜头角度有误')
-		mSleep(300)
+		for i = 1, 3, 1 do
+			mSleep(1000)
+			sysLog('尝试寻找觉血条第'..i..'次')
+			jue_x, jue_y = myFindColor(觉血条)
+			if jue_x > -1 then
+				return first_mark()
+			end
+		end
+		do return end
 	end
 end
     
@@ -390,14 +414,26 @@ end
 function last_mark()
 	local initial_t = mTime()
 	sysLog('last_mark')
+	keepScreen(true)
 	local mark_x, mark_y = myFindColor(战斗标记)
+	local boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+	keepScreen(false)
 	local force_skip_t = mTime() - initial_t
 	while mark_x == -1 do
-		tap(530, 560)
-		mark_x, mark_y = myFindColor(战斗标记)
+		if boss_x > -1 then
+			sysLog('尝试标记')
+			tap(530, 560)
+		else
+			sysLog('镜头角度有误')
+		end
+		mSleep(300)
+		keepScreen(true)
+			mark_x, mark_y = myFindColor(战斗标记)
+			boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+		keepScreen(false)
 		force_skip_t = mTime() - initial_t
 		if force_skip_t >= 5000 then
-			my_toast(id, '标记超时, 直接下一轮标记')
+			my_toast(id, '左边标记超时, 直接下一轮标记')
 			break end
 	end
 	mSleep(1000)
@@ -416,28 +452,42 @@ function last_mark()
 		boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
 		keepScreen(false)
 	until
-		(dead_x > -1 and boss_x > -1) or (mTime() - initial_t >= 5000)
-
-
+		(dead_x > -1 and boss_x > -1) or (mTime() - initial_t >= 10000)
+	sysLog('左边已死亡')
+	mSleep(500)
 			--sysLog('if_mark'..tap_situation)
 	initial_t = mTime()	
-	accept_quest()
+	keepScreen(true)
 	mark_x, mark_y = myFindColor(战斗标记)
+	boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+	local left_x, left_y = myFindColor(右边天狗)
+	keepScreen(false)
 	if mark_x ~= -1 then
 		my_toast(id, '队友已标记')
 		do return end
 	end
 	force_skip_t = mTime() - initial_t
-	local left_x, left_y = myFindColor({0x342419,"4|-4|0xdddedd,-7|-5|0xfafafa",95,1464,346,1487,369})
+	
 	while mark_x == -1 do
 		sysLog(force_skip_t)
 		if left_x > -1 then 
+			sysLog('尝试标记右边')
 			tap(1580, 535)
+		else
+			if boss_x > -1 then
+				sysLog('右边已死亡')
+				do return end	
+			end
+			sysLog('镜头角度有误')
 		end
+		mSleep(300)
+		keepScreen(true)
 		mark_x, mark_y = myFindColor(战斗标记)
-		left_x, left_y = myFindColor({0x342419,"4|-4|0xdddedd,-7|-5|0xfafafa",95,1464,346,1487,369})
+		left_x, left_y = myFindColor(右边天狗)
+		boss_x, boss_y = myFindColor({0x7d817a,"4|25|0x536860,5|57|0x788375",95,1021,334,1124,393})
+		keepScreen(false)
 		force_skip_t = mTime() - initial_t
-		if force_skip_t >= 3000 then
+		if force_skip_t >= 5000 then
 			my_toast(id, '标记超时, 直接下一轮标记')
 			do return end
 		end
