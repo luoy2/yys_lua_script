@@ -198,7 +198,7 @@ function if_refresh(input_ss_table)
 		tap(refresh_x, refresh_y)
 		--sysLog('是否有妖气')
 		mSleep(_G.refresh_lag)
-		wait_for_state(组队刷新)
+		wait_for_leaving_state(刷新等待)
 		return if_monster(input_ss_table)
 	else
 		sysLog('未找到刷新')
@@ -214,9 +214,9 @@ function if_monster(input_ss_table)
 		if slot ~= nil then
 			join_party:case(slot)
 			sysLog('尝试进入队伍')
-			wait_for_leaving_state(刷新等待)
-			mSleep(1000)
 			keepScreen(false)
+			wait_for_leaving_state(刷新等待)
+			mSleep(_G.refresh_lag)
 			my_toast(id, '检测是否加入队伍')
 			local refresh_x, refresh_y = myFindColor(组队刷新)  --刷新黄色 如果未找到说明在队伍
 			if refresh_x == -1 then
@@ -299,7 +299,7 @@ function main_yqfy(yqfy_ret, yqfy_results)
 		toast("您选择了取消，停止脚本运行")
 		lua_exit()
 	end
-	ss_list = {海坊主, 小黑, 二口女, 骨女, 哥哥, 经验, 金币, 椒图, 饿鬼, '石距'}
+	ss_list = {海坊主, 小黑, 二口女, 骨女, 哥哥, 日和坊, 小松丸, 经验, 金币, 椒图, 饿鬼, '石距'}
 	sysLogLst(ss_list)
 	local fight_times = tonumber(yqfy_results['100'])
 	local ss_index = str_split((yqfy_results['101']))														--ui返回选择的项目index

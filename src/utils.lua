@@ -270,7 +270,6 @@ function check_current_state()
   --local main_x, main_y = findMultiColorInRegionFuzzy(0x8f5ea0,"-45|-4|0xbdb5a4,-38|45|0xf8f3e0,59|17|0x603d3a", 90, 434,1413, 438, 1417)
 	local main_x, main_y = myFindColor(组队)
 	local intansuo_x, intansuo_y = findColorInRegionFuzzy(0x2e4432, 95, 3, 1525, 9, 1531); --战斗界面左下角绿色
-  local incombat_x, incombat_y = findColorInRegionFuzzy(0x856e56, 95, 86, 1485, 110, 1494) --战斗左下角小齿轮颜色
 	local tansuo_x, tansuo_y = myFindColor(探索地图) -- 探索yuhun下方蓝色
 	local incombat_x, incombat_y = findColorInRegionFuzzy(0x856e56, 95, 86, 1485, 110, 1494) --战斗左下角小齿轮颜色
 	local tupo_x, tupo_y = findMultiColorInRegionFuzzy(0xc7241c,"-13|8|0xf7f2df,-14|-35|0xf4efe1", 95, 888, 1078, 888, 1078)  --3次达摩周边色

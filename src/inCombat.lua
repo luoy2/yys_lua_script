@@ -262,6 +262,6 @@ function start_combat(tap_situation, hero_num)
 		return 'defeat'
 	end
 	if_mark(tap_situation)
-  combat_result = end_combat(tap_situation)
+	combat_result = end_combat(tap_situation)
 	return combat_result
 end
